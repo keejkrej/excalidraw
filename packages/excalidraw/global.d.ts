@@ -2,6 +2,26 @@ interface Window {
   ClipboardItem: any;
   __EXCALIDRAW_SHA__: string | undefined;
   EXCALIDRAW_ASSET_PATH: string | string[] | undefined;
+  EXCALIDRAW_FS_ADAPTER:
+    | {
+        supported: boolean;
+        open: (opts: {
+          extensions?: string[];
+          description: string;
+          multiple?: boolean;
+        }) => Promise<File | File[]>;
+        save: (
+          blob: Blob | Promise<Blob>,
+          opts: {
+            name: string;
+            extension: string;
+            mimeTypes?: string[];
+            description: string;
+            fileHandle?: any;
+          },
+        ) => Promise<any>;
+      }
+    | undefined;
   EXCALIDRAW_THROTTLE_RENDER: boolean | undefined;
   DEBUG_FRACTIONAL_INDICES: boolean | undefined;
   EXCALIDRAW_EXPORT_SOURCE: string;
@@ -52,7 +72,7 @@ declare module "png-chunks-extract" {
 // -----------------------------------------------------------------------------
 
 interface Blob {
-  handle?: FileSystemFileHandle;
+  handle?: import("./types").ExcalidrawFileHandle;
   name?: string;
 }
 

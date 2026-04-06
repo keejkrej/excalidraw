@@ -25,9 +25,32 @@
   "engines": {
     "node": ">=18.0.0"
   },
+  "prettier": "@excalidraw/prettier-config",
+  "scripts": {
+    "build-node": "node ./scripts/build-node.js",
+    "build:app:docker": "cross-env VITE_APP_DISABLE_SENTRY=true vite build",
+    "build:app": "cross-env VITE_APP_GIT_SHA=$VERCEL_GIT_COMMIT_SHA cross-env VITE_APP_ENABLE_TRACKING=true vite build",
+    "build:desktop:app": "cross-env VITE_DESKTOP_APP=true cross-env VITE_APP_DISABLE_SENTRY=true vite build && bun run build:version",
+    "build:version": "node ../scripts/build-version.js",
+    "build": "bun run build:app && bun run build:version",
+    "start": "bun run start:web",
+    "start:web": "vite",
+    "start:production": "bun run build && bun run serve",
+    "serve": "npx http-server build -a localhost -p 5001 -o",
+    "build:preview": "bun run build && vite preview --port 5000",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.1",
+    "vite-plugin-sitemap": "0.7.1"
+  },
   "dependencies": {
     "@excalidraw/random-username": "1.0.0",
     "@sentry/browser": "9.0.1",
+    "@tauri-apps/api": "^2.8.0",
+    "@tauri-apps/plugin-dialog": "^2.4.0",
+    "@tauri-apps/plugin-opener": "^2.4.0",
     "callsites": "4.2.0",
     "firebase": "11.3.1",
     "i18next-browser-languagedetector": "6.1.4",
@@ -38,20 +61,5 @@
     "socket.io-client": "4.7.2",
     "uqr": "0.1.2",
     "vite-plugin-html": "3.2.2"
-  },
-  "prettier": "@excalidraw/prettier-config",
-  "scripts": {
-    "build-node": "node ./scripts/build-node.js",
-    "build:app:docker": "cross-env VITE_APP_DISABLE_SENTRY=true vite build",
-    "build:app": "cross-env VITE_APP_GIT_SHA=$VERCEL_GIT_COMMIT_SHA cross-env VITE_APP_ENABLE_TRACKING=true vite build",
-    "build:version": "node ../scripts/build-version.js",
-    "build": "yarn build:app && yarn build:version",
-    "start": "yarn && vite",
-    "start:production": "yarn build && yarn serve",
-    "serve": "npx http-server build -a localhost -p 5001 -o",
-    "build:preview": "yarn build && vite preview --port 5000"
-  },
-  "devDependencies": {
-    "vite-plugin-sitemap": "0.7.1"
   }
 }

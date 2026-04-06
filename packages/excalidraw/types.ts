@@ -110,6 +110,16 @@ export type CollaboratorPointer = {
 
 export type DataURL = string & { _brand: "DataURL" };
 
+export type ExcalidrawNativeFileHandle = {
+  kind: "native";
+  path: string;
+  name: string;
+};
+
+export type ExcalidrawFileHandle =
+  | FileSystemFileHandle
+  | ExcalidrawNativeFileHandle;
+
 export type BinaryFileData = {
   mimeType:
     | ValueOf<typeof IMAGE_MIME_TYPES>
@@ -435,7 +445,7 @@ export interface AppState {
   offsetTop: number;
   offsetLeft: number;
 
-  fileHandle: FileSystemFileHandle | null;
+  fileHandle: ExcalidrawFileHandle | null;
   collaborators: Map<SocketId, Collaborator>;
   stats: {
     open: boolean;

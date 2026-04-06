@@ -35,7 +35,7 @@ import { fileSave } from "./filesystem";
 import { serializeAsJSON } from "./json";
 
 import type { ExportType } from "../scene/types";
-import type { AppState, BinaryFiles } from "../types";
+import type { AppState, BinaryFiles, ExcalidrawFileHandle } from "../types";
 
 export { loadFromBlob } from "./blob";
 export { loadFromJSON, saveAsJSON } from "./json";
@@ -114,7 +114,7 @@ export const exportCanvas = async (
     viewBackgroundColor: string;
     /** filename, if applicable */
     name?: string;
-    fileHandle?: FileSystemFileHandle | null;
+    fileHandle?: ExcalidrawFileHandle | null;
     exportingFrame: ExcalidrawFrameLikeElement | null;
   },
 ) => {

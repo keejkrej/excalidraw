@@ -7,7 +7,7 @@ import { getFileHandleType, isImageFileHandleType } from "./blob";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { exportCanvas, prepareElementsForExport } from ".";
 
-import type { AppState, BinaryFiles } from "../types";
+import type { AppState, BinaryFiles, ExcalidrawFileHandle } from "../types";
 
 export const resaveAsImageWithScene = async (
   data: MaybePromise<{
@@ -15,7 +15,7 @@ export const resaveAsImageWithScene = async (
     appState: AppState;
     files: BinaryFiles;
   }>,
-  fileHandle: FileSystemFileHandle,
+  fileHandle: ExcalidrawFileHandle,
   filename: string,
 ) => {
   const fileHandleType = getFileHandleType(fileHandle);

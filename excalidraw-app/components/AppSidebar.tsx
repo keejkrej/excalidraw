@@ -6,9 +6,15 @@ import {
 import { LinkButton } from "@excalidraw/excalidraw/components/LinkButton";
 import { useUIAppState } from "@excalidraw/excalidraw/context/ui-appState";
 
+import { isDesktopApp } from "../desktop/runtime";
+
 import "./AppSidebar.scss";
 
 export const AppSidebar = () => {
+  if (isDesktopApp) {
+    return null;
+  }
+
   const { theme, openSidebar } = useUIAppState();
 
   return (

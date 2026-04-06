@@ -37,6 +37,7 @@ interface ImportMetaEnv {
   VITE_APP_PLUS_APP: string;
 
   VITE_APP_GIT_SHA: string;
+  VITE_DESKTOP_APP?: string;
 
   MODE: string;
 

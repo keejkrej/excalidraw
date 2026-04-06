@@ -1,14 +1,21 @@
 import {
   fileOpen as _fileOpen,
   fileSave as _fileSave,
-  supported as nativeFileSystemSupported,
+  supported as browserNativeFileSystemSupported,
 } from "browser-fs-access";
 
 import { MIME_TYPES } from "@excalidraw/common";
 
 import { normalizeFile } from "./blob";
 
+import type { ExcalidrawFileHandle } from "../types";
+
 type FILE_EXTENSION = Exclude<keyof typeof MIME_TYPES, "binary">;
+
+type HostFilesystemAdapter = NonNullable<typeof window.EXCALIDRAW_FS_ADAPTER>;
+
+const getHostFilesystemAdapter = (): HostFilesystemAdapter | undefined =>
+  window.EXCALIDRAW_FS_ADAPTER;
 
 export const fileOpen = async <M extends boolean | undefined = false>(opts: {
   extensions?: FILE_EXTENSION[];
@@ -17,6 +24,11 @@ export const fileOpen = async <M extends boolean | undefined = false>(opts: {
 }): Promise<M extends false | undefined ? File : File[]> => {
   // an unsafe TS hack, alas not much we can do AFAIK
   type RetType = M extends false | undefined ? File : File[];
+
+  const hostAdapter = getHostFilesystemAdapter();
+  if (hostAdapter?.supported) {
+    return hostAdapter.open(opts) as RetType;
+  }
 
   const mimeTypes = opts.extensions?.reduce((mimeTypes, type) => {
     mimeTypes.push(MIME_TYPES[type]);
@@ -55,10 +67,15 @@ export const fileSave = (
     extension: FILE_EXTENSION;
     mimeTypes?: string[];
     description: string;
-    /** existing FileSystemFileHandle */
-    fileHandle?: FileSystemFileHandle | null;
+    /** existing file handle */
+    fileHandle?: ExcalidrawFileHandle | null;
   },
 ) => {
+  const hostAdapter = getHostFilesystemAdapter();
+  if (hostAdapter?.supported) {
+    return hostAdapter.save(blob, opts);
+  }
+
   return _fileSave(
     blob,
     {
@@ -67,9 +84,10 @@ export const fileSave = (
       extensions: [`.${opts.extension}`],
       mimeTypes: opts.mimeTypes,
     },
-    opts.fileHandle,
+    opts.fileHandle as FileSystemFileHandle | null | undefined,
     false,
   );
 };
 
-export { nativeFileSystemSupported };
+export const nativeFileSystemSupported =
+  !!getHostFilesystemAdapter()?.supported || browserNativeFileSystemSupported;

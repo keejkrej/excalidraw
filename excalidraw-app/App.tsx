@@ -147,6 +147,11 @@ import "./index.scss";
 
 import { ExcalidrawPlusPromoBanner } from "./components/ExcalidrawPlusPromoBanner";
 import { AppSidebar } from "./components/AppSidebar";
+import {
+  isDesktopApp,
+  onDesktopOpenFiles,
+  readDesktopFile,
+} from "./desktop/runtime";
 
 import type { CollabAPI } from "./collab/Collab";
 
@@ -171,20 +176,22 @@ declare global {
 
 let pwaEvent: BeforeInstallPromptEvent | null = null;
 
-// Adding a listener outside of the component as it may (?) need to be
-// subscribed early to catch the event.
-//
-// Also note that it will fire only if certain heuristics are met (user has
-// used the app for some time, etc.)
-window.addEventListener(
-  "beforeinstallprompt",
-  (event: BeforeInstallPromptEvent) => {
-    // prevent Chrome <= 67 from automatically showing the prompt
-    event.preventDefault();
-    // cache for later use
-    pwaEvent = event;
-  },
-);
+if (!isDesktopApp) {
+  // Adding a listener outside of the component as it may (?) need to be
+  // subscribed early to catch the event.
+  //
+  // Also note that it will fire only if certain heuristics are met (user has
+  // used the app for some time, etc.)
+  window.addEventListener(
+    "beforeinstallprompt",
+    (event: BeforeInstallPromptEvent) => {
+      // prevent Chrome <= 67 from automatically showing the prompt
+      event.preventDefault();
+      // cache for later use
+      pwaEvent = event;
+    },
+  );
+}
 
 let isSelfEmbedding = false;
 
@@ -375,7 +382,7 @@ const ExcalidrawWrapper = () => {
   const excalidrawAPI = useExcalidrawAPI();
 
   const [errorMessage, setErrorMessage] = useState("");
-  const isCollabDisabled = isRunningInIframe();
+  const isCollabDisabled = isRunningInIframe() || isDesktopApp;
 
   const { editorTheme, appTheme, setAppTheme } = useHandleAppTheme();
 
@@ -793,6 +800,76 @@ const ExcalidrawWrapper = () => {
     [setShareDialogState],
   );
 
+  const loadDesktopSceneFromPath = useCallback(
+    async (path: string) => {
+      if (!excalidrawAPI) {
+        return;
+      }
+
+      const elements = excalidrawAPI.getSceneElements();
+      const appState = excalidrawAPI.getAppState();
+      const { file, fileHandle } = await readDesktopFile(path);
+      const loadedScene = await loadFromBlob(
+        file,
+        appState,
+        elements,
+        fileHandle,
+      );
+
+      excalidrawAPI.updateScene({
+        elements: loadedScene.elements,
+        appState: {
+          ...loadedScene.appState,
+          errorMessage: null,
+          isLoading: false,
+        },
+        files: loadedScene.files,
+        replaceFiles: true,
+        captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+      });
+    },
+    [excalidrawAPI],
+  );
+
+  useEffect(() => {
+    if (!isDesktopApp || !excalidrawAPI) {
+      return;
+    }
+
+    return onDesktopOpenFiles(async (paths) => {
+      const [path] = paths;
+      if (!path) {
+        return;
+      }
+
+      const sceneHasContent = excalidrawAPI.getSceneElements().length > 0;
+      if (
+        sceneHasContent &&
+        !(await openConfirmModal({
+          title: t("overwriteConfirm.modal.loadFromFile.title"),
+          actionLabel: t("overwriteConfirm.modal.loadFromFile.button"),
+          color: "warning",
+          description: (
+            <Trans
+              i18nKey="overwriteConfirm.modal.loadFromFile.description"
+              bold={(text) => <strong>{text}</strong>}
+              br={() => <br />}
+            />
+          ),
+        }))
+      ) {
+        return;
+      }
+
+      try {
+        await loadDesktopSceneFromPath(path);
+      } catch (error: any) {
+        console.error(error);
+        setErrorMessage(error.message || t("alerts.couldNotLoadInvalidFile"));
+      }
+    });
+  }, [excalidrawAPI, loadDesktopSceneFromPath, setErrorMessage]);
+
   // ---------------------------------------------------------------------------
   // onExport — intercepts file save to wait for pending image loads
   // ---------------------------------------------------------------------------
@@ -918,8 +995,8 @@ const ExcalidrawWrapper = () => {
           canvasActions: {
             toggleTheme: true,
             export: {
-              onExportToBackend,
-              renderCustomUI: excalidrawAPI
+              onExportToBackend: isDesktopApp ? undefined : onExportToBackend,
+              renderCustomUI: !isDesktopApp && excalidrawAPI
                 ? (elements, appState, files) => {
                     return (
                       <ExportToExcalidrawPlus
@@ -959,11 +1036,12 @@ const ExcalidrawWrapper = () => {
 
           return (
             <div className="excalidraw-ui-top-right">
-              {excalidrawAPI?.getEditorInterface().formFactor === "desktop" && (
-                <ExcalidrawPlusPromoBanner
-                  isSignedIn={isExcalidrawPlusSignedUser}
-                />
-              )}
+              {!isDesktopApp &&
+                excalidrawAPI?.getEditorInterface().formFactor === "desktop" && (
+                  <ExcalidrawPlusPromoBanner
+                    isSignedIn={isExcalidrawPlusSignedUser}
+                  />
+                )}
 
               {collabError.message && <CollabError collabError={collabError} />}
               <LiveCollaborationTrigger
@@ -987,6 +1065,7 @@ const ExcalidrawWrapper = () => {
           onCollabDialogOpen={onCollabDialogOpen}
           isCollaborating={isCollaborating}
           isCollabEnabled={!isCollabDisabled}
+          isDesktopApp={isDesktopApp}
           theme={appTheme}
           setTheme={(theme) => setAppTheme(theme)}
           refresh={() => forceRefresh((prev) => !prev)}
@@ -994,11 +1073,12 @@ const ExcalidrawWrapper = () => {
         <AppWelcomeScreen
           onCollabDialogOpen={onCollabDialogOpen}
           isCollabEnabled={!isCollabDisabled}
+          showExcalidrawPlusLinks={!isDesktopApp}
         />
         <OverwriteConfirmDialog>
           <OverwriteConfirmDialog.Actions.ExportToImage />
           <OverwriteConfirmDialog.Actions.SaveToDisk />
-          {excalidrawAPI && (
+          {!isDesktopApp && excalidrawAPI && (
             <OverwriteConfirmDialog.Action
               title={t("overwriteConfirm.action.excalidrawPlus.title")}
               actionLabel={t("overwriteConfirm.action.excalidrawPlus.button")}
@@ -1016,7 +1096,9 @@ const ExcalidrawWrapper = () => {
           )}
         </OverwriteConfirmDialog>
         <AppFooter onChange={() => excalidrawAPI?.refresh()} />
-        {excalidrawAPI && <AIComponents excalidrawAPI={excalidrawAPI} />}
+        {!isDesktopApp && excalidrawAPI && (
+          <AIComponents excalidrawAPI={excalidrawAPI} />
+        )}
 
         <TTDDialogTrigger />
         {isCollaborating && isOffline && (
@@ -1070,6 +1152,7 @@ const ExcalidrawWrapper = () => {
             {
               label: t("labels.liveCollaboration"),
               category: DEFAULT_CATEGORIES.app,
+              predicate: !isDesktopApp,
               keywords: [
                 "team",
                 "multiplayer",
@@ -1111,7 +1194,7 @@ const ExcalidrawWrapper = () => {
             {
               label: t("labels.share"),
               category: DEFAULT_CATEGORIES.app,
-              predicate: true,
+              predicate: !isDesktopApp,
               icon: share,
               keywords: [
                 "link",
@@ -1203,20 +1286,22 @@ const ExcalidrawWrapper = () => {
                 );
               },
             },
-            ...(isExcalidrawPlusSignedUser
-              ? [
-                  {
-                    ...ExcalidrawPlusAppCommand,
-                    label: "Sign in / Go to Excalidraw+",
-                  },
-                ]
-              : [ExcalidrawPlusCommand, ExcalidrawPlusAppCommand]),
+            ...(!isDesktopApp
+              ? isExcalidrawPlusSignedUser
+                ? [
+                    {
+                      ...ExcalidrawPlusAppCommand,
+                      label: "Sign in / Go to Excalidraw+",
+                    },
+                  ]
+                : [ExcalidrawPlusCommand, ExcalidrawPlusAppCommand]
+              : []),
 
             {
               label: t("overwriteConfirm.action.excalidrawPlus.button"),
               category: DEFAULT_CATEGORIES.export,
               icon: exportToPlus,
-              predicate: true,
+              predicate: !isDesktopApp,
               keywords: ["plus", "export", "save", "backup"],
               perform: () => {
                 if (excalidrawAPI) {
@@ -1240,7 +1325,7 @@ const ExcalidrawWrapper = () => {
             {
               label: t("labels.installPWA"),
               category: DEFAULT_CATEGORIES.app,
-              predicate: () => !!pwaEvent,
+              predicate: () => !isDesktopApp && !!pwaEvent,
               perform: () => {
                 if (pwaEvent) {
                   pwaEvent.prompt();
