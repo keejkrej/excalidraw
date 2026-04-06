@@ -142,6 +142,7 @@ import {
   isBindingElement,
   isBindingElementType,
   isBoundToContainer,
+  isFrameElement,
   isFrameLikeElement,
   isImageElement,
   isEmbeddableElement,
@@ -177,6 +178,8 @@ import {
   redrawTextBoundingBox,
   hasBoundingBox,
   getFrameChildren,
+  getPresentationFramesSorted,
+  getPresentationOrder,
   isCursorInFrame,
   addElementsToFrame,
   replaceAllElementsInFrame,
@@ -259,6 +262,8 @@ import {
   maybeHandleArrowPointlikeDrag,
   getUncroppedWidthAndHeight,
   getActiveTextElement,
+  setPresentationOrder,
+  syncPresentationOrders,
 } from "@excalidraw/element";
 
 import type { GlobalPoint, LocalPoint, Radians } from "@excalidraw/math";
@@ -281,6 +286,7 @@ import type {
   IframeData,
   ExcalidrawIframeElement,
   ExcalidrawEmbeddableElement,
+  ExcalidrawFrameElement,
   Ordered,
   MagicGenerationData,
   ExcalidrawArrowElement,
@@ -436,6 +442,7 @@ import { activeEyeDropperAtom } from "./EyeDropper";
 import FollowMode from "./FollowMode/FollowMode";
 import LayerUI from "./LayerUI";
 import { ElementCanvasButton } from "./MagicButton";
+import { PresentationControls } from "./PresentationControls";
 import { SVGLayer } from "./SVGLayer";
 import { searchItemInFocusAtom } from "./SearchMenu";
 import { isSidebarDockedAtom } from "./Sidebar/Sidebar";
@@ -1439,18 +1446,16 @@ class App extends React.Component<AppProps, AppState> {
     });
   };
 
-  private renderEmbeddables() {
+  private renderEmbeddables(elements = this.scene.getNonDeletedElements()) {
     const scale = this.state.zoom.value;
     const normalizedWidth = this.state.width;
     const normalizedHeight = this.state.height;
 
-    const embeddableElements = this.scene
-      .getNonDeletedElements()
-      .filter(
-        (el): el is Ordered<NonDeleted<ExcalidrawIframeLikeElement>> =>
-          (isEmbeddableElement(el) && this.embedsValidationStatus.get(el.id) === true) ||
-          isIframeElement(el),
-      );
+    const embeddableElements = elements.filter(
+      (el): el is Ordered<NonDeleted<ExcalidrawIframeLikeElement>> =>
+        (isEmbeddableElement(el) && this.embedsValidationStatus.get(el.id) === true) ||
+        isIframeElement(el),
+    );
 
     return (
       <>
@@ -1927,11 +1932,26 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   public render() {
+    const sceneElements = this.scene.getNonDeletedElements();
     const selectedElements = this.scene.getSelectedElements(this.state);
     const { renderTopRightUI, renderTopLeftUI, renderCustomStats } = this.props;
 
     const sceneNonce = this.scene.getSceneNonce();
-    const { elementsMap, visibleElements } = this.renderer.getRenderableElements({
+    const presentationFrames = this.state.presentationModeEnabled
+      ? this.getPresentationFrames()
+      : [];
+    const currentPresentationFrame =
+      presentationFrames.find((frame) => frame.id === this.state.presentationFrameId) ||
+      presentationFrames[0] ||
+      null;
+    const presentationElements =
+      currentPresentationFrame !== null
+        ? ([
+            currentPresentationFrame,
+            ...getFrameChildren(sceneElements, currentPresentationFrame.id),
+          ] as readonly Ordered<NonDeletedExcalidrawElement>[])
+        : sceneElements;
+    const renderableElements = this.renderer.getRenderableElements({
       sceneNonce,
       zoom: this.state.zoom,
       offsetLeft: this.state.offsetLeft,
@@ -1943,9 +1963,31 @@ class App extends React.Component<AppProps, AppState> {
       editingTextElement: this.state.editingTextElement,
       newElementId: this.state.newElement?.id,
     });
+    const elementsMap = renderableElements.elementsMap;
+    const visibleElements = this.state.presentationModeEnabled
+      ? presentationElements
+      : renderableElements.visibleElements;
     this.visibleElements = visibleElements;
 
     const allElementsMap = this.scene.getNonDeletedElementsMap();
+    const elementsForProvider = this.state.presentationModeEnabled
+      ? presentationElements
+      : sceneElements;
+    const staticCanvasAppState = this.state.presentationModeEnabled
+      ? {
+          ...this.state,
+          frameRendering: {
+            enabled: true,
+            clip: true,
+            outline: false,
+            name: false,
+          },
+        }
+      : this.state;
+    const presentationSlideIndex =
+      currentPresentationFrame && presentationFrames.length
+        ? presentationFrames.findIndex((frame) => frame.id === currentPresentationFrame.id)
+        : -1;
 
     const shouldBlockPointerEvents =
       // default back to `--ui-pointerEvents` flow if setPointerCapture
@@ -1993,139 +2035,151 @@ class App extends React.Component<AppProps, AppState> {
                 <EditorInterfaceContext.Provider value={this.editorInterface}>
                   <ExcalidrawSetAppStateContext.Provider value={this.setAppState}>
                     <ExcalidrawAppStateContext.Provider value={this.state}>
-                      <ExcalidrawElementsContext.Provider
-                        value={this.scene.getNonDeletedElements()}
-                      >
+                      <ExcalidrawElementsContext.Provider value={elementsForProvider}>
                         <ExcalidrawActionManagerContext.Provider value={this.actionManager}>
-                          <LayerUI
-                            canvas={this.canvas}
-                            appState={this.state}
-                            files={this.files}
-                            setAppState={this.setAppState}
-                            actionManager={this.actionManager}
-                            elements={this.scene.getNonDeletedElements()}
-                            onLockToggle={this.toggleLock}
-                            onPenModeToggle={this.togglePenMode}
-                            onHandToolToggle={this.onHandToolToggle}
-                            langCode={getLanguage().code}
-                            renderTopLeftUI={renderTopLeftUI}
-                            renderTopRightUI={renderTopRightUI}
-                            renderCustomStats={renderCustomStats}
-                            showExitZenModeBtn={
-                              typeof this.props?.zenModeEnabled === "undefined" &&
-                              this.state.zenModeEnabled
-                            }
-                            UIOptions={this.props.UIOptions}
-                            onExportImage={this.onExportImage}
-                            renderWelcomeScreen={
-                              !this.state.isLoading &&
-                              this.state.showWelcomeScreen &&
-                              this.state.activeTool.type ===
-                                this.state.preferredSelectionTool.type &&
-                              !this.state.zenModeEnabled &&
-                              !this.scene.getElementsIncludingDeleted().length
-                            }
-                            app={this}
-                            isCollaborating={this.props.isCollaborating}
-                            generateLinkForSelection={this.props.generateLinkForSelection}
-                          >
-                            {this.props.children}
-                          </LayerUI>
-
-                          <div className="excalidraw-textEditorContainer" />
-                          <div className="excalidraw-contextMenuContainer" />
-                          <div className="excalidraw-eye-dropper-container" />
-                          <SVGLayer
-                            trails={[this.laserTrails, this.lassoTrail, this.eraserTrail]}
-                          />
-                          {selectedElements.length === 1 &&
-                            this.state.openDialog?.name !== "elementLinkSelector" &&
-                            this.state.showHyperlinkPopup && (
-                              <Hyperlink
-                                key={firstSelectedElement.id}
-                                element={firstSelectedElement}
-                                scene={this.scene}
+                          {this.state.presentationModeEnabled ? (
+                            <PresentationControls
+                              currentSlideIndex={presentationSlideIndex}
+                              totalSlides={presentationFrames.length}
+                              onPrevious={this.goToPreviousPresentationFrame}
+                              onNext={this.goToNextPresentationFrame}
+                              onClose={this.stopPresentation}
+                            />
+                          ) : (
+                            <>
+                              <LayerUI
+                                canvas={this.canvas}
+                                appState={this.state}
+                                files={this.files}
                                 setAppState={this.setAppState}
-                                onLinkOpen={this.props.onLinkOpen}
-                                setToast={this.setToast}
-                                updateEmbedValidationStatus={this.updateEmbedValidationStatus}
+                                actionManager={this.actionManager}
+                                elements={sceneElements}
+                                onLockToggle={this.toggleLock}
+                                onPenModeToggle={this.togglePenMode}
+                                onHandToolToggle={this.onHandToolToggle}
+                                langCode={getLanguage().code}
+                                renderTopLeftUI={renderTopLeftUI}
+                                renderTopRightUI={renderTopRightUI}
+                                renderCustomStats={renderCustomStats}
+                                showExitZenModeBtn={
+                                  typeof this.props?.zenModeEnabled === "undefined" &&
+                                  this.state.zenModeEnabled
+                                }
+                                UIOptions={this.props.UIOptions}
+                                onExportImage={this.onExportImage}
+                                renderWelcomeScreen={
+                                  !this.state.isLoading &&
+                                  this.state.showWelcomeScreen &&
+                                  this.state.activeTool.type ===
+                                    this.state.preferredSelectionTool.type &&
+                                  !this.state.zenModeEnabled &&
+                                  !this.scene.getElementsIncludingDeleted().length
+                                }
+                                app={this}
+                                isCollaborating={this.props.isCollaborating}
+                                generateLinkForSelection={this.props.generateLinkForSelection}
+                              >
+                                {this.props.children}
+                              </LayerUI>
+
+                              <div className="excalidraw-textEditorContainer" />
+                              <div className="excalidraw-contextMenuContainer" />
+                              <div className="excalidraw-eye-dropper-container" />
+                              <SVGLayer
+                                trails={[this.laserTrails, this.lassoTrail, this.eraserTrail]}
                               />
-                            )}
-                          {this.props.aiEnabled !== false &&
-                            selectedElements.length === 1 &&
-                            isMagicFrameElement(firstSelectedElement) && (
-                              <ElementCanvasButtons
-                                element={firstSelectedElement}
-                                elementsMap={elementsMap}
-                              >
-                                <ElementCanvasButton
-                                  title={t("labels.convertToCode")}
-                                  icon={MagicIcon}
-                                  checked={false}
-                                  onChange={() =>
-                                    this.onMagicFrameGenerate(firstSelectedElement, "button")
-                                  }
-                                />
-                              </ElementCanvasButtons>
-                            )}
-                          {selectedElements.length === 1 &&
-                            isIframeElement(firstSelectedElement) &&
-                            firstSelectedElement.customData?.generationData?.status === "done" && (
-                              <ElementCanvasButtons
-                                element={firstSelectedElement}
-                                elementsMap={elementsMap}
-                              >
-                                <ElementCanvasButton
-                                  title={t("labels.copySource")}
-                                  icon={copyIcon}
-                                  checked={false}
-                                  onChange={() => this.onIframeSrcCopy(firstSelectedElement)}
-                                />
-                                <ElementCanvasButton
-                                  title="Enter fullscreen"
-                                  icon={fullscreenIcon}
-                                  checked={false}
-                                  onChange={() => {
-                                    const iframe = this.getHTMLIFrameElement(firstSelectedElement);
-                                    if (iframe) {
-                                      try {
-                                        iframe.requestFullscreen();
-                                        this.setState({
-                                          activeEmbeddable: {
-                                            element: firstSelectedElement,
-                                            state: "active",
-                                          },
-                                          selectedElementIds: {
-                                            [firstSelectedElement.id]: true,
-                                          },
-                                          newElement: null,
-                                          selectionElement: null,
-                                        });
-                                      } catch (err: any) {
-                                        console.warn(err);
-                                        this.setState({
-                                          errorMessage: "Couldn't enter fullscreen",
-                                        });
+                              {selectedElements.length === 1 &&
+                                this.state.openDialog?.name !== "elementLinkSelector" &&
+                                this.state.showHyperlinkPopup && (
+                                  <Hyperlink
+                                    key={firstSelectedElement.id}
+                                    element={firstSelectedElement}
+                                    scene={this.scene}
+                                    setAppState={this.setAppState}
+                                    onLinkOpen={this.props.onLinkOpen}
+                                    setToast={this.setToast}
+                                    updateEmbedValidationStatus={this.updateEmbedValidationStatus}
+                                  />
+                                )}
+                              {this.props.aiEnabled !== false &&
+                                selectedElements.length === 1 &&
+                                isMagicFrameElement(firstSelectedElement) && (
+                                  <ElementCanvasButtons
+                                    element={firstSelectedElement}
+                                    elementsMap={elementsMap}
+                                  >
+                                    <ElementCanvasButton
+                                      title={t("labels.convertToCode")}
+                                      icon={MagicIcon}
+                                      checked={false}
+                                      onChange={() =>
+                                        this.onMagicFrameGenerate(firstSelectedElement, "button")
                                       }
-                                    }
+                                    />
+                                  </ElementCanvasButtons>
+                                )}
+                              {selectedElements.length === 1 &&
+                                isIframeElement(firstSelectedElement) &&
+                                firstSelectedElement.customData?.generationData?.status ===
+                                  "done" && (
+                                  <ElementCanvasButtons
+                                    element={firstSelectedElement}
+                                    elementsMap={elementsMap}
+                                  >
+                                    <ElementCanvasButton
+                                      title={t("labels.copySource")}
+                                      icon={copyIcon}
+                                      checked={false}
+                                      onChange={() => this.onIframeSrcCopy(firstSelectedElement)}
+                                    />
+                                    <ElementCanvasButton
+                                      title="Enter fullscreen"
+                                      icon={fullscreenIcon}
+                                      checked={false}
+                                      onChange={() => {
+                                        const iframe =
+                                          this.getHTMLIFrameElement(firstSelectedElement);
+                                        if (iframe) {
+                                          try {
+                                            iframe.requestFullscreen();
+                                            this.setState({
+                                              activeEmbeddable: {
+                                                element: firstSelectedElement,
+                                                state: "active",
+                                              },
+                                              selectedElementIds: {
+                                                [firstSelectedElement.id]: true,
+                                              },
+                                              newElement: null,
+                                              selectionElement: null,
+                                            });
+                                          } catch (err: any) {
+                                            console.warn(err);
+                                            this.setState({
+                                              errorMessage: "Couldn't enter fullscreen",
+                                            });
+                                          }
+                                        }
+                                      }}
+                                    />
+                                  </ElementCanvasButtons>
+                                )}
+
+                              {this.state.contextMenu && (
+                                <ContextMenu
+                                  items={this.state.contextMenu.items}
+                                  top={this.state.contextMenu.top}
+                                  left={this.state.contextMenu.left}
+                                  actionManager={this.actionManager}
+                                  onClose={(callback) => {
+                                    this.setState({ contextMenu: null }, () => {
+                                      this.focusContainer();
+                                      callback?.();
+                                    });
                                   }}
                                 />
-                              </ElementCanvasButtons>
-                            )}
-
-                          {this.state.contextMenu && (
-                            <ContextMenu
-                              items={this.state.contextMenu.items}
-                              top={this.state.contextMenu.top}
-                              left={this.state.contextMenu.left}
-                              actionManager={this.actionManager}
-                              onClose={(callback) => {
-                                this.setState({ contextMenu: null }, () => {
-                                  this.focusContainer();
-                                  callback?.();
-                                });
-                              }}
-                            />
+                              )}
+                            </>
                           )}
                           <StaticCanvas
                             canvas={this.canvas}
@@ -2136,11 +2190,12 @@ class App extends React.Component<AppProps, AppState> {
                             sceneNonce={sceneNonce}
                             selectionNonce={this.state.selectionElement?.versionNonce}
                             scale={window.devicePixelRatio}
-                            appState={this.state}
+                            appState={staticCanvasAppState}
                             renderConfig={{
                               imageCache: this.imageCache,
                               isExporting: false,
-                              renderGrid: isGridModeEnabled(this),
+                              renderGrid:
+                                !this.state.presentationModeEnabled && isGridModeEnabled(this),
                               canvasBackgroundColor: this.state.viewBackgroundColor,
                               embedsValidationStatus: this.embedsValidationStatus,
                               elementsPendingErasure: this.elementsPendingErasure,
@@ -2167,46 +2222,55 @@ class App extends React.Component<AppProps, AppState> {
                               }}
                             />
                           )}
-                          <InteractiveCanvas
-                            app={this}
-                            containerRef={this.excalidrawContainerRef}
-                            canvas={this.interactiveCanvas}
-                            elementsMap={elementsMap}
-                            visibleElements={visibleElements}
-                            allElementsMap={allElementsMap}
-                            selectedElements={selectedElements}
-                            sceneNonce={sceneNonce}
-                            selectionNonce={this.state.selectionElement?.versionNonce}
-                            scale={window.devicePixelRatio}
-                            appState={this.state}
-                            renderScrollbars={this.props.renderScrollbars === true}
-                            editorInterface={this.editorInterface}
-                            renderInteractiveSceneCallback={this.renderInteractiveSceneCallback}
-                            handleCanvasRef={this.handleInteractiveCanvasRef}
-                            onContextMenu={this.handleCanvasContextMenu}
-                            onClick={this.handleCanvasClick}
-                            onPointerMove={this.handleCanvasPointerMove}
-                            onPointerUp={this.handleCanvasPointerUp}
-                            onPointerCancel={this.removePointer}
-                            onTouchMove={this.handleTouchMove}
-                            onPointerDown={this.handleCanvasPointerDown}
-                            onDoubleClick={this.handleCanvasDoubleClick}
-                          />
-                          {this.state.userToFollow && (
-                            <FollowMode
-                              width={this.state.width}
-                              height={this.state.height}
-                              userToFollow={this.state.userToFollow}
-                              onDisconnect={this.maybeUnfollowRemoteUser}
-                            />
+                          {!this.state.presentationModeEnabled && (
+                            <>
+                              <InteractiveCanvas
+                                app={this}
+                                containerRef={this.excalidrawContainerRef}
+                                canvas={this.interactiveCanvas}
+                                elementsMap={elementsMap}
+                                visibleElements={visibleElements}
+                                allElementsMap={allElementsMap}
+                                selectedElements={selectedElements}
+                                sceneNonce={sceneNonce}
+                                selectionNonce={this.state.selectionElement?.versionNonce}
+                                scale={window.devicePixelRatio}
+                                appState={this.state}
+                                renderScrollbars={this.props.renderScrollbars === true}
+                                editorInterface={this.editorInterface}
+                                renderInteractiveSceneCallback={this.renderInteractiveSceneCallback}
+                                handleCanvasRef={this.handleInteractiveCanvasRef}
+                                onContextMenu={this.handleCanvasContextMenu}
+                                onClick={this.handleCanvasClick}
+                                onPointerMove={this.handleCanvasPointerMove}
+                                onPointerUp={this.handleCanvasPointerUp}
+                                onPointerCancel={this.removePointer}
+                                onTouchMove={this.handleTouchMove}
+                                onPointerDown={this.handleCanvasPointerDown}
+                                onDoubleClick={this.handleCanvasDoubleClick}
+                              />
+                              {this.state.userToFollow && (
+                                <FollowMode
+                                  width={this.state.width}
+                                  height={this.state.height}
+                                  userToFollow={this.state.userToFollow}
+                                  onDisconnect={this.maybeUnfollowRemoteUser}
+                                />
+                              )}
+                              {this.renderFrameNames()}
+                              {this.state.activeLockedId && (
+                                <UnlockPopup
+                                  app={this}
+                                  activeLockedId={this.state.activeLockedId}
+                                />
+                              )}
+                              {showShapeSwitchPanel && <ConvertElementTypePopup app={this} />}
+                            </>
                           )}
-                          {this.renderFrameNames()}
-                          {this.state.activeLockedId && (
-                            <UnlockPopup app={this} activeLockedId={this.state.activeLockedId} />
-                          )}
-                          {showShapeSwitchPanel && <ConvertElementTypePopup app={this} />}
                         </ExcalidrawActionManagerContext.Provider>
-                        {this.renderEmbeddables()}
+                        {this.renderEmbeddables(
+                          this.state.presentationModeEnabled ? presentationElements : sceneElements,
+                        )}
                       </ExcalidrawElementsContext.Provider>
                     </ExcalidrawAppStateContext.Provider>
                   </ExcalidrawSetAppStateContext.Provider>
@@ -2218,6 +2282,233 @@ class App extends React.Component<AppProps, AppState> {
       </div>
     );
   }
+
+  public getPresentationFrames = () => {
+    return getPresentationFramesSorted(this.scene.getNonDeletedElements());
+  };
+
+  public reorderPresentationFrames = (frameIds: readonly ExcalidrawElement["id"][]) => {
+    const frames = this.getPresentationFrames();
+    const orderedIds = frameIds.filter((id) => frames.some((frame) => frame.id === id));
+    const remainingIds = frames.map((frame) => frame.id).filter((id) => !orderedIds.includes(id));
+    const nextOrder = [...orderedIds, ...remainingIds];
+    const elementsMap = this.scene.getElementsMapIncludingDeleted();
+
+    nextOrder.forEach((id, index) => {
+      const frame = elementsMap.get(id);
+      if (frame && isFrameElement(frame) && getPresentationOrder(frame) !== index) {
+        setPresentationOrder(frame, elementsMap, index);
+      }
+    });
+
+    this.scene.triggerUpdate();
+    this.store.scheduleCapture();
+  };
+
+  public goToPresentationFrame = (
+    frameId: ExcalidrawElement["id"],
+    opts?: { animate?: boolean; forcePresentationMode?: boolean },
+  ) => {
+    const frame = this.scene.getNonDeletedElementsMap().get(frameId);
+    if (!frame || !isFrameElement(frame)) {
+      return;
+    }
+
+    const isPresentationMode = opts?.forcePresentationMode || this.state.presentationModeEnabled;
+    const frameElements = [
+      frame,
+      ...getFrameChildren(this.scene.getNonDeletedElements(), frame.id),
+    ];
+
+    this.setState({
+      presentationFrameId: frame.id,
+      selectedElementIds: { [frame.id]: true },
+    });
+
+    this.scrollToContent(frameElements, {
+      fitToViewport: true,
+      viewportZoomFactor: 0.9,
+      animate: opts?.animate ?? true,
+      canvasOffsets: isPresentationMode
+        ? { top: 16, right: 16, bottom: 112, left: 16 }
+        : this.getEditorUIOffsets(),
+    });
+  };
+
+  public startPresentation = async (frameId?: ExcalidrawElement["id"]) => {
+    const elements = this.scene.getElementsIncludingDeleted();
+    const frames = this.getPresentationFrames();
+
+    if (!frames.length) {
+      return;
+    }
+
+    syncPresentationOrders(elements);
+
+    const orderedFrames = this.getPresentationFrames();
+    const selectedFrame = this.scene
+      .getSelectedElements(this.state)
+      .find((element): element is ExcalidrawFrameElement => isFrameElement(element));
+    const nextFrame =
+      (frameId &&
+        orderedFrames.find((frame) => {
+          return frame.id === frameId;
+        })) ||
+      selectedFrame ||
+      orderedFrames[0];
+
+    let presentationIsFullscreen = false;
+    if (this.excalidrawContainerRef.current?.requestFullscreen) {
+      try {
+        await this.excalidrawContainerRef.current.requestFullscreen();
+      } catch (error) {
+        muteFSAbortError(error as Error);
+      }
+      presentationIsFullscreen = document.fullscreenElement === this.excalidrawContainerRef.current;
+    }
+
+    this.setState(
+      {
+        presentationModeEnabled: true,
+        presentationFrameId: nextFrame.id,
+        presentationIsFullscreen,
+        contextMenu: null,
+        openDialog: null,
+        openMenu: null,
+        activeEmbeddable: null,
+      },
+      () => {
+        this.goToPresentationFrame(nextFrame.id, {
+          animate: false,
+          forcePresentationMode: true,
+        });
+        this.focusContainer();
+      },
+    );
+  };
+
+  public stopPresentation = async () => {
+    const shouldExitFullscreen =
+      this.state.presentationIsFullscreen &&
+      document.fullscreenElement === this.excalidrawContainerRef.current;
+
+    this.setState(
+      {
+        presentationModeEnabled: false,
+        presentationFrameId: null,
+        presentationIsFullscreen: false,
+      },
+      () => {
+        this.focusContainer();
+      },
+    );
+
+    if (shouldExitFullscreen) {
+      try {
+        await document.exitFullscreen();
+      } catch (error) {
+        muteFSAbortError(error as Error);
+      }
+    }
+  };
+
+  public goToNextPresentationFrame = () => {
+    const frames = this.getPresentationFrames();
+    if (!frames.length) {
+      return;
+    }
+
+    const currentIndex = frames.findIndex((frame) => frame.id === this.state.presentationFrameId);
+    const nextIndex = Math.min(currentIndex + 1, frames.length - 1);
+    this.goToPresentationFrame(frames[nextIndex].id);
+  };
+
+  public goToPreviousPresentationFrame = () => {
+    const frames = this.getPresentationFrames();
+    if (!frames.length) {
+      return;
+    }
+
+    const currentIndex = frames.findIndex((frame) => frame.id === this.state.presentationFrameId);
+    const nextIndex = Math.max(currentIndex <= 0 ? 0 : currentIndex - 1, 0);
+    this.goToPresentationFrame(frames[nextIndex].id);
+  };
+
+  public applyPresentationLayout = (opts: {
+    mode: "row" | "column" | "grid";
+    columns?: number;
+  }) => {
+    const frames = this.getPresentationFrames();
+    if (!frames.length) {
+      this.setState({ openDialog: null });
+      return;
+    }
+
+    const originX = Math.min(...frames.map((frame) => frame.x));
+    const originY = Math.min(...frames.map((frame) => frame.y));
+    const gap = 64;
+    const gridColumns = Math.max(1, Math.floor(opts.columns || 1));
+    let cursorX = originX;
+    let cursorY = originY;
+    let rowMaxHeight = 0;
+
+    frames.forEach((frame, index) => {
+      let targetX = originX;
+      let targetY = originY;
+
+      if (opts.mode === "row") {
+        targetX = cursorX;
+        targetY = originY;
+        cursorX += frame.width + gap;
+      } else if (opts.mode === "column") {
+        targetX = originX;
+        targetY = cursorY;
+        cursorY += frame.height + gap;
+      } else {
+        targetX = cursorX;
+        targetY = cursorY;
+        rowMaxHeight = Math.max(rowMaxHeight, frame.height);
+
+        if ((index + 1) % gridColumns === 0) {
+          cursorX = originX;
+          cursorY += rowMaxHeight + gap;
+          rowMaxHeight = 0;
+        } else {
+          cursorX += frame.width + gap;
+        }
+      }
+
+      const deltaX = targetX - frame.x;
+      const deltaY = targetY - frame.y;
+
+      if (!deltaX && !deltaY) {
+        return;
+      }
+
+      for (const element of [
+        frame,
+        ...getFrameChildren(this.scene.getNonDeletedElements(), frame.id),
+      ]) {
+        this.scene.mutateElement(
+          element,
+          {
+            x: element.x + deltaX,
+            y: element.y + deltaY,
+          },
+          { informMutation: false, isDragging: false },
+        );
+      }
+    });
+
+    this.scene.triggerUpdate();
+    this.store.scheduleCapture();
+    this.setState({ openDialog: null });
+    this.scrollToContent(frames, {
+      fitToContent: true,
+      animate: true,
+      canvasOffsets: this.getEditorUIOffsets(),
+    });
+  };
 
   public focusContainer: AppClassProperties["focusContainer"] = () => {
     this.excalidrawContainerRef.current?.focus();
@@ -2988,6 +3279,24 @@ class App extends React.Component<AppProps, AppState> {
 
   /** generally invoked only if fullscreen was invoked programmatically */
   private onFullscreenChange = () => {
+    if (
+      this.state.presentationModeEnabled &&
+      this.state.presentationIsFullscreen &&
+      document.fullscreenElement !== this.excalidrawContainerRef.current
+    ) {
+      this.setState(
+        {
+          presentationModeEnabled: false,
+          presentationFrameId: null,
+          presentationIsFullscreen: false,
+        },
+        () => {
+          this.focusContainer();
+        },
+      );
+      return;
+    }
+
     if (
       // points to the iframe element we fullscreened
       !document.fullscreenElement &&
@@ -4375,6 +4684,26 @@ class App extends React.Component<AppProps, AppState> {
             : value;
         },
       });
+    }
+
+    if (this.state.presentationModeEnabled && !isInputLike(event.target)) {
+      if (event.key === KEYS.ESCAPE) {
+        event.preventDefault();
+        void this.stopPresentation();
+        return;
+      }
+
+      if (event.key === KEYS.ARROW_RIGHT || event.key === KEYS.SPACE) {
+        event.preventDefault();
+        this.goToNextPresentationFrame();
+        return;
+      }
+
+      if (event.key === KEYS.ARROW_LEFT || (event.key === KEYS.SPACE && event.shiftKey)) {
+        event.preventDefault();
+        this.goToPreviousPresentationFrame();
+        return;
+      }
     }
 
     if (!isInputLike(event.target)) {

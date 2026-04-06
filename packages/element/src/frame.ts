@@ -30,10 +30,96 @@ import type {
   ElementsMap,
   ElementsMapOrArray,
   ExcalidrawElement,
+  ExcalidrawFrameElement,
   ExcalidrawFrameLikeElement,
   NonDeleted,
   NonDeletedExcalidrawElement,
 } from "./types";
+
+type PresentationData = {
+  order?: number;
+};
+
+const PRESENTATION_KEY = "presentation";
+
+const getPresentationData = (element: ExcalidrawElement): PresentationData | null => {
+  const data = element.customData?.[PRESENTATION_KEY];
+  return data && typeof data === "object" ? (data as PresentationData) : null;
+};
+
+export const getPresentationOrder = (frame: ExcalidrawFrameElement): number | null => {
+  const order = getPresentationData(frame)?.order;
+  return Number.isFinite(order) ? order! : null;
+};
+
+export const setPresentationOrder = (
+  frame: ExcalidrawFrameElement,
+  elementsMap: ElementsMap,
+  order: number,
+) => {
+  mutateElement(frame, elementsMap, {
+    customData: {
+      ...frame.customData,
+      [PRESENTATION_KEY]: {
+        ...getPresentationData(frame),
+        order,
+      },
+    },
+  });
+};
+
+const sortFramesByCanvasPosition = (a: ExcalidrawFrameElement, b: ExcalidrawFrameElement) => {
+  if (a.y !== b.y) {
+    return a.y - b.y;
+  }
+
+  if (a.x !== b.x) {
+    return a.x - b.x;
+  }
+
+  return 0;
+};
+
+export const getPresentationFrames = (allElements: readonly ExcalidrawElement[]) => {
+  return allElements.filter((element): element is ExcalidrawFrameElement =>
+    isFrameElement(element),
+  );
+};
+
+export const getPresentationFramesSorted = (allElements: readonly ExcalidrawElement[]) => {
+  const frames = getPresentationFrames(allElements);
+  const ordered = frames.filter((frame) => getPresentationOrder(frame) !== null);
+  const unordered = frames.filter((frame) => getPresentationOrder(frame) === null);
+
+  ordered.sort((a, b) => {
+    const orderDiff = getPresentationOrder(a)! - getPresentationOrder(b)!;
+    return orderDiff || sortFramesByCanvasPosition(a, b);
+  });
+  unordered.sort(sortFramesByCanvasPosition);
+
+  return [...ordered, ...unordered];
+};
+
+export const syncPresentationOrders = <T extends ElementsMapOrArray>(allElements: T): T => {
+  const frames = getPresentationFramesSorted([...allElements.values()]);
+  const elementsMap = arrayToMap(allElements);
+
+  frames.forEach((frame, index) => {
+    if (getPresentationOrder(frame) !== index) {
+      setPresentationOrder(frame, elementsMap, index);
+    }
+  });
+
+  return allElements;
+};
+
+export const getNextPresentationOrder = (allElements: readonly ExcalidrawElement[]) => {
+  return (
+    getPresentationFrames(allElements).reduce((maxOrder, frame) => {
+      return Math.max(maxOrder, getPresentationOrder(frame) ?? -1);
+    }, -1) + 1
+  );
+};
 
 // --------------------------- Frame State ------------------------------------
 export const bindElementsToFramesAfterDuplication = (

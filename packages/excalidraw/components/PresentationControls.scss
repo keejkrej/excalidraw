@@ -1,0 +1,27 @@
+.PresentationControls {
+  position: absolute;
+  inset: auto 0 24px 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.PresentationControls__inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--color-surface-low);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+  pointer-events: all;
+}
+
+.PresentationControls__counter {
+  min-width: 108px;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}

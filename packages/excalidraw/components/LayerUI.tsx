@@ -56,6 +56,7 @@ import { ImageExportDialog } from "./ImageExportDialog";
 import { Island } from "./Island";
 import { JSONExportDialog } from "./JSONExportDialog";
 import { LaserPointerButton } from "./LaserPointerButton";
+import { SlidesLayoutDialog } from "./SlidesLayoutDialog";
 import { Toast } from "./Toast";
 
 import "./LayerUI.scss";
@@ -520,6 +521,7 @@ const LayerUI = ({
       <tunnels.OverwriteConfirmDialogTunnel.Out />
       {renderImageExportDialog()}
       {renderJSONExportDialog()}
+      <SlidesLayoutDialog />
       {appState.openDialog?.name === "charts" && (
         <PasteChartDialog
           data={appState.openDialog.data}

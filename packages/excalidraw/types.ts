@@ -397,6 +397,7 @@ export interface AppState {
     | { name: "ttd"; tab: "text-to-diagram" | "mermaid" }
     | { name: "commandPalette" }
     | { name: "settings" }
+    | { name: "slidesLayout" }
     | { name: "elementLinkSelector"; sourceElementId: ExcalidrawElement["id"] }
     | { name: "charts"; data: Spreadsheet; rawText: string };
   /**
@@ -413,6 +414,9 @@ export interface AppState {
   hoveredElementIds: Readonly<{ [id: string]: true }>;
   previousSelectedElementIds: { [id: string]: true };
   selectedElementsAreBeingDragged: boolean;
+  presentationModeEnabled: boolean;
+  presentationFrameId: ExcalidrawElement["id"] | null;
+  presentationIsFullscreen: boolean;
   shouldCacheIgnoreZoom: boolean;
   toast: {
     message: React.ReactNode;
@@ -801,6 +805,14 @@ export type AppClassProperties = {
   setPlugins: App["setPlugins"];
   plugins: App["plugins"];
   getEditorUIOffsets: App["getEditorUIOffsets"];
+  startPresentation: App["startPresentation"];
+  stopPresentation: App["stopPresentation"];
+  goToPresentationFrame: App["goToPresentationFrame"];
+  goToNextPresentationFrame: App["goToNextPresentationFrame"];
+  goToPreviousPresentationFrame: App["goToPreviousPresentationFrame"];
+  reorderPresentationFrames: App["reorderPresentationFrames"];
+  applyPresentationLayout: App["applyPresentationLayout"];
+  getPresentationFrames: App["getPresentationFrames"];
   visibleElements: App["visibleElements"];
   excalidrawContainerValue: App["excalidrawContainerValue"];
 

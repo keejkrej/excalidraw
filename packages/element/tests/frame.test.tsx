@@ -1,8 +1,16 @@
 import { convertToExcalidrawElements, Excalidraw } from "@excalidraw/excalidraw";
+import { arrayToMap } from "@excalidraw/common";
 
 import { API } from "@excalidraw/excalidraw/tests/helpers/api";
 import { Keyboard, Pointer } from "@excalidraw/excalidraw/tests/helpers/ui";
 import { getCloneByOrigId, render } from "@excalidraw/excalidraw/tests/test-utils";
+
+import {
+  getPresentationFramesSorted,
+  getPresentationOrder,
+  setPresentationOrder,
+  syncPresentationOrders,
+} from "../src/frame";
 
 import type { ExcalidrawElement } from "../src/types";
 
@@ -518,5 +526,87 @@ describe("adding elements to frames", () => {
       dragElementIntoFrame(frame2, rectangle1);
       expect(h.elements.length).toBe(4);
     });
+  });
+});
+
+describe("presentation ordering for frames", () => {
+  it("bootstraps legacy frame order from canvas position", () => {
+    const lowerFrame = API.createElement({
+      id: "frame-1",
+      type: "frame",
+      x: 300,
+      y: 200,
+      width: 100,
+      height: 100,
+    });
+    const upperFrame = API.createElement({
+      id: "frame-2",
+      type: "frame",
+      x: 100,
+      y: 0,
+      width: 100,
+      height: 100,
+    });
+    const middleFrame = API.createElement({
+      id: "frame-3",
+      type: "frame",
+      x: 500,
+      y: 100,
+      width: 100,
+      height: 100,
+    });
+
+    syncPresentationOrders([lowerFrame, upperFrame, middleFrame]);
+
+    expect(
+      getPresentationFramesSorted([lowerFrame, upperFrame, middleFrame]).map((frame) => frame.id),
+    ).toEqual(["frame-2", "frame-3", "frame-1"]);
+    expect(getPresentationOrder(upperFrame)).toBe(0);
+    expect(getPresentationOrder(middleFrame)).toBe(1);
+    expect(getPresentationOrder(lowerFrame)).toBe(2);
+  });
+
+  it("normalizes reordered presentation metadata to contiguous indices", () => {
+    const firstFrame = API.createElement({
+      id: "slide-a",
+      type: "frame",
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+    });
+    const secondFrame = API.createElement({
+      id: "slide-b",
+      type: "frame",
+      x: 200,
+      y: 0,
+      width: 100,
+      height: 100,
+    });
+    const thirdFrame = API.createElement({
+      id: "slide-c",
+      type: "frame",
+      x: 400,
+      y: 0,
+      width: 100,
+      height: 100,
+    });
+    const elements = [firstFrame, secondFrame, thirdFrame];
+    const elementsMap = arrayToMap(elements);
+
+    setPresentationOrder(firstFrame, elementsMap, 8);
+    setPresentationOrder(secondFrame, elementsMap, 2);
+    setPresentationOrder(thirdFrame, elementsMap, 5);
+
+    syncPresentationOrders(elements);
+
+    expect(getPresentationFramesSorted(elements).map((frame) => frame.id)).toEqual([
+      "slide-b",
+      "slide-c",
+      "slide-a",
+    ]);
+    expect(getPresentationOrder(secondFrame)).toBe(0);
+    expect(getPresentationOrder(thirdFrame)).toBe(1);
+    expect(getPresentationOrder(firstFrame)).toBe(2);
   });
 });
