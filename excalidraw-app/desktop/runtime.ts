@@ -19,8 +19,6 @@ const openListeners = new Set<DesktopOpenListener>();
 
 let desktopRuntimePromise: Promise<void> | null = null;
 
-export const isDesktopApp = import.meta.env.VITE_DESKTOP_APP === "true";
-
 export const isNativeFileHandle = (
   handle: ExcalidrawFileHandle | null | undefined,
 ): handle is ExcalidrawNativeFileHandle => {
@@ -162,10 +160,6 @@ const shouldUseNativeOpen = (url?: string | URL) => {
 };
 
 export const installDesktopRuntime = async () => {
-  if (!isDesktopApp) {
-    return;
-  }
-
   if (desktopRuntimePromise) {
     return desktopRuntimePromise;
   }

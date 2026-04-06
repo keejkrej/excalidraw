@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "identifier": "com.excalidraw.desktop",
   "build": {
-    "beforeDevCommand": "cross-env VITE_DESKTOP_APP=true bun run start:web -- --host 127.0.0.1 --port 3000",
+    "beforeDevCommand": "bun run dev:renderer",
     "devUrl": "http://127.0.0.1:3000",
-    "beforeBuildCommand": "bun run build:desktop:app",
+    "beforeBuildCommand": "bun run build:renderer",
     "frontendDist": "../build"
   },
   "app": {
