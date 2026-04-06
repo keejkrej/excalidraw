@@ -12,7 +12,8 @@ import type { ExcalidrawElement, ExcalidrawFrameElement } from "@excalidraw/elem
 
 import { actionDeleteSelected } from "../actions/actionDeleteSelected";
 import { actionDuplicateSelection } from "../actions/actionDuplicateSelection";
-import { prepareElementsForExport } from "../data";
+import { prepareElementsForExport, saveAsJSON } from "../data";
+import { getSelectedElements } from "../scene";
 import { exportToSvg } from "../scene/export";
 
 import { FilledButton } from "./FilledButton";
@@ -28,9 +29,11 @@ import {
   pencilIcon,
   playerPlayIcon,
   pngIcon,
+  saveAs,
   share as shareIcon,
   slidesLayoutIcon,
   svgIcon,
+  tablerCheckIcon,
 } from "./icons";
 import { ScrollableList } from "./ScrollableList";
 import { ToolButton } from "./ToolButton";
@@ -110,7 +113,10 @@ export const PresentationSidebar = () => {
   const setAppState = useExcalidrawSetAppState();
   const frames = app.getPresentationFrames();
   const [draggedId, setDraggedId] = useState<ExcalidrawElement["id"] | null>(null);
+  const [checkedSlideIds, setCheckedSlideIds] = useState<Record<ExcalidrawElement["id"], true>>({});
   const [openSlideMenuId, setOpenSlideMenuId] = useState<ExcalidrawElement["id"] | null>(null);
+  const [presentationMenuOpen, setPresentationMenuOpen] = useState(false);
+  const [selectedSlidesMenuOpen, setSelectedSlidesMenuOpen] = useState(false);
 
   const activeFrameId = useMemo(() => {
     if (appState.presentationModeEnabled && appState.presentationFrameId) {
@@ -164,15 +170,49 @@ export const PresentationSidebar = () => {
     return elements;
   };
 
-  const getSelectedFrameIds = (frameId: ExcalidrawElement["id"]) =>
-    ({
-      [frameId]: true,
-    }) as Record<ExcalidrawElement["id"], true>;
+  const checkedFrameIds = useMemo(
+    () => frames.filter((frame) => checkedSlideIds[frame.id]).map((frame) => frame.id),
+    [checkedSlideIds, frames],
+  );
+
+  const getSelectedFrameIds = (frameIds: readonly ExcalidrawElement["id"][]) =>
+    frameIds.reduce(
+      (acc, frameId) => {
+        acc[frameId] = true;
+        return acc;
+      },
+      {} as Record<ExcalidrawElement["id"], true>,
+    );
 
   const getFrameScopedAppState = (frameId: ExcalidrawElement["id"]) => ({
     ...appState,
-    selectedElementIds: getSelectedFrameIds(frameId),
+    selectedElementIds: getSelectedFrameIds([frameId]),
   });
+
+  useEffect(() => {
+    const nextFrameIds = new Set(frames.map((frame) => frame.id));
+
+    setCheckedSlideIds((currentCheckedSlideIds) => {
+      let changed = false;
+      const nextCheckedSlideIds = {} as Record<ExcalidrawElement["id"], true>;
+
+      for (const frameId of Object.keys(currentCheckedSlideIds)) {
+        if (nextFrameIds.has(frameId)) {
+          nextCheckedSlideIds[frameId] = true;
+        } else {
+          changed = true;
+        }
+      }
+
+      return changed ? nextCheckedSlideIds : currentCheckedSlideIds;
+    });
+  }, [frames]);
+
+  useEffect(() => {
+    if (checkedFrameIds.length === 0) {
+      setSelectedSlidesMenuOpen(false);
+    }
+  }, [checkedFrameIds.length]);
 
   const exportSlide = async (
     frameId: ExcalidrawElement["id"],
@@ -185,6 +225,28 @@ export const PresentationSidebar = () => {
     );
 
     await app.onExportImage(exportType, exportedElements, { exportingFrame });
+  };
+
+  const exportSlideAsJSON = async (frameId: ExcalidrawElement["id"], slideIndex: number) => {
+    const scopedAppState = getFrameScopedAppState(frameId);
+    const exportedElements = getSelectedElements(
+      app.scene.getNonDeletedElements(),
+      scopedAppState,
+      {
+        includeBoundTextElement: true,
+        includeElementsInFrames: true,
+      },
+    );
+
+    await saveAsJSON({
+      data: {
+        elements: exportedElements,
+        appState: scopedAppState,
+        files: app.files,
+      },
+      filename: `${app.getName() || "presentation"}-slide-${slideIndex + 1}`,
+      fileHandle: null,
+    });
   };
 
   const duplicateSlide = (frameId: ExcalidrawElement["id"]) => {
@@ -242,11 +304,35 @@ export const PresentationSidebar = () => {
     app.syncActionResult(actionResult);
   };
 
+  const removeSelectedSlides = () => {
+    if (checkedFrameIds.length === 0) {
+      return;
+    }
+
+    const actionResult = actionDeleteSelected.perform(
+      app.scene.getElementsIncludingDeleted(),
+      {
+        ...appState,
+        selectedElementIds: getSelectedFrameIds(checkedFrameIds),
+      },
+      null,
+      app,
+    );
+
+    if (!actionResult) {
+      return;
+    }
+
+    setCheckedSlideIds({});
+    setSelectedSlidesMenuOpen(false);
+    app.syncActionResult(actionResult);
+  };
+
   const renameSlide = (frameId: ExcalidrawElement["id"]) => {
     setOpenSlideMenuId(null);
     app.goToPresentationFrame(frameId);
     setAppState({
-      selectedElementIds: getSelectedFrameIds(frameId),
+      selectedElementIds: getSelectedFrameIds([frameId]),
       editingFrame: frameId,
     });
   };
@@ -272,7 +358,7 @@ export const PresentationSidebar = () => {
     app.syncActionResult({
       elements: nextElements,
       appState: {
-        selectedElementIds: getSelectedFrameIds(nextFrame.id),
+        selectedElementIds: getSelectedFrameIds([nextFrame.id]),
       },
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     });
@@ -283,6 +369,21 @@ export const PresentationSidebar = () => {
     const targetFrame = frames.find((frame) => frame.id === activeFrameId) || frames.at(-1) || null;
 
     createSlide(targetFrame);
+  };
+
+  const toggleSlideSelection = (frameId: ExcalidrawElement["id"]) => {
+    setCheckedSlideIds((currentCheckedSlideIds) => {
+      if (currentCheckedSlideIds[frameId]) {
+        const nextCheckedSlideIds = { ...currentCheckedSlideIds };
+        delete nextCheckedSlideIds[frameId];
+        return nextCheckedSlideIds;
+      }
+
+      return {
+        ...currentCheckedSlideIds,
+        [frameId]: true,
+      };
+    });
   };
 
   return (
@@ -310,20 +411,87 @@ export const PresentationSidebar = () => {
             title="Create new slide"
             onClick={createSlideFromSidebar}
           />
-          <ToolButton
-            type="button"
-            size="small"
-            className="PresentationSidebar__actionButton"
-            icon={DotsIcon}
-            aria-label="Presentation actions"
-            title="Presentation actions"
-          />
+          <DropdownMenu open={presentationMenuOpen}>
+            <DropdownMenu.Trigger
+              className={clsx("PresentationSidebar__headerMenuTrigger", {
+                "PresentationSidebar__headerMenuTrigger--open": presentationMenuOpen,
+              })}
+              onToggle={() => setPresentationMenuOpen((isOpen) => !isOpen)}
+              aria-label="Presentation actions"
+              title="Presentation actions"
+            >
+              {DotsIcon}
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content
+              className="PresentationSidebar__slideMenu PresentationSidebar__presentationMenu"
+              align="end"
+              onClickOutside={() => setPresentationMenuOpen(false)}
+              onSelect={() => setPresentationMenuOpen(false)}
+            >
+              <DropdownMenu.Item icon={ExportIcon} onSelect={() => {}}>
+                Slides as PDF
+              </DropdownMenu.Item>
+              <DropdownMenu.Item icon={ExportIcon} onSelect={() => {}}>
+                Slides as PPTX
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu>
         </div>
       </div>
 
       <ScrollableList className="PresentationSidebar__slides" placeholder="">
         <div className="PresentationSidebar__slidesHeader">
-          <div className="PresentationSidebar__slidesTitle">Slides ({frames.length})</div>
+          <div className="PresentationSidebar__slidesTitle">
+            {checkedFrameIds.length > 0
+              ? `Slides (${checkedFrameIds.length} selected out of ${frames.length})`
+              : `Slides (${frames.length})`}
+          </div>
+          {checkedFrameIds.length > 0 ? (
+            <DropdownMenu open={selectedSlidesMenuOpen} dir="rtl">
+              <DropdownMenu.Trigger
+                className={clsx("PresentationSidebar__slidesMenuTrigger", {
+                  "PresentationSidebar__slidesMenuTrigger--open": selectedSlidesMenuOpen,
+                })}
+                onToggle={() => setSelectedSlidesMenuOpen((isOpen) => !isOpen)}
+                aria-label="Selected slides actions"
+                title="Selected slides actions"
+              >
+                {DotsIcon}
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content
+                className="PresentationSidebar__slideMenu"
+                align="end"
+                onClickOutside={() => setSelectedSlidesMenuOpen(false)}
+                onSelect={() => setSelectedSlidesMenuOpen(false)}
+              >
+                <DropdownMenu.Sub>
+                  <DropdownMenu.Sub.Trigger icon={ExportIcon}>
+                    Export selected as
+                  </DropdownMenu.Sub.Trigger>
+                  <DropdownMenu.Sub.Content
+                    className="PresentationSidebar__slideMenu PresentationSidebar__exportMenu"
+                    placement="left"
+                    sideOffset={0}
+                  >
+                    <DropdownMenu.Item icon={ExportIcon} onSelect={() => {}}>
+                      PDF
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item icon={ExportIcon} onSelect={() => {}}>
+                      PPTX
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Sub.Content>
+                </DropdownMenu.Sub>
+                <DropdownMenu.Separator />
+                <DropdownMenu.Item
+                  icon={TrashIcon}
+                  className="PresentationSidebar__slideMenuDanger"
+                  onSelect={removeSelectedSlides}
+                >
+                  Remove selected
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu>
+          ) : null}
         </div>
         {frames.map((frame, index) => (
           <div
@@ -355,18 +523,29 @@ export const PresentationSidebar = () => {
             }}
           >
             <div className="PresentationSidebar__checkboxWrapper">
-              <label className="PresentationSidebar__checkboxLabel" aria-hidden>
-                <input
-                  className="PresentationSidebar__checkboxInput"
-                  type="checkbox"
-                  tabIndex={-1}
-                />
-                <span className="PresentationSidebar__checkbox" />
-                <span className="PresentationSidebar__checkboxSpacer" />
-              </label>
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={!!checkedSlideIds[frame.id]}
+                aria-label={`Select slide ${index + 1}`}
+                className={clsx("PresentationSidebar__checkbox", {
+                  "PresentationSidebar__checkbox--checked": checkedSlideIds[frame.id],
+                })}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  toggleSlideSelection(frame.id);
+                }}
+                onKeyDown={(event) => {
+                  event.stopPropagation();
+                }}
+              >
+                <span className="PresentationSidebar__checkboxIcon" aria-hidden>
+                  {tablerCheckIcon}
+                </span>
+              </button>
             </div>
             <div className="PresentationSidebar__slideActionWrapper">
-              <DropdownMenu open={openSlideMenuId === frame.id}>
+              <DropdownMenu open={openSlideMenuId === frame.id} dir="rtl">
                 <DropdownMenu.Trigger
                   className={clsx("PresentationSidebar__slideAction", {
                     "PresentationSidebar__slideAction--open": openSlideMenuId === frame.id,
@@ -410,7 +589,14 @@ export const PresentationSidebar = () => {
                     <DropdownMenu.Sub.Trigger icon={ExportIcon}>
                       Export slide as
                     </DropdownMenu.Sub.Trigger>
-                    <DropdownMenu.Sub.Content className="PresentationSidebar__slideMenu">
+                    <DropdownMenu.Sub.Content
+                      className="PresentationSidebar__slideMenu PresentationSidebar__exportMenu"
+                      placement="left"
+                      sideOffset={0}
+                    >
+                      <DropdownMenu.Item icon={ExportIcon} onSelect={() => {}}>
+                        PDF
+                      </DropdownMenu.Item>
                       <DropdownMenu.Item
                         icon={pngIcon}
                         onSelect={() => {
@@ -426,6 +612,14 @@ export const PresentationSidebar = () => {
                         }}
                       >
                         SVG
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        icon={saveAs}
+                        onSelect={() => {
+                          void exportSlideAsJSON(frame.id, index);
+                        }}
+                      >
+                        JSON
                       </DropdownMenu.Item>
                     </DropdownMenu.Sub.Content>
                   </DropdownMenu.Sub>

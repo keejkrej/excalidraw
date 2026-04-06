@@ -14,9 +14,13 @@ const BASE_SIDE_OFFSET = 4;
 const DropdownMenuSubContent = ({
   children,
   className,
+  placement = "right",
+  sideOffset = BASE_SIDE_OFFSET,
 }: {
   children?: React.ReactNode;
   className?: string;
+  placement?: "left" | "right";
+  sideOffset?: number;
 }) => {
   const editorInterface = useEditorInterface();
 
@@ -24,30 +28,40 @@ const DropdownMenuSubContent = ({
     "dropdown-menu--mobile": editorInterface.formFactor === "phone",
   }).trim();
 
-  const callbacksRef = useCallback((node: HTMLDivElement | null) => {
-    if (node) {
-      const parentContainer = node.closest(".dropdown-menu-container");
-      const parentRect = parentContainer?.getBoundingClientRect();
-      if (parentRect) {
+  const callbacksRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (node) {
+        if (placement === "left") {
+          return;
+        }
+
+        const parentContainer = node.closest(".dropdown-menu-container");
+        const parentRect = parentContainer?.getBoundingClientRect();
+
+        if (!parentRect) {
+          return;
+        }
+
         const menuWidth = node.getBoundingClientRect().width;
 
         const viewportWidth = window.innerWidth;
         const spaceRemaining = viewportWidth - parentRect.right;
         if (spaceRemaining < menuWidth + 20) {
-          setSideOffset(spaceRemaining - menuWidth + BASE_ALIGN_OFFSET);
+          setResolvedSideOffset(spaceRemaining - menuWidth + BASE_ALIGN_OFFSET);
           setAlignOffset(BASE_ALIGN_OFFSET + 8);
         }
       }
-    }
-  }, []);
+    },
+    [placement],
+  );
 
-  const [sideOffset, setSideOffset] = useState(BASE_SIDE_OFFSET);
+  const [resolvedSideOffset, setResolvedSideOffset] = useState(sideOffset);
   const [alignOffset, setAlignOffset] = useState(BASE_ALIGN_OFFSET);
 
   return (
     <DropdownMenuPrimitive.SubContent
       className={classNames}
-      sideOffset={sideOffset}
+      sideOffset={resolvedSideOffset}
       alignOffset={alignOffset}
       collisionPadding={8}
       ref={callbacksRef}

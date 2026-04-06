@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
+import { Direction as DirectionPrimitive, DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 
 import { CLASSES } from "@excalidraw/common";
 
@@ -17,7 +17,15 @@ import { getMenuContentComponent, getMenuTriggerComponent } from "./dropdownMenu
 
 import "./DropdownMenu.scss";
 
-const DropdownMenu = ({ children, open }: { children?: React.ReactNode; open: boolean }) => {
+const DropdownMenu = ({
+  children,
+  open,
+  dir,
+}: {
+  children?: React.ReactNode;
+  open: boolean;
+  dir?: "ltr" | "rtl";
+}) => {
   const MenuTriggerComp = getMenuTriggerComponent(children);
   const MenuContentComp = getMenuContentComponent(children);
   const MenuContentWithState =
@@ -28,8 +36,8 @@ const DropdownMenu = ({ children, open }: { children?: React.ReactNode; open: bo
         )
       : MenuContentComp;
 
-  return (
-    <DropdownMenuPrimitive.Root open={open} modal={false}>
+  const menuRoot = (
+    <DropdownMenuPrimitive.Root open={open} modal={false} dir={dir}>
       <div
         className={CLASSES.DROPDOWN_MENU_EVENT_WRAPPER}
         style={{
@@ -41,6 +49,10 @@ const DropdownMenu = ({ children, open }: { children?: React.ReactNode; open: bo
         {MenuContentWithState}
       </div>
     </DropdownMenuPrimitive.Root>
+  );
+
+  return (
+    dir ? <DirectionPrimitive.Provider dir={dir}>{menuRoot}</DirectionPrimitive.Provider> : menuRoot
   );
 };
 
