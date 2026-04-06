@@ -1,9 +1,9 @@
 import React from "react";
 
-import { DEFAULT_SIDEBAR } from "@excalidraw/common";
+import { DEFAULT_SIDEBAR, PRESENTATION_SIDEBAR_TAB } from "@excalidraw/common";
 
-import { DefaultSidebar } from "../index";
-import { fireEvent, waitFor, withExcalidrawDimensions } from "../tests/test-utils";
+import { DefaultSidebar, Excalidraw } from "../index";
+import { fireEvent, render, waitFor, withExcalidrawDimensions } from "../tests/test-utils";
 
 import {
   assertExcalidrawWithSidebar,
@@ -128,5 +128,28 @@ describe("DefaultSidebar", () => {
         expect(sidebar).not.toHaveClass("sidebar--docked");
       },
     );
+  });
+
+  it("should force-dock the presentation tab", async () => {
+    await render(
+      <Excalidraw
+        initialData={{
+          appState: {
+            openSidebar: {
+              name: DEFAULT_SIDEBAR.name,
+              tab: PRESENTATION_SIDEBAR_TAB,
+            },
+          },
+        }}
+      >
+        <DefaultSidebar />
+      </Excalidraw>,
+    );
+
+    await withExcalidrawDimensions({ width: 1920, height: 1080 }, async () => {
+      const { dockButton, sidebar } = await assertSidebarDockButton(false);
+      expect(dockButton).toBeNull();
+      expect(sidebar).toHaveClass("sidebar--docked");
+    });
   });
 });
