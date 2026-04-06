@@ -32,5 +32,12 @@
     }
   },
   "include": ["packages", "excalidraw-app"],
-  "exclude": ["examples", "dist", "types", "tests"]
+  "exclude": [
+    "dist",
+    "types",
+    "tests",
+    "examples",
+    "**/target",
+    "excalidraw-app/src-tauri/target"
+  ]
 }

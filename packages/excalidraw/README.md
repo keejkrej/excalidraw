@@ -75,10 +75,8 @@ export default function Page() {
 }
 ```
 
-See the local examples for complete setups:
-
-- [examples/with-nextjs](https://github.com/excalidraw/excalidraw/tree/master/examples/with-nextjs)
-- [examples/with-script-in-browser](https://github.com/excalidraw/excalidraw/tree/master/examples/with-script-in-browser)
+This desktop-focused fork does not ship the old integration examples directory.
+For package embedding examples, refer to the upstream Excalidraw repository.
 
 ## LLM / agent tips
 
@@ -89,7 +87,7 @@ If an LLM or coding agent is setting up Excalidraw, these shortcuts usually save
 - In Next.js or other SSR frameworks, assume client-only rendering first. Use `"use client"` and `dynamic(..., { ssr: false })` before debugging hydration or `window is not defined` errors.
 - If imports or entrypoints are unclear, inspect `node_modules/@excalidraw/excalidraw/package.json`. The installed package exports are the source of truth.
 - Do not set `window.EXCALIDRAW_ASSET_PATH` unless you are intentionally self-hosting fonts/assets.
-- When docs and generated code drift, copy the nearest working example from this repo, especially `examples/with-nextjs` or `examples/with-script-in-browser`.
+- When docs and generated code drift, compare against a minimal working embed first instead of assuming example folders exist in this fork.
 
 ## Migrating to `@excalidraw/excalidraw@0.18.x`
 
@@ -124,10 +122,6 @@ For self-hosting, copy the contents of `node_modules/@excalidraw/excalidraw/dist
   window.EXCALIDRAW_ASSET_PATH = "/";
 </script>
 ```
-
-## Demo
-
-Try the [CodeSandbox example](https://codesandbox.io/p/sandbox/github/excalidraw/excalidraw/tree/master/examples/with-script-in-browser).
 
 ## Integration
 
