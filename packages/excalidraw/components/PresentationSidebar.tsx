@@ -8,7 +8,8 @@ import { exportToSvg } from "../scene/export";
 
 import { FilledButton } from "./FilledButton";
 import { useApp, useExcalidrawAppState } from "./App";
-import { DotsIcon, PlusIcon, gridIcon, playerPlayIcon } from "./icons";
+import { DotsHorizontalIcon, DotsIcon, PlusIcon, playerPlayIcon, slidesLayoutIcon } from "./icons";
+import { ScrollableList } from "./ScrollableList";
 import { ToolButton } from "./ToolButton";
 
 import "./PresentationSidebar.scss";
@@ -59,7 +60,19 @@ const FrameThumbnail = ({ frame }: { frame: ExcalidrawFrameElement }) => {
     };
   }, [app, app.files, appState.viewBackgroundColor, frame]);
 
-  return src ? <img src={src} alt="" draggable={false} /> : null;
+  return (
+    <div
+      className="PresentationSidebar__preview"
+      aria-hidden
+      style={
+        src
+          ? {
+              backgroundImage: `url("${src}")`,
+            }
+          : undefined
+      }
+    />
+  );
 };
 
 export const PresentationSidebar = () => {
@@ -107,15 +120,15 @@ export const PresentationSidebar = () => {
   return (
     <div className="PresentationSidebar">
       <div className="PresentationSidebar__header">
-        <div>
+        <div className="PresentationSidebar__heading">
           <div className="PresentationSidebar__title">Presentation</div>
-          <div className="PresentationSidebar__subtitle">Slides ({frames.length})</div>
         </div>
         <div className="PresentationSidebar__actions">
           <ToolButton
             type="button"
             size="small"
-            icon={gridIcon}
+            className="PresentationSidebar__actionButton"
+            icon={slidesLayoutIcon}
             aria-label="Slides layout"
             title="Slides layout"
             onClick={() => app.setOpenDialog({ name: "slidesLayout" })}
@@ -123,29 +136,33 @@ export const PresentationSidebar = () => {
           <ToolButton
             type="button"
             size="small"
+            className="PresentationSidebar__actionButton"
             icon={PlusIcon}
             aria-label="Add slide action"
             title="Add slide action"
-            disabled
           />
           <ToolButton
             type="button"
             size="small"
+            className="PresentationSidebar__actionButton"
             icon={DotsIcon}
             aria-label="Presentation actions"
             title="Presentation actions"
-            disabled
           />
         </div>
       </div>
 
-      <div className="PresentationSidebar__slides">
+      <ScrollableList className="PresentationSidebar__slides" placeholder="">
+        <div className="PresentationSidebar__slidesHeader">
+          <div className="PresentationSidebar__slidesTitle">Slides ({frames.length})</div>
+        </div>
         {frames.map((frame, index) => (
           <div
             key={frame.id}
             role="button"
             tabIndex={0}
             draggable
+            data-testid="presentation-slide"
             className={clsx("PresentationSidebar__slide", {
               "PresentationSidebar__slide--active": activeFrameId === frame.id,
             })}
@@ -168,15 +185,25 @@ export const PresentationSidebar = () => {
               setDraggedId(null);
             }}
           >
-            <div className="PresentationSidebar__slideToolbar">
-              <span className="PresentationSidebar__checkbox" aria-hidden />
+            <div className="PresentationSidebar__checkboxWrapper">
+              <label className="PresentationSidebar__checkboxLabel" aria-hidden>
+                <input
+                  className="PresentationSidebar__checkboxInput"
+                  type="checkbox"
+                  tabIndex={-1}
+                />
+                <span className="PresentationSidebar__checkbox" />
+                <span className="PresentationSidebar__checkboxSpacer" />
+              </label>
+            </div>
+            <div className="PresentationSidebar__slideActionWrapper">
               <ToolButton
                 type="button"
                 size="small"
-                icon={DotsIcon}
+                className="PresentationSidebar__slideAction"
+                icon={DotsHorizontalIcon}
                 aria-label="Slide actions"
                 title="Slide actions"
-                disabled
               />
             </div>
             <div className="PresentationSidebar__thumbnail">
@@ -185,16 +212,19 @@ export const PresentationSidebar = () => {
             <div className="PresentationSidebar__slideLabel">Slide {index + 1}</div>
           </div>
         ))}
-      </div>
+      </ScrollableList>
 
-      <FilledButton
-        fullWidth
-        icon={playerPlayIcon}
-        onClick={() => activeFrameId && app.startPresentation(activeFrameId)}
-        disabled={!activeFrameId}
-      >
-        Start presentation
-      </FilledButton>
+      <div className="PresentationSidebar__footer">
+        <FilledButton
+          fullWidth
+          className="PresentationSidebar__startButton"
+          icon={playerPlayIcon}
+          onClick={() => activeFrameId && app.startPresentation(activeFrameId)}
+          disabled={!activeFrameId}
+        >
+          Start presentation
+        </FilledButton>
+      </div>
     </div>
   );
 };

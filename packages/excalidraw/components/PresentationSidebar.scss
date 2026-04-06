@@ -1,88 +1,278 @@
 .PresentationSidebar {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 16px;
-  height: 100%;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   min-height: 0;
+  padding: 0 0.75rem;
 }
 
 .PresentationSidebar__header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
-  align-items: flex-start;
+  padding: 1.5rem 0 0.5rem;
+  border-bottom: 1px solid var(--sidebar-border-color);
+}
+
+.PresentationSidebar__heading {
+  min-width: 0;
 }
 
 .PresentationSidebar__title {
+  color: var(--color-primary);
   font-size: 1.125rem;
   font-weight: 700;
-}
-
-.PresentationSidebar__subtitle {
-  margin-top: 4px;
-  color: var(--color-on-surface-variant);
-  font-size: 0.875rem;
+  line-height: 1;
 }
 
 .PresentationSidebar__actions {
-  display: inline-flex;
-  gap: 8px;
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .PresentationSidebar__slides {
-  display: grid;
-  gap: 12px;
-  align-content: start;
-  overflow: auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
   min-height: 0;
-  padding-right: 4px;
+  margin: 0.5rem 0;
+  padding: 0;
 }
 
-.PresentationSidebar__slide {
-  display: grid;
-  gap: 8px;
-  padding: 10px;
-  border-radius: 16px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-lowest);
-  text-align: left;
-  color: inherit;
+.PresentationSidebar__slides:empty,
+.PresentationSidebar__slides > .empty:empty {
+  min-height: 100%;
 }
 
-.PresentationSidebar__slide--active {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 18%, transparent);
+.PresentationSidebar__slides > .empty:empty {
+  padding: 0;
 }
 
-.PresentationSidebar__slideToolbar {
+.PresentationSidebar__slidesHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 1.75rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.625rem;
+  background: var(--sidebar-bg-color);
+}
+
+.PresentationSidebar__slidesTitle {
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.PresentationSidebar__actionButton,
+.PresentationSidebar__slideAction {
+  flex-shrink: 0;
+}
+
+.PresentationSidebar__actionButton.ToolIcon_type_button,
+.PresentationSidebar__slideAction.ToolIcon_type_button {
+  border-radius: 0.5rem;
+}
+
+.PresentationSidebar__actionButton.ToolIcon_type_button {
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-on-surface);
+  background: transparent;
+}
+
+.PresentationSidebar__actionButton.ToolIcon_type_button .ToolIcon__icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.PresentationSidebar__actionButton.ToolIcon_type_button .ToolIcon__icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.PresentationSidebar__actionButton.ToolIcon_type_button:hover,
+.PresentationSidebar__slideAction.ToolIcon_type_button:hover {
+  background: var(--color-surface-high);
+}
+
+.PresentationSidebar__slide {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid var(--sidebar-border-color);
+  background: var(--color-surface-lowest);
+  text-align: left;
+  color: inherit;
+  transition: border-color 120ms ease-out;
+}
+
+.PresentationSidebar__slide:hover {
+  border-color: var(--color-primary);
+}
+
+.PresentationSidebar__slide--active {
+  border-color: var(--sidebar-border-color);
+}
+
+.PresentationSidebar__checkboxWrapper {
+  position: absolute;
+  top: 0.5rem;
+  left: 5px;
+  z-index: 1;
+}
+
+.PresentationSidebar__checkboxLabel {
+  display: flex;
+  cursor: pointer;
+}
+
+.PresentationSidebar__checkboxInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .PresentationSidebar__checkbox {
-  width: 18px;
-  height: 18px;
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-low);
+  display: flex;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  border: 1px solid var(--color-border-outline);
+  background: var(--input-bg-color);
+}
+
+.PresentationSidebar__checkboxSpacer {
+  margin-inline: 0.75rem;
+}
+
+.PresentationSidebar__slideActionWrapper {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+}
+
+.PresentationSidebar__slide:hover .PresentationSidebar__slideActionWrapper {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.PresentationSidebar__slideAction.ToolIcon_type_button {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.25rem;
+}
+
+.PresentationSidebar__slideAction.ToolIcon_type_button .ToolIcon__icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.PresentationSidebar__slideAction.ToolIcon_type_button .ToolIcon__icon svg {
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .PresentationSidebar__thumbnail {
-  overflow: hidden;
-  aspect-ratio: 16 / 9;
-  border-radius: 12px;
-  background: var(--color-surface-mid);
+  display: flex;
+  pointer-events: none;
+  align-items: center;
+  justify-content: center;
 }
 
-.PresentationSidebar__thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.PresentationSidebar__preview {
+  display: flex;
+  height: 9rem;
+  aspect-ratio: 16 / 9;
+  align-items: center;
+  justify-content: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
 }
 
 .PresentationSidebar__slideLabel {
-  font-size: 0.875rem;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0.5rem;
+  overflow: hidden;
+  border-radius: 0 0 0.5rem 0.5rem;
+  background: color-mix(in srgb, var(--color-gray-20) 50%, transparent);
+  backdrop-filter: blur(3px);
+  color: var(--color-on-surface);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+
+  .theme--dark & {
+    background: color-mix(in srgb, var(--color-gray-80) 50%, transparent);
+  }
+}
+
+.PresentationSidebar__footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--sidebar-border-color);
+}
+
+.PresentationSidebar__startButton.ExcButton--variant-filled {
+  --back-color: var(--color-primary);
+  --text-color: var(--color-surface-lowest);
+
+  min-height: 0;
+  padding: 0.625rem 2rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.PresentationSidebar__startButton .ExcButton__contents {
+  gap: 0.5rem;
+}
+
+.PresentationSidebar__startButton .ExcButton__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.PresentationSidebar__startButton.ExcButton--variant-filled:hover {
+  --back-color: var(--color-brand-hover);
+}
+
+.PresentationSidebar__startButton.ExcButton--variant-filled:active {
+  --back-color: var(--color-brand-active);
+  transform: scale(0.98);
 }
