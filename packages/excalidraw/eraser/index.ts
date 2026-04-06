@@ -51,21 +51,14 @@ export class EraserTrail extends AnimatedTrail {
       sizeMapping: (c) => {
         const DECAY_TIME = 200;
         const DECAY_LENGTH = 10;
-        const t = Math.max(
-          0,
-          1 - (performance.now() - c.pressure) / DECAY_TIME,
-        );
+        const t = Math.max(0, 1 - (performance.now() - c.pressure) / DECAY_TIME);
         const l =
-          (DECAY_LENGTH -
-            Math.min(DECAY_LENGTH, c.totalLength - c.currentIndex)) /
-          DECAY_LENGTH;
+          (DECAY_LENGTH - Math.min(DECAY_LENGTH, c.totalLength - c.currentIndex)) / DECAY_LENGTH;
 
         return Math.min(easeOut(l), easeOut(t));
       },
       fill: () =>
-        app.state.theme === THEME.LIGHT
-          ? "rgba(0, 0, 0, 0.2)"
-          : "rgba(255, 255, 255, 0.2)",
+        app.state.theme === THEME.LIGHT ? "rgba(0, 0, 0, 0.2)" : "rgba(255, 255, 255, 0.2)",
     });
   }
 
@@ -85,9 +78,7 @@ export class EraserTrail extends AnimatedTrail {
 
   private updateElementsToBeErased(restoreToErase?: boolean) {
     const eraserPath: GlobalPoint[] =
-      super
-        .getCurrentTrail()
-        ?.originalPoints?.map((p) => pointFrom<GlobalPoint>(p[0], p[1])) || [];
+      super.getCurrentTrail()?.originalPoints?.map((p) => pointFrom<GlobalPoint>(p[0], p[1])) || [];
 
     if (eraserPath.length < 2) {
       return [];
@@ -100,9 +91,7 @@ export class EraserTrail extends AnimatedTrail {
       eraserPath[eraserPath.length - 2],
     );
 
-    const candidateElements = this.app.visibleElements.filter(
-      (el) => !el.locked,
-    );
+    const candidateElements = this.app.visibleElements.filter((el) => !el.locked);
 
     const candidateElementsMap = arrayToMap(candidateElements);
 
@@ -226,10 +215,7 @@ const eraserTest = (
   // There are shapes where the inner area should trigger erasing
   // even though the eraser path segment doesn't intersect with or
   // get close to the shape's stroke
-  if (
-    shouldTestInside(element) &&
-    isPointInElement(lastPoint, element, elementsMap)
-  ) {
+  if (shouldTestInside(element) && isPointInElement(lastPoint, element, elementsMap)) {
     return true;
   }
 
@@ -238,11 +224,7 @@ const eraserTest = (
   // which offers a good visual precision at various zoom levels
   if (isFreeDrawElement(element)) {
     const outlinePoints = getFreedrawOutlinePoints(element);
-    const strokeSegments = getFreedrawOutlineAsSegments(
-      element,
-      outlinePoints,
-      elementsMap,
-    );
+    const strokeSegments = getFreedrawOutlineAsSegments(element, outlinePoints, elementsMap);
     const tolerance = Math.max(2.25, 5 / zoom); // NOTE: Visually fine-tuned approximation
 
     for (const seg of strokeSegments) {
@@ -270,10 +252,7 @@ const eraserTest = (
   const boundTextElement = getBoundTextElement(element, elementsMap);
 
   if (isArrowElement(element) || (isLineElement(element) && !element.polygon)) {
-    const tolerance = Math.max(
-      element.strokeWidth,
-      (element.strokeWidth * 2) / zoom,
-    );
+    const tolerance = Math.max(element.strokeWidth, (element.strokeWidth * 2) / zoom);
 
     // If the eraser movement is so fast that a large distance is covered
     // between the last two points, the distanceToElement miss, so we test
@@ -289,8 +268,7 @@ const eraserTest = (
   }
 
   return (
-    intersectElementWithLineSegment(element, elementsMap, pathSegment, 0, true)
-      .length > 0 ||
+    intersectElementWithLineSegment(element, elementsMap, pathSegment, 0, true).length > 0 ||
     (!!boundTextElement &&
       intersectElementWithLineSegment(
         {

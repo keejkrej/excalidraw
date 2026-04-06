@@ -29,9 +29,7 @@ export const ColorInput = ({
 }) => {
   const editorInterface = useEditorInterface();
   const [innerValue, setInnerValue] = useState(color);
-  const [activeSection, setActiveColorPickerSection] = useAtom(
-    activeColorPickerSectionAtom,
-  );
+  const [activeSection, setActiveColorPickerSection] = useAtom(activeColorPickerSectionAtom);
 
   useEffect(() => {
     setInnerValue(color);

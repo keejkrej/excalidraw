@@ -5,7 +5,7 @@
 
 // In order to run:
 //   npm install canvas # please do not check it in
-//   yarn build-node
+//   bun run build-node
 //   node build/static/js/build-node.js
 //   open test.png
 
@@ -31,10 +31,7 @@ config.entry = "../packages/excalidraw/index-node";
 // webpack to avoid rewriting that dependency.
 config.externals = (context, request, callback) => {
   if (/\.node$/.test(request)) {
-    return callback(
-      null,
-      "commonjs ../../../node_modules/canvas/build/Release/canvas.node",
-    );
+    return callback(null, "commonjs ../../../node_modules/canvas/build/Release/canvas.node");
   }
   callback();
 };

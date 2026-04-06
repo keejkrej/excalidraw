@@ -66,11 +66,7 @@ export const languages: Language[] = [
     { code: "vi-VN", label: "Tiếng Việt" },
     { code: "mr-IN", label: "मराठी" },
   ]
-    .filter(
-      (lang) =>
-        (percentages as Record<string, number>)[lang.code] >=
-        COMPLETION_THRESHOLD,
-    )
+    .filter((lang) => (percentages as Record<string, number>)[lang.code] >= COMPLETION_THRESHOLD)
     .sort((left, right) => (left.label > right.label ? 1 : -1)),
 ];
 
@@ -130,9 +126,7 @@ export const t = (
   fallback?: string,
 ) => {
   if (currentLang.code.startsWith(TEST_LANG_CODE)) {
-    const name = replacement
-      ? `${path}(${JSON.stringify(replacement).slice(1, -1)})`
-      : path;
+    const name = replacement ? `${path}(${JSON.stringify(replacement).slice(1, -1)})` : path;
     return `\u{202a}[[${name}]]\u{202c}`;
   }
 

@@ -14,11 +14,7 @@ describe("makeNextSelectedElementIds", () => {
   it("should return prevState selectedElementIds if no change", () => {
     _makeNextSelectedElementIds({}, {}, false);
     _makeNextSelectedElementIds({ 1: true }, { 1: true }, false);
-    _makeNextSelectedElementIds(
-      { 1: true, 2: true },
-      { 1: true, 2: true },
-      false,
-    );
+    _makeNextSelectedElementIds({ 1: true, 2: true }, { 1: true, 2: true }, false);
   });
   it("should return new selectedElementIds if changed", () => {
     // _makeNextSelectedElementIds({ 1: true }, { 1: false }, true);
@@ -26,10 +22,6 @@ describe("makeNextSelectedElementIds", () => {
     _makeNextSelectedElementIds({}, { 1: true }, true);
     _makeNextSelectedElementIds({ 1: true }, { 2: true }, true);
     _makeNextSelectedElementIds({ 1: true }, { 1: true, 2: true }, true);
-    _makeNextSelectedElementIds(
-      { 1: true, 2: true },
-      { 1: true, 3: true },
-      true,
-    );
+    _makeNextSelectedElementIds({ 1: true, 2: true }, { 1: true, 3: true }, true);
   });
 });

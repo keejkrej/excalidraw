@@ -1,8 +1,4 @@
-import {
-  curvePointDistance,
-  distanceToLineSegment,
-  pointRotateRads,
-} from "@excalidraw/math";
+import { curvePointDistance, distanceToLineSegment, pointRotateRads } from "@excalidraw/math";
 
 import { ellipse, ellipseDistanceFromPoint } from "@excalidraw/math/ellipse";
 
@@ -136,10 +132,7 @@ const distanceToLinearOrFreeDraElement = (
   elementsMap: ElementsMap,
   p: GlobalPoint,
 ) => {
-  const [lines, curves] = deconstructLinearOrFreeDrawElement(
-    element,
-    elementsMap,
-  );
+  const [lines, curves] = deconstructLinearOrFreeDrawElement(element, elementsMap);
   return Math.min(
     ...lines.map((s) => distanceToLineSegment(p, s)),
     ...curves.map((a) => curvePointDistance(a, p)),

@@ -7,9 +7,7 @@ import { unstable_batchedUpdates } from "react-dom";
 
 import { throttleRAF } from "@excalidraw/common";
 
-export const withBatchedUpdates = <
-  TFunction extends ((event: any) => void) | (() => void),
->(
+export const withBatchedUpdates = <TFunction extends ((event: any) => void) | (() => void)>(
   func: Parameters<TFunction>["length"] extends 0 | 1 ? TFunction : never,
 ) =>
   ((event) => {
@@ -49,9 +47,7 @@ export const isRenderThrottlingEnabled = (() => {
       if (!IS_REACT_18_AND_UP) {
         if (!hasWarned) {
           hasWarned = true;
-          console.warn(
-            "Excalidraw: render throttling is disabled on React versions < 18.",
-          );
+          console.warn("Excalidraw: render throttling is disabled on React versions < 18.");
         }
         return false;
       }

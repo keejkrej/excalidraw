@@ -18,23 +18,20 @@ interface ButtonIconProps {
   style?: React.CSSProperties;
 }
 
-export const ButtonIcon = forwardRef<HTMLButtonElement, ButtonIconProps>(
-  (props, ref) => {
-    const { title, className, testId, active, standalone, icon, onClick } =
-      props;
-    return (
-      <button
-        type="button"
-        ref={ref}
-        key={title}
-        title={title}
-        data-testid={testId}
-        className={clsx(className, { standalone, active })}
-        onClick={onClick}
-        style={props.style}
-      >
-        {icon}
-      </button>
-    );
-  },
-);
+export const ButtonIcon = forwardRef<HTMLButtonElement, ButtonIconProps>((props, ref) => {
+  const { title, className, testId, active, standalone, icon, onClick } = props;
+  return (
+    <button
+      type="button"
+      ref={ref}
+      key={title}
+      title={title}
+      data-testid={testId}
+      className={clsx(className, { standalone, active })}
+      onClick={onClick}
+      style={props.style}
+    >
+      {icon}
+    </button>
+  );
+});

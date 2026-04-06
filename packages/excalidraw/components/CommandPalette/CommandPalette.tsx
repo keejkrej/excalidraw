@@ -15,27 +15,15 @@ import type { MarkRequired } from "@excalidraw/common/utility-types";
 import { actionToggleShapeSwitch } from "../../actions/actionToggleShapeSwitch";
 import { getShortcutKey } from "../../shortcut";
 
-import {
-  actionClearCanvas,
-  actionLink,
-  actionToggleSearchMenu,
-} from "../../actions";
-import {
-  actionCopyElementLink,
-  actionLinkToElement,
-} from "../../actions/actionElementLink";
+import { actionClearCanvas, actionLink, actionToggleSearchMenu } from "../../actions";
+import { actionCopyElementLink, actionLinkToElement } from "../../actions/actionElementLink";
 import { getShortcutFromShortcutName } from "../../actions/shortcuts";
 import { trackEvent } from "../../analytics";
 import { useUIAppState } from "../../context/ui-appState";
 import { deburr } from "../../deburr";
 import { atom, useAtom, editorJotaiStore } from "../../editor-jotai";
 import { t } from "../../i18n";
-import {
-  useApp,
-  useAppProps,
-  useExcalidrawActionManager,
-  useExcalidrawSetAppState,
-} from "../App";
+import { useApp, useAppProps, useExcalidrawActionManager, useExcalidrawSetAppState } from "../App";
 import { Dialog } from "../Dialog";
 import { InlineIcon } from "../InlineIcon";
 import { TextField } from "../TextField";
@@ -61,15 +49,9 @@ import { useStable } from "../../hooks/useStable";
 
 import { Ellipsify } from "../Ellipsify";
 
-import {
-  distributeLibraryItemsOnSquareGrid,
-  libraryItemsAtom,
-} from "../../data/library";
+import { distributeLibraryItemsOnSquareGrid, libraryItemsAtom } from "../../data/library";
 
-import {
-  useLibraryCache,
-  useLibraryItemSvg,
-} from "../../hooks/useLibraryItemSvg";
+import { useLibraryCache, useLibraryItemSvg } from "../../hooks/useLibraryItemSvg";
 
 import * as defaultItems from "./defaultCommandPaletteItems";
 import "./CommandPalette.scss";
@@ -140,8 +122,7 @@ const isCommandPaletteToggleShortcut = (event: KeyboardEvent) => {
   return (
     !event.altKey &&
     event[KEYS.CTRL_OR_CMD] &&
-    ((event.shiftKey && event.key.toLowerCase() === KEYS.P) ||
-      event.key === KEYS.SLASH)
+    ((event.shiftKey && event.key.toLowerCase() === KEYS.P) || event.key === KEYS.SLASH)
   );
 };
 
@@ -195,9 +176,7 @@ export const CommandPalette = Object.assign(
   },
 );
 
-function CommandPaletteInner({
-  customCommandPaletteItems,
-}: CommandPaletteProps) {
+function CommandPaletteInner({ customCommandPaletteItems }: CommandPaletteProps) {
   const app = useApp();
   const uiAppState = useUIAppState();
   const setAppState = useExcalidrawSetAppState();
@@ -222,24 +201,16 @@ function CommandPaletteInner({
     return (
       libraryItemsData.libraryItems
         ?.filter(
-          (libraryItem): libraryItem is MarkRequired<LibraryItem, "name"> =>
-            !!libraryItem.name,
+          (libraryItem): libraryItem is MarkRequired<LibraryItem, "name"> => !!libraryItem.name,
         )
         .map((libraryItem) => ({
           label: libraryItem.name,
-          icon: (
-            <LibraryItemIcon
-              id={libraryItem.id}
-              elements={libraryItem.elements}
-            />
-          ),
+          icon: <LibraryItemIcon id={libraryItem.id} elements={libraryItem.elements} />,
           category: "Library",
           order: getCategoryOrder("Library"),
           haystack: deburr(libraryItem.name),
           perform: () => {
-            app.onInsertElements(
-              distributeLibraryItemsOnSquareGrid([libraryItem]),
-            );
+            app.onInsertElements(distributeLibraryItemsOnSquareGrid([libraryItem]));
           },
         })) || []
     );
@@ -283,10 +254,7 @@ function CommandPaletteInner({
     const actionToCommand = (
       action: Action,
       category: string,
-      transformer?: (
-        command: CommandPaletteItem,
-        action: Action,
-      ) => CommandPaletteItem,
+      transformer?: (command: CommandPaletteItem, action: Action) => CommandPaletteItem,
     ): CommandPaletteItem => {
       const command: CommandPaletteItem = {
         label: getActionLabel(action),
@@ -338,22 +306,15 @@ function CommandPaletteInner({
         actionCopyElementLink,
         actionLinkToElement,
       ].map((action: Action) =>
-        actionToCommand(
-          action,
-          DEFAULT_CATEGORIES.elements,
-          (command, action) => ({
-            ...command,
-            predicate: action.predicate
-              ? action.predicate
-              : (elements, appState, appProps, app) => {
-                  const selectedElements = getSelectedElements(
-                    elements,
-                    appState,
-                  );
-                  return selectedElements.length > 0;
-                },
-          }),
-        ),
+        actionToCommand(action, DEFAULT_CATEGORIES.elements, (command, action) => ({
+          ...command,
+          predicate: action.predicate
+            ? action.predicate
+            : (elements, appState, appProps, app) => {
+                const selectedElements = getSelectedElements(elements, appState);
+                return selectedElements.length > 0;
+              },
+        })),
       );
       const toolCommands: CommandPaletteItem[] = [
         actionManager.actions.toggleHandTool,
@@ -392,9 +353,7 @@ function CommandPaletteInner({
         {
           label: getActionLabel(actionClearCanvas),
           icon: getActionIcon(actionClearCanvas),
-          shortcut: getShortcutFromShortcutName(
-            actionClearCanvas.name as ShortcutName,
-          ),
+          shortcut: getShortcutFromShortcutName(actionClearCanvas.name as ShortcutName),
           category: DEFAULT_CATEGORIES.editor,
           keywords: ["delete", "destroy"],
           viewMode: false,
@@ -407,15 +366,7 @@ function CommandPaletteInner({
           category: DEFAULT_CATEGORIES.export,
           icon: ExportImageIcon,
           shortcut: getShortcutFromShortcutName("imageExport"),
-          keywords: [
-            "export",
-            "image",
-            "png",
-            "jpeg",
-            "svg",
-            "clipboard",
-            "picture",
-          ],
+          keywords: ["export", "image", "png", "jpeg", "svg", "clipboard", "picture"],
           perform: () => {
             setAppState({ openDialog: { name: "imageExport" } });
           },
@@ -469,10 +420,7 @@ function CommandPaletteInner({
           viewMode: false,
           predicate: (elements, appState) => {
             const selectedElements = getSelectedElements(elements, appState);
-            return (
-              selectedElements.length > 0 &&
-              canChangeStrokeColor(appState, selectedElements)
-            );
+            return selectedElements.length > 0 && canChangeStrokeColor(appState, selectedElements);
           },
           perform: () => {
             setAppState((prevState) => ({
@@ -489,8 +437,7 @@ function CommandPaletteInner({
           predicate: (elements, appState) => {
             const selectedElements = getSelectedElements(elements, appState);
             return (
-              selectedElements.length > 0 &&
-              canChangeBackgroundColor(appState, selectedElements)
+              selectedElements.length > 0 && canChangeBackgroundColor(appState, selectedElements)
             );
           },
           perform: () => {
@@ -517,17 +464,13 @@ function CommandPaletteInner({
 
           if (
             appProps.UIOptions.tools?.[
-              value as Extract<
-                typeof value,
-                keyof AppProps["UIOptions"]["tools"]
-              >
+              value as Extract<typeof value, keyof AppProps["UIOptions"]["tools"]>
             ] === false
           ) {
             return acc;
           }
 
-          const letter =
-            key && capitalizeString(typeof key === "string" ? key : key[0]);
+          const letter = key && capitalizeString(typeof key === "string" ? key : key[0]);
           const shortcut = letter || numericKey;
 
           const command: CommandPaletteItem = {
@@ -624,9 +567,8 @@ function CommandPaletteInner({
 
       setAllCommands(allCommands);
       setLastUsed(
-        [...allCommands, ...libraryCommands].find(
-          (command) => command.label === lastUsed?.label,
-        ) ?? null,
+        [...allCommands, ...libraryCommands].find((command) => command.label === lastUsed?.label) ??
+          null,
       );
     }
   }, [
@@ -641,8 +583,7 @@ function CommandPaletteInner({
   ]);
 
   const [commandSearch, setCommandSearch] = useState("");
-  const [currentCommand, setCurrentCommand] =
-    useState<CommandPaletteItem | null>(null);
+  const [currentCommand, setCurrentCommand] = useState<CommandPaletteItem | null>(null);
   const [commandsByCategory, setCommandsByCategory] = useState<
     Record<string, CommandPaletteItem[]>
   >({});
@@ -676,22 +617,15 @@ function CommandPaletteInner({
     }
   };
 
-  const isCommandAvailable = useStableCallback(
-    (command: CommandPaletteItem) => {
-      if (command.viewMode === false && uiAppState.viewModeEnabled) {
-        return false;
-      }
+  const isCommandAvailable = useStableCallback((command: CommandPaletteItem) => {
+    if (command.viewMode === false && uiAppState.viewModeEnabled) {
+      return false;
+    }
 
-      return typeof command.predicate === "function"
-        ? command.predicate(
-            app.scene.getNonDeletedElements(),
-            uiAppState as AppState,
-            appProps,
-            app,
-          )
-        : command.predicate === undefined || command.predicate;
-    },
-  );
+    return typeof command.predicate === "function"
+      ? command.predicate(app.scene.getNonDeletedElements(), uiAppState as AppState, appProps, app)
+      : command.predicate === undefined || command.predicate;
+  });
 
   const handleKeyDown = useStableCallback((event: KeyboardEvent) => {
     const ignoreAlphanumerics =
@@ -709,14 +643,11 @@ function CommandPaletteInner({
     }
 
     const matchingCommands = Object.values(commandsByCategory).flat();
-    const shouldConsiderLastUsed =
-      lastUsed && !commandSearch && isCommandAvailable(lastUsed);
+    const shouldConsiderLastUsed = lastUsed && !commandSearch && isCommandAvailable(lastUsed);
 
     if (event.key === KEYS.ARROW_UP) {
       event.preventDefault();
-      const index = matchingCommands.findIndex(
-        (item) => item.label === currentCommand?.label,
-      );
+      const index = matchingCommands.findIndex((item) => item.label === currentCommand?.label);
 
       if (shouldConsiderLastUsed) {
         if (index === 0) {
@@ -739,9 +670,7 @@ function CommandPaletteInner({
         nextIndex = matchingCommands.length - 1;
       } else {
         nextIndex =
-          index === 0
-            ? matchingCommands.length - 1
-            : (index - 1) % matchingCommands.length;
+          index === 0 ? matchingCommands.length - 1 : (index - 1) % matchingCommands.length;
       }
 
       const nextItem = matchingCommands[nextIndex];
@@ -754,9 +683,7 @@ function CommandPaletteInner({
 
     if (event.key === KEYS.ARROW_DOWN) {
       event.preventDefault();
-      const index = matchingCommands.findIndex(
-        (item) => item.label === currentCommand?.label,
-      );
+      const index = matchingCommands.findIndex((item) => item.label === currentCommand?.label);
 
       if (shouldConsiderLastUsed) {
         if (!currentCommand || index === matchingCommands.length - 1) {
@@ -837,25 +764,18 @@ function CommandPaletteInner({
     let matchingCommands =
       commandSearch?.length > 1
         ? [
-            ...allCommands
-              .filter(isCommandAvailable)
-              .sort((a, b) => a.order - b.order),
+            ...allCommands.filter(isCommandAvailable).sort((a, b) => a.order - b.order),
             ...libraryCommands,
           ]
-        : allCommands
-            .filter(isCommandAvailable)
-            .sort((a, b) => a.order - b.order);
+        : allCommands.filter(isCommandAvailable).sort((a, b) => a.order - b.order);
 
-    const showLastUsed =
-      !commandSearch && lastUsed && isCommandAvailable(lastUsed);
+    const showLastUsed = !commandSearch && lastUsed && isCommandAvailable(lastUsed);
 
     if (!commandSearch) {
       setCommandsByCategory(
         getNextCommandsByCategory(
           showLastUsed
-            ? matchingCommands.filter(
-                (command) => command.label !== lastUsed?.label,
-              )
+            ? matchingCommands.filter((command) => command.label !== lastUsed?.label)
             : matchingCommands,
         ),
       );
@@ -863,9 +783,7 @@ function CommandPaletteInner({
       return;
     }
 
-    const _query = deburr(
-      commandSearch.toLocaleLowerCase().replace(/[<>_| -]/g, ""),
-    );
+    const _query = deburr(commandSearch.toLocaleLowerCase().replace(/[<>_| -]/g, ""));
     matchingCommands = fuzzy
       .filter(_query, matchingCommands, {
         extract: (command) => command.haystack ?? "",
@@ -875,13 +793,7 @@ function CommandPaletteInner({
 
     setCommandsByCategory(getNextCommandsByCategory(matchingCommands));
     setCurrentCommand(matchingCommands[0] ?? null);
-  }, [
-    commandSearch,
-    allCommands,
-    isCommandAvailable,
-    lastUsed,
-    libraryCommands,
-  ]);
+  }, [commandSearch, allCommands, isCommandAvailable, lastUsed, libraryCommands]);
 
   return (
     <Dialog
@@ -964,8 +876,7 @@ function CommandPaletteInner({
           })
         ) : allCommands ? (
           <div className="no-match">
-            <div className="icon">{searchIcon}</div>{" "}
-            {t("commandPalette.search.noMatch")}
+            <div className="icon">{searchIcon}</div> {t("commandPalette.search.noMatch")}
           </div>
         ) : null}
       </div>
@@ -1031,18 +942,12 @@ const CommandItem = ({
           <InlineIcon
             className="icon"
             size="var(--icon-size, 1rem)"
-            icon={
-              typeof command.icon === "function"
-                ? command.icon(appState, [])
-                : command.icon
-            }
+            icon={typeof command.icon === "function" ? command.icon(appState, []) : command.icon}
           />
         )}
         <Ellipsify>{command.label}</Ellipsify>
       </div>
-      {showShortcut && command.shortcut && (
-        <CommandShortcutHint shortcut={command.shortcut} />
-      )}
+      {showShortcut && command.shortcut && <CommandShortcutHint shortcut={command.shortcut} />}
     </div>
   );
 };

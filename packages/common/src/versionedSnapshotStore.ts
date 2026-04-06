@@ -6,12 +6,8 @@ export type VersionedSnapshot<T> = Readonly<{
 export class VersionedSnapshotStore<T> {
   private version = 0;
   private value: T;
-  private readonly waiters = new Set<
-    (snapshot: VersionedSnapshot<T>) => void
-  >();
-  private readonly subscribers = new Set<
-    (snapshot: VersionedSnapshot<T>) => void
-  >();
+  private readonly waiters = new Set<(snapshot: VersionedSnapshot<T>) => void>();
+  private readonly subscribers = new Set<(snapshot: VersionedSnapshot<T>) => void>();
 
   constructor(
     initialValue: T,
@@ -49,9 +45,7 @@ export class VersionedSnapshotStore<T> {
     return this.set(updater(this.value));
   }
 
-  public subscribe(
-    subscriber: (snapshot: VersionedSnapshot<T>) => void,
-  ): () => void {
+  public subscribe(subscriber: (snapshot: VersionedSnapshot<T>) => void): () => void {
     this.subscribers.add(subscriber);
     return () => {
       this.subscribers.delete(subscriber);

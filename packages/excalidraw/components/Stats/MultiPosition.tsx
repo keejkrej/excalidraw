@@ -10,12 +10,7 @@ import type { ElementsMap, ExcalidrawElement } from "@excalidraw/element/types";
 import type { Scene } from "@excalidraw/element";
 
 import StatsDragInput from "./DragInput";
-import {
-  getAtomicUnits,
-  getStepSizedValue,
-  isPropertyEditable,
-  STEP_SIZE,
-} from "./utils";
+import { getAtomicUnits, getStepSizedValue, isPropertyEditable, STEP_SIZE } from "./utils";
 import { getElementsInAtomicUnit, moveElement } from "./utils";
 
 import type { DragInputCallbackType } from "./DragInput";
@@ -53,21 +48,11 @@ const moveElements = (
       origElement.angle,
     );
 
-    const newTopLeftX =
-      property === "x" ? Math.round(topLeftX + changeInTopX) : topLeftX;
+    const newTopLeftX = property === "x" ? Math.round(topLeftX + changeInTopX) : topLeftX;
 
-    const newTopLeftY =
-      property === "y" ? Math.round(topLeftY + changeInTopY) : topLeftY;
+    const newTopLeftY = property === "y" ? Math.round(topLeftY + changeInTopY) : topLeftY;
 
-    moveElement(
-      newTopLeftX,
-      newTopLeftY,
-      origElement,
-      scene,
-      appState,
-      originalElementsMap,
-      false,
-    );
+    moveElement(newTopLeftX, newTopLeftY, origElement, scene, appState, originalElementsMap, false);
   }
 };
 
@@ -118,9 +103,7 @@ const moveGroupTo = (
   }
 };
 
-const handlePositionChange: DragInputCallbackType<
-  MultiPositionProps["property"]
-> = ({
+const handlePositionChange: DragInputCallbackType<MultiPositionProps["property"]> = ({
   accumulatedChange,
   originalElements,
   originalElementsMap,
@@ -134,20 +117,11 @@ const handlePositionChange: DragInputCallbackType<
   const elementsMap = scene.getNonDeletedElementsMap();
 
   if (nextValue !== undefined) {
-    for (const atomicUnit of getAtomicUnits(
-      originalElements,
-      originalAppState,
-    )) {
-      const elementsInUnit = getElementsInAtomicUnit(
-        atomicUnit,
-        elementsMap,
-        originalElementsMap,
-      );
+    for (const atomicUnit of getAtomicUnits(originalElements, originalAppState)) {
+      const elementsInUnit = getElementsInAtomicUnit(atomicUnit, elementsMap, originalElementsMap);
 
       if (elementsInUnit.length > 1) {
-        const [x1, y1, ,] = getCommonBounds(
-          elementsInUnit.map((el) => el.latest!),
-        );
+        const [x1, y1, ,] = getCommonBounds(elementsInUnit.map((el) => el.latest!));
         const newTopLeftX = property === "x" ? nextValue : x1;
         const newTopLeftY = property === "y" ? nextValue : y1;
 
@@ -162,11 +136,7 @@ const handlePositionChange: DragInputCallbackType<
       } else {
         const origElement = elementsInUnit[0]?.original;
         const latestElement = elementsInUnit[0]?.latest;
-        if (
-          origElement &&
-          latestElement &&
-          isPropertyEditable(latestElement, property)
-        ) {
+        if (origElement && latestElement && isPropertyEditable(latestElement, property)) {
           const [cx, cy] = [
             origElement.x + origElement.width / 2,
             origElement.y + origElement.height / 2,

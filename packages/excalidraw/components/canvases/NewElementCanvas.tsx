@@ -5,10 +5,7 @@ import type { NonDeletedSceneElementsMap } from "@excalidraw/element/types";
 import { isRenderThrottlingEnabled } from "../../reactUtils";
 import { renderNewElementScene } from "../../renderer/renderNewElementScene";
 
-import type {
-  RenderableElementsMap,
-  StaticCanvasRenderConfig,
-} from "../../scene/types";
+import type { RenderableElementsMap, StaticCanvasRenderConfig } from "../../scene/types";
 import type { AppState } from "../../types";
 import type { RoughCanvas } from "roughjs/bin/canvas";
 

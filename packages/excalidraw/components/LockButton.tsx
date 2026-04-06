@@ -24,13 +24,9 @@ const ICONS = {
 export const LockButton = (props: LockIconProps) => {
   return (
     <label
-      className={clsx(
-        "ToolIcon ToolIcon__lock",
-        `ToolIcon_size_${DEFAULT_SIZE}`,
-        {
-          "is-mobile": props.isMobile,
-        },
-      )}
+      className={clsx("ToolIcon ToolIcon__lock", `ToolIcon_size_${DEFAULT_SIZE}`, {
+        "is-mobile": props.isMobile,
+      })}
       title={`${props.title} — Q`}
     >
       <input
@@ -42,9 +38,7 @@ export const LockButton = (props: LockIconProps) => {
         aria-label={props.title}
         data-testid="toolbar-lock"
       />
-      <div className="ToolIcon__icon">
-        {props.checked ? ICONS.CHECKED : ICONS.UNCHECKED}
-      </div>
+      <div className="ToolIcon__icon">{props.checked ? ICONS.CHECKED : ICONS.UNCHECKED}</div>
     </label>
   );
 };

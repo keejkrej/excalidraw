@@ -20,23 +20,14 @@ describe("Math curve", () => {
       );
       const l = lineSegment(pointFrom(0, 0), pointFrom(200, 200));
 
-      expect(curveIntersectLineSegment(c, l)).toCloselyEqualPoints([
-        [87.5, 87.5],
-      ]);
+      expect(curveIntersectLineSegment(c, l)).toCloselyEqualPoints([[87.5, 87.5]]);
     });
 
     it("point is found when control points aren't the same", () => {
-      const c = curve(
-        pointFrom(100, 0),
-        pointFrom(100, 60),
-        pointFrom(60, 100),
-        pointFrom(0, 100),
-      );
+      const c = curve(pointFrom(100, 0), pointFrom(100, 60), pointFrom(60, 100), pointFrom(0, 100));
       const l = lineSegment(pointFrom(0, 0), pointFrom(200, 200));
 
-      expect(curveIntersectLineSegment(c, l)).toCloselyEqualPoints([
-        [72.5, 72.5],
-      ]);
+      expect(curveIntersectLineSegment(c, l)).toCloselyEqualPoints([[72.5, 72.5]]);
     });
 
     it("points are found when curve is sliced at 3 points", () => {
@@ -48,9 +39,7 @@ describe("Math curve", () => {
       );
       const l = lineSegment(pointFrom(10, -60), pointFrom(10, 60));
 
-      expect(curveIntersectLineSegment(c, l)).toCloselyEqualPoints([
-        [9.99, 5.05],
-      ]);
+      expect(curveIntersectLineSegment(c, l)).toCloselyEqualPoints([[9.99, 5.05]]);
     });
 
     it("can be detected where the determinant is overly precise", () => {
@@ -66,9 +55,7 @@ describe("Math curve", () => {
         pointFrom(188.2149592542487, 134.75505940984908),
       );
 
-      expect(curveIntersectLineSegment(c, l)).toCloselyEqualPoints([
-        [34.4, 34.71],
-      ]);
+      expect(curveIntersectLineSegment(c, l)).toCloselyEqualPoints([[34.4, 34.71]]);
     });
   });
 

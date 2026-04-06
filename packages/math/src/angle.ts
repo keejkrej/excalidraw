@@ -1,12 +1,6 @@
 import { PRECISION } from "./utils";
 
-import type {
-  Degrees,
-  GlobalPoint,
-  LocalPoint,
-  PolarCoords,
-  Radians,
-} from "./types";
+import type { Degrees, GlobalPoint, LocalPoint, PolarCoords, Radians } from "./types";
 
 export const normalizeRadians = (angle: Radians): Radians =>
   angle < 0
@@ -18,10 +12,7 @@ export const normalizeRadians = (angle: Radians): Radians =>
  * (x, y) for the center point 0,0 where the first number returned is the radius,
  * the second is the angle in radians.
  */
-export const cartesian2Polar = <P extends GlobalPoint | LocalPoint>([
-  x,
-  y,
-]: P): PolarCoords => [
+export const cartesian2Polar = <P extends GlobalPoint | LocalPoint>([x, y]: P): PolarCoords => [
   Math.hypot(x, y),
   normalizeRadians(Math.atan2(y, x) as Radians),
 ];
@@ -44,11 +35,7 @@ export function isRightAngleRads(rads: Radians): boolean {
   return Math.abs(Math.sin(2 * rads)) < PRECISION;
 }
 
-export function radiansBetweenAngles(
-  a: Radians,
-  min: Radians,
-  max: Radians,
-): boolean {
+export function radiansBetweenAngles(a: Radians, min: Radians, max: Radians): boolean {
   a = normalizeRadians(a);
   min = normalizeRadians(min);
   max = normalizeRadians(max);

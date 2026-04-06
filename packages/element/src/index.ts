@@ -45,9 +45,7 @@ export const getVisibleElements = (elements: readonly ExcalidrawElement[]) =>
     (el) => !el.isDeleted && !isInvisiblySmallElement(el),
   ) as readonly NonDeletedExcalidrawElement[];
 
-export const getNonDeletedElements = <T extends ExcalidrawElement>(
-  elements: readonly T[],
-) =>
+export const getNonDeletedElements = <T extends ExcalidrawElement>(elements: readonly T[]) =>
   elements.filter((element) => !element.isDeleted) as readonly NonDeleted<T>[];
 
 export const isNonDeletedElement = <T extends ExcalidrawElement>(

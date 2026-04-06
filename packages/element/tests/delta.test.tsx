@@ -19,9 +19,7 @@ describe("ElementsDelta", () => {
       const prevElements = new Map([[element.id, element]]);
       const nextElements = new Map();
 
-      expect(() =>
-        ElementsDelta.calculate(prevElements, nextElements),
-      ).not.toThrow();
+      expect(() => ElementsDelta.calculate(prevElements, nextElements)).not.toThrow();
     });
 
     it("should not throw when adding element as already deleted", () => {
@@ -35,9 +33,7 @@ describe("ElementsDelta", () => {
       const prevElements = new Map();
       const nextElements = new Map([[element.id, element]]);
 
-      expect(() =>
-        ElementsDelta.calculate(prevElements, nextElements),
-      ).not.toThrow();
+      expect(() => ElementsDelta.calculate(prevElements, nextElements)).not.toThrow();
     });
 
     it("should create updated delta even when there is only version and versionNonce change", () => {
@@ -93,11 +89,7 @@ describe("ElementsDelta", () => {
         { x: 200, version: 2, versionNonce: 2 },
       );
 
-      const elementsDelta1 = ElementsDelta.create(
-        {},
-        {},
-        { id1: updatedDelta },
-      );
+      const elementsDelta1 = ElementsDelta.create({}, {}, { id1: updatedDelta });
       const elementsDelta2 = ElementsDelta.empty();
       const elementsDelta = elementsDelta1.squash(elementsDelta2);
 
@@ -122,17 +114,9 @@ describe("ElementsDelta", () => {
         { x: 200, version: 2, versionNonce: 2 },
       );
 
-      const elementsDelta1 = ElementsDelta.create(
-        { id1: addedDelta },
-        { id2: removedDelta },
-        {},
-      );
+      const elementsDelta1 = ElementsDelta.create({ id1: addedDelta }, { id2: removedDelta }, {});
 
-      const elementsDelta2 = ElementsDelta.create(
-        {},
-        {},
-        { id3: updatedDelta },
-      );
+      const elementsDelta2 = ElementsDelta.create({}, {}, { id3: updatedDelta });
 
       const elementsDelta = elementsDelta1.squash(elementsDelta2);
 
@@ -480,10 +464,7 @@ describe("AppStateDelta", () => {
 
   describe("squash", () => {
     it("should not squash when second delta is empty", () => {
-      const delta = Delta.create(
-        { name: "untitled scene" },
-        { name: "titled scene" },
-      );
+      const delta = Delta.create({ name: "untitled scene" }, { name: "titled scene" });
 
       const appStateDelta1 = AppStateDelta.create(delta);
       const appStateDelta2 = AppStateDelta.empty();
@@ -495,10 +476,7 @@ describe("AppStateDelta", () => {
     });
 
     it("should squash exclusive properties", () => {
-      const delta1 = Delta.create(
-        { name: "untitled scene" },
-        { name: "titled scene" },
-      );
+      const delta1 = Delta.create({ name: "untitled scene" }, { name: "titled scene" });
       const delta2 = Delta.create(
         { viewBackgroundColor: "#ffffff" },
         { viewBackgroundColor: "#000000" },

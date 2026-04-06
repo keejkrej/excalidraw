@@ -6,13 +6,7 @@ import { copiedStyles } from "../actions/actionStyles";
 import { Excalidraw } from "../index";
 import { API } from "../tests/helpers/api";
 import { Keyboard, Pointer, UI } from "../tests/helpers/ui";
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  togglePopover,
-} from "../tests/test-utils";
+import { act, fireEvent, render, screen, togglePopover } from "../tests/test-utils";
 
 const { h } = window;
 

@@ -51,9 +51,7 @@ export const fileOpen = async <M extends boolean | undefined = false>(opts: {
   });
 
   if (Array.isArray(files)) {
-    return (await Promise.all(
-      files.map((file) => normalizeFile(file)),
-    )) as RetType;
+    return (await Promise.all(files.map((file) => normalizeFile(file)))) as RetType;
   }
   return (await normalizeFile(files)) as RetType;
 };

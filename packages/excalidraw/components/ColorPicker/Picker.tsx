@@ -64,8 +64,8 @@ export const Picker = React.forwardRef(
       ? type === "elementStroke"
         ? t("labels.stroke")
         : type === "elementBackground"
-        ? t("labels.background")
-        : null
+          ? t("labels.background")
+          : null
       : null;
 
     const [customColors] = React.useState(() => {
@@ -93,10 +93,10 @@ export const Picker = React.forwardRef(
           isCustomButNotInList
             ? null
             : isCustom
-            ? "custom"
-            : colorObj?.shade != null
-            ? "shades"
-            : "baseColors",
+              ? "custom"
+              : colorObj?.shade != null
+                ? "shades"
+                : "baseColors",
         );
       }
     }, [
@@ -170,9 +170,7 @@ export const Picker = React.forwardRef(
 
           {!!customColors.length && (
             <div>
-              <PickerHeading>
-                {t("colorPicker.mostUsedCustomColors")}
-              </PickerHeading>
+              <PickerHeading>{t("colorPicker.mostUsedCustomColors")}</PickerHeading>
               <CustomColorList
                 colors={customColors}
                 color={color}

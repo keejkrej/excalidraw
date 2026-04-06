@@ -9,11 +9,7 @@ import {
 import { roundRect } from "./renderer/roundRect";
 
 import type { InteractiveCanvasRenderConfig } from "./scene/types";
-import type {
-  Collaborator,
-  InteractiveCanvasAppState,
-  SocketId,
-} from "./types";
+import type { Collaborator, InteractiveCanvasAppState, SocketId } from "./types";
 
 function hashToInteger(id: string) {
   let hash = 0;
@@ -27,10 +23,7 @@ function hashToInteger(id: string) {
   return hash;
 }
 
-export const getClientColor = (
-  socketId: SocketId,
-  collaborator: Collaborator | undefined,
-) => {
+export const getClientColor = (socketId: SocketId, collaborator: Collaborator | undefined) => {
   // to get more even distribution in case `id` is not uniformly distributed to
   // begin with, we hash it
   const hash = Math.abs(hashToInteger(collaborator?.id || socketId));
@@ -49,9 +42,7 @@ export const getClientColor = (
 export const getNameInitial = (name?: string | null) => {
   // first char can be a surrogate pair, hence using codePointAt
   const firstCodePoint = name?.trim()?.codePointAt(0);
-  return (
-    firstCodePoint ? String.fromCodePoint(firstCodePoint) : "?"
-  ).toUpperCase();
+  return (firstCodePoint ? String.fromCodePoint(firstCodePoint) : "?").toUpperCase();
 };
 
 export const renderRemoteCursors = ({
@@ -80,10 +71,7 @@ export const renderRemoteCursors = ({
     const height = 14;
 
     const isOutOfBounds =
-      x < 0 ||
-      x > normalizedWidth - width ||
-      y < 0 ||
-      y > normalizedHeight - height;
+      x < 0 || x > normalizedWidth - width || y < 0 || y > normalizedHeight - height;
 
     x = Math.max(x, 0);
     x = Math.min(x, normalizedWidth - width);
@@ -98,9 +86,7 @@ export const renderRemoteCursors = ({
 
     const userState = renderConfig.remotePointerUserStates.get(socketId);
     const isInactive =
-      isOutOfBounds ||
-      userState === UserIdleState.IDLE ||
-      userState === UserIdleState.AWAY;
+      isOutOfBounds || userState === UserIdleState.IDLE || userState === UserIdleState.AWAY;
 
     if (isInactive) {
       context.globalAlpha = 0.3;
@@ -123,8 +109,7 @@ export const renderRemoteCursors = ({
     }
 
     // TODO remove the dark theme color after we stop inverting canvas colors
-    const IS_SPEAKING_COLOR =
-      appState.theme === THEME.DARK ? "#2f6330" : COLOR_VOICE_CALL;
+    const IS_SPEAKING_COLOR = appState.theme === THEME.DARK ? "#2f6330" : COLOR_VOICE_CALL;
 
     const isSpeaking = collaborator?.isSpeaking;
 
@@ -191,8 +176,7 @@ export const renderRemoteCursors = ({
       const paddingHorizontal = 5;
       const paddingVertical = 3;
       const measure = context.measureText(username);
-      const measureHeight =
-        measure.actualBoundingBoxDescent + measure.actualBoundingBoxAscent;
+      const measureHeight = measure.actualBoundingBoxDescent + measure.actualBoundingBoxAscent;
       const finalHeight = Math.max(measureHeight, 12);
 
       const boxX = offsetX - 1;

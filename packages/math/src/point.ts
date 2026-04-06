@@ -19,10 +19,7 @@ import type {
  * @param y The Y coordinate
  * @returns The branded and created point
  */
-export function pointFrom<Point extends GlobalPoint | LocalPoint>(
-  x: number,
-  y: number,
-): Point;
+export function pointFrom<Point extends GlobalPoint | LocalPoint>(x: number, y: number): Point;
 // TODO remove the overload once we migrate to using Point tuples everywhere
 export function pointFrom<Coord extends GlobalCoord | LocalCoord>(
   coords: Coord,
@@ -50,9 +47,7 @@ export function pointFrom<Point extends GlobalPoint | LocalPoint>(
 export function pointFromArray<Point extends GlobalPoint | LocalPoint>(
   numberArray: number[],
 ): Point | undefined {
-  return numberArray.length === 2
-    ? pointFrom<Point>(numberArray[0], numberArray[1])
-    : undefined;
+  return numberArray.length === 2 ? pointFrom<Point>(numberArray[0], numberArray[1]) : undefined;
 }
 
 /**
@@ -192,10 +187,7 @@ export function pointCenter<P extends LocalPoint | GlobalPoint>(a: P, b: P): P {
  * @param b Second point
  * @returns The euclidean distance between the two points.
  */
-export function pointDistance<P extends LocalPoint | GlobalPoint>(
-  a: P,
-  b: P,
-): number {
+export function pointDistance<P extends LocalPoint | GlobalPoint>(a: P, b: P): number {
   return Math.hypot(b[0] - a[0], b[1] - a[1]);
 }
 
@@ -208,10 +200,7 @@ export function pointDistance<P extends LocalPoint | GlobalPoint>(
  * @param b Second point
  * @returns The euclidean distance between the two points.
  */
-export function pointDistanceSq<P extends LocalPoint | GlobalPoint>(
-  a: P,
-  b: P,
-): number {
+export function pointDistanceSq<P extends LocalPoint | GlobalPoint>(a: P, b: P): number {
   const xDiff = b[0] - a[0];
   const yDiff = b[1] - a[1];
 
@@ -241,11 +230,7 @@ export const pointScaleFromOrigin = <P extends GlobalPoint | LocalPoint>(
  * @param r The other point to compare against
  * @returns TRUE if q is indeed between p and r
  */
-export const isPointWithinBounds = <P extends GlobalPoint | LocalPoint>(
-  p: P,
-  q: P,
-  r: P,
-) => {
+export const isPointWithinBounds = <P extends GlobalPoint | LocalPoint>(p: P, q: P, r: P) => {
   return (
     q[0] <= Math.max(p[0], r[0]) &&
     q[0] >= Math.min(p[0], r[0]) &&

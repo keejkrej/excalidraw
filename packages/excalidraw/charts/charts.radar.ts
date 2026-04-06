@@ -8,11 +8,7 @@ import {
   ROUGHNESS,
 } from "@excalidraw/common";
 
-import {
-  measureText,
-  newLinearElement,
-  newTextElement,
-} from "@excalidraw/element";
+import { measureText, newLinearElement, newTextElement } from "@excalidraw/element";
 
 import type { LocalPoint } from "@excalidraw/math";
 
@@ -49,8 +45,7 @@ export const renderRadarChart = (
   }
 
   const labels =
-    spreadsheet.labels ??
-    spreadsheet.series[0].values.map((_, index) => `Value ${index + 1}`);
+    spreadsheet.labels ?? spreadsheet.series[0].values.map((_, index) => `Value ${index + 1}`);
 
   const series = spreadsheet.series;
   const { normalize, renderSteps } = getRadarValueScale(series, labels.length);
@@ -61,9 +56,7 @@ export const renderRadarChart = (
   const centerX = x + chartWidth / 2;
   const centerY = y - chartHeight / 2;
   const radius = BAR_HEIGHT / 2;
-  const angles = labels.map(
-    (_, index) => -Math.PI / 2 + (Math.PI * 2 * index) / labels.length,
-  );
+  const angles = labels.map((_, index) => -Math.PI / 2 + (Math.PI * 2 * index) / labels.length);
 
   const { axisLabels, axisLabelTopY, axisLabelBottomY } = createRadarAxisLabels(
     labels,
@@ -82,11 +75,7 @@ export const renderRadarChart = (
     fontSize: titleFontSize,
   });
   const titleText = spreadsheet.title
-    ? getRadarDisplayText(
-        spreadsheet.title,
-        titleFontString,
-        chartWidth + RADAR_LABEL_OFFSET * 2,
-      )
+    ? getRadarDisplayText(spreadsheet.title, titleFontString, chartWidth + RADAR_LABEL_OFFSET * 2)
     : null;
   const titleTextMetrics = titleText
     ? measureText(titleText, titleFontString, titleLineHeight)
@@ -111,10 +100,7 @@ export const renderRadarChart = (
         const levelRatio = (levelIndex + 1) / RADAR_GRID_LEVELS;
         const levelRadius = radius * levelRatio;
         const points = angles.map((angle) =>
-          pointFrom<LocalPoint>(
-            Math.cos(angle) * levelRadius,
-            Math.sin(angle) * levelRadius,
-          ),
+          pointFrom<LocalPoint>(Math.cos(angle) * levelRadius, Math.sin(angle) * levelRadius),
         );
         points.push(pointFrom(points[0][0], points[0][1]));
 
@@ -157,10 +143,7 @@ export const renderRadarChart = (
     const points = angles.map((angle, axisIndex) => {
       const value = seriesData.values[axisIndex] ?? 0;
       const pointRadius = normalize(value, axisIndex) * radius;
-      return pointFrom<LocalPoint>(
-        Math.cos(angle) * pointRadius,
-        Math.sin(angle) * pointRadius,
-      );
+      return pointFrom<LocalPoint>(Math.cos(angle) * pointRadius, Math.sin(angle) * pointRadius);
     });
     points.push(pointFrom(points[0][0], points[0][1]));
 

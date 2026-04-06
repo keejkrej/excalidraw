@@ -1,9 +1,4 @@
-import {
-  KEYS,
-  DEFAULT_EXPORT_PADDING,
-  EXPORT_SCALES,
-  THEME,
-} from "@excalidraw/common";
+import { KEYS, DEFAULT_EXPORT_PADDING, EXPORT_SCALES, THEME } from "@excalidraw/common";
 
 import { getNonDeletedElements } from "@excalidraw/element";
 
@@ -76,18 +71,12 @@ export const actionChangeExportScale = register<AppState["exportScale"]>({
   PanelComponent: ({ elements: allElements, appState, updateData }) => {
     const elements = getNonDeletedElements(allElements);
     const exportSelected = isSomeElementSelected(elements, appState);
-    const exportedElements = exportSelected
-      ? getSelectedElements(elements, appState)
-      : elements;
+    const exportedElements = exportSelected ? getSelectedElements(elements, appState) : elements;
 
     return (
       <>
         {EXPORT_SCALES.map((s) => {
-          const [width, height] = getExportSize(
-            exportedElements,
-            DEFAULT_EXPORT_PADDING,
-            s,
-          );
+          const [width, height] = getExportSize(exportedElements, DEFAULT_EXPORT_PADDING, s);
 
           const scaleButtonTitle = `${t(
             "imageExportDialog.label.scale",
@@ -113,9 +102,7 @@ export const actionChangeExportScale = register<AppState["exportScale"]>({
   },
 });
 
-export const actionChangeExportBackground = register<
-  AppState["exportBackground"]
->({
+export const actionChangeExportBackground = register<AppState["exportBackground"]>({
   name: "changeExportBackground",
   label: "imageExportDialog.label.withBackground",
   trackEvent: { category: "export", action: "toggleBackground" },
@@ -126,18 +113,13 @@ export const actionChangeExportBackground = register<
     };
   },
   PanelComponent: ({ appState, updateData }) => (
-    <CheckboxItem
-      checked={appState.exportBackground}
-      onChange={(checked) => updateData(checked)}
-    >
+    <CheckboxItem checked={appState.exportBackground} onChange={(checked) => updateData(checked)}>
       {t("imageExportDialog.label.withBackground")}
     </CheckboxItem>
   ),
 });
 
-export const actionChangeExportEmbedScene = register<
-  AppState["exportEmbedScene"]
->({
+export const actionChangeExportEmbedScene = register<AppState["exportEmbedScene"]>({
   name: "changeExportEmbedScene",
   label: "imageExportDialog.tooltip.embedScene",
   trackEvent: { category: "export", action: "embedScene" },
@@ -148,10 +130,7 @@ export const actionChangeExportEmbedScene = register<
     };
   },
   PanelComponent: ({ appState, updateData }) => (
-    <CheckboxItem
-      checked={appState.exportEmbedScene}
-      onChange={(checked) => updateData(checked)}
-    >
+    <CheckboxItem checked={appState.exportEmbedScene} onChange={(checked) => updateData(checked)}>
       {t("imageExportDialog.label.embedScene")}
       <Tooltip label={t("imageExportDialog.tooltip.embedScene")} long={true}>
         <div className="excalidraw-tooltip-icon">{questionCircle}</div>
@@ -266,9 +245,7 @@ function prepareDataForJSONExport(
     } catch (error: any) {
       if (error?.name === "AbortError") {
         // if abort error, assume it's a reaction on the signal being aborted
-        console.warn(
-          `onExport() aborted by host app (signal aborted: ${signal.aborted})`,
-        );
+        console.warn(`onExport() aborted by host app (signal aborted: ${signal.aborted})`);
       } else {
         // non-abort error
         //
@@ -318,16 +295,16 @@ export const actionSaveToActiveFile = register({
     const previousFileHandle = appState.fileHandle;
     const filename = app.getName();
 
-    const { abortController, data: exportedDataPromise } =
-      prepareDataForJSONExport(elements, appState, app.files, app);
+    const { abortController, data: exportedDataPromise } = prepareDataForJSONExport(
+      elements,
+      appState,
+      app.files,
+      app,
+    );
 
     try {
       const { fileHandle } = isImageFileHandle(previousFileHandle)
-        ? await resaveAsImageWithScene(
-            exportedDataPromise,
-            previousFileHandle,
-            filename,
-          )
+        ? await resaveAsImageWithScene(exportedDataPromise, previousFileHandle, filename)
         : await saveAsJSON({
             data: exportedDataPromise,
             filename,
@@ -341,10 +318,7 @@ export const actionSaveToActiveFile = register({
           toast: {
             message:
               previousFileHandle && fileHandle?.name
-                ? t("toast.fileSavedToFilename").replace(
-                    "{filename}",
-                    `"${fileHandle.name}"`,
-                  )
+                ? t("toast.fileSavedToFilename").replace("{filename}", `"${fileHandle.name}"`)
                 : t("toast.fileSaved"),
             duration: 1500,
           },
@@ -368,8 +342,7 @@ export const actionSaveToActiveFile = register({
       onExportInProgress = false;
     }
   },
-  keyTest: (event) =>
-    event.key === KEYS.S && event[KEYS.CTRL_OR_CMD] && !event.shiftKey,
+  keyTest: (event) => event.key === KEYS.S && event[KEYS.CTRL_OR_CMD] && !event.shiftKey,
 });
 
 export const actionSaveFileToDisk = register({
@@ -384,8 +357,12 @@ export const actionSaveFileToDisk = register({
     }
     onExportInProgress = true;
 
-    const { abortController, data: exportedDataPromise } =
-      prepareDataForJSONExport(elements, appState, app.files, app);
+    const { abortController, data: exportedDataPromise } = prepareDataForJSONExport(
+      elements,
+      appState,
+      app.files,
+      app,
+    );
 
     try {
       const { fileHandle: savedFileHandle } = await saveAsJSON({
@@ -420,9 +397,7 @@ export const actionSaveFileToDisk = register({
     }
   },
   keyTest: (event) =>
-    event.key.toLowerCase() === KEYS.S &&
-    event.shiftKey &&
-    event[KEYS.CTRL_OR_CMD],
+    event.key.toLowerCase() === KEYS.S && event.shiftKey && event[KEYS.CTRL_OR_CMD],
   PanelComponent: ({ updateData }) => (
     <ToolButton
       type="button"
@@ -442,9 +417,7 @@ export const actionLoadScene = register({
   label: "buttons.load",
   trackEvent: { category: "export" },
   predicate: (elements, appState, props, app) => {
-    return (
-      !!app.props.UIOptions.canvasActions.loadScene && !appState.viewModeEnabled
-    );
+    return !!app.props.UIOptions.canvasActions.loadScene && !appState.viewModeEnabled;
   },
   perform: async (elements, appState, _, app) => {
     try {
@@ -475,9 +448,7 @@ export const actionLoadScene = register({
   keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.key === KEYS.O,
 });
 
-export const actionExportWithDarkMode = register<
-  AppState["exportWithDarkMode"]
->({
+export const actionExportWithDarkMode = register<AppState["exportWithDarkMode"]>({
   name: "exportWithDarkMode",
   label: "imageExportDialog.label.darkMode",
   trackEvent: { category: "export", action: "toggleTheme" },

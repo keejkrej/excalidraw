@@ -16,19 +16,12 @@ import type { AppState } from "@excalidraw/excalidraw/types";
 
 import type { ExtractSetType } from "@excalidraw/common/utility-types";
 
-import {
-  resetOriginalContainerCache,
-  updateOriginalContainerCache,
-} from "./containerCache";
+import { resetOriginalContainerCache, updateOriginalContainerCache } from "./containerCache";
 import { LinearElementEditor } from "./linearElementEditor";
 
 import { measureText } from "./textMeasurements";
 import { wrapText } from "./textWrapping";
-import {
-  isBoundToContainer,
-  isArrowElement,
-  isTextElement,
-} from "./typeChecks";
+import { isBoundToContainer, isArrowElement, isTextElement } from "./typeChecks";
 
 import type { Scene } from "./Scene";
 
@@ -75,9 +68,7 @@ export const redrawTextBoundingBox = (
   boundTextUpdates.text = textElement.text;
 
   if (container || !textElement.autoResize) {
-    maxWidth = container
-      ? getBoundTextMaxWidth(container, textElement)
-      : textElement.width;
+    maxWidth = container ? getBoundTextMaxWidth(container, textElement) : textElement.width;
     boundTextUpdates.text = wrapText(
       textElement.originalText,
       getFontString(textElement),
@@ -105,19 +96,13 @@ export const redrawTextBoundingBox = (
     const maxContainerWidth = getBoundTextMaxWidth(container, textElement);
 
     if (!isArrowElement(container) && metrics.height > maxContainerHeight) {
-      const nextHeight = computeContainerDimensionForBoundText(
-        metrics.height,
-        container.type,
-      );
+      const nextHeight = computeContainerDimensionForBoundText(metrics.height, container.type);
       scene.mutateElement(container, { height: nextHeight });
       updateOriginalContainerCache(container.id, nextHeight);
     }
 
     if (metrics.width > maxContainerWidth) {
-      const nextWidth = computeContainerDimensionForBoundText(
-        metrics.width,
-        container.type,
-      );
+      const nextWidth = computeContainerDimensionForBoundText(metrics.width, container.type);
       scene.mutateElement(container, { width: nextWidth });
     }
 
@@ -126,11 +111,7 @@ export const redrawTextBoundingBox = (
       ...boundTextUpdates,
     } as ExcalidrawTextElementWithContainer;
 
-    const { x, y } = computeBoundTextPosition(
-      container,
-      updatedTextElement,
-      elementsMap,
-    );
+    const { x, y } = computeBoundTextPosition(container, updatedTextElement, elementsMap);
 
     boundTextUpdates.x = x;
     boundTextUpdates.y = y;
@@ -163,31 +144,17 @@ export const handleBindTextResize = (
     const maxWidth = getBoundTextMaxWidth(container, textElement);
     const maxHeight = getBoundTextMaxHeight(container, textElement);
     let containerHeight = container.height;
-    if (
-      shouldMaintainAspectRatio ||
-      (transformHandleType !== "n" && transformHandleType !== "s")
-    ) {
+    if (shouldMaintainAspectRatio || (transformHandleType !== "n" && transformHandleType !== "s")) {
       if (text) {
-        text = wrapText(
-          textElement.originalText,
-          getFontString(textElement),
-          maxWidth,
-        );
+        text = wrapText(textElement.originalText, getFontString(textElement), maxWidth);
       }
-      const metrics = measureText(
-        text,
-        getFontString(textElement),
-        textElement.lineHeight,
-      );
+      const metrics = measureText(text, getFontString(textElement), textElement.lineHeight);
       nextHeight = metrics.height;
       nextWidth = metrics.width;
     }
     // increase height in case text element height exceeds
     if (nextHeight > maxHeight) {
-      containerHeight = computeContainerDimensionForBoundText(
-        nextHeight,
-        container.type,
-      );
+      containerHeight = computeContainerDimensionForBoundText(nextHeight, container.type);
 
       const diff = containerHeight - container.height;
       // fix the y coord when resizing from ne/nw/n
@@ -242,17 +209,14 @@ export const computeBoundTextPosition = (
   } else if (boundTextElement.verticalAlign === VERTICAL_ALIGN.BOTTOM) {
     y = containerCoords.y + (maxContainerHeight - boundTextElement.height);
   } else {
-    y =
-      containerCoords.y +
-      (maxContainerHeight / 2 - boundTextElement.height / 2);
+    y = containerCoords.y + (maxContainerHeight / 2 - boundTextElement.height / 2);
   }
   if (boundTextElement.textAlign === TEXT_ALIGN.LEFT) {
     x = containerCoords.x;
   } else if (boundTextElement.textAlign === TEXT_ALIGN.RIGHT) {
     x = containerCoords.x + (maxContainerWidth - boundTextElement.width);
   } else {
-    x =
-      containerCoords.x + (maxContainerWidth / 2 - boundTextElement.width / 2);
+    x = containerCoords.x + (maxContainerWidth / 2 - boundTextElement.width / 2);
   }
   const angle = (container.angle ?? 0) as Radians;
 
@@ -261,10 +225,7 @@ export const computeBoundTextPosition = (
       containerCoords.x + maxContainerWidth / 2,
       containerCoords.y + maxContainerHeight / 2,
     );
-    const textCenter = pointFrom(
-      x + boundTextElement.width / 2,
-      y + boundTextElement.height / 2,
-    );
+    const textCenter = pointFrom(x + boundTextElement.width / 2, y + boundTextElement.height / 2);
 
     const [rx, ry] = pointRotateRads(textCenter, contentCenter, angle);
 
@@ -307,8 +268,7 @@ export const getContainerElement = (
     return null;
   }
   if (element.containerId) {
-    return (elementsMap.get(element.containerId) ||
-      null) as ExcalidrawTextContainer | null;
+    return (elementsMap.get(element.containerId) || null) as ExcalidrawTextContainer | null;
   }
   return null;
 };
@@ -324,10 +284,7 @@ export const getContainerCenter = (
       y: container.y + container.height / 2,
     };
   }
-  const points = LinearElementEditor.getPointsGlobalCoordinates(
-    container,
-    elementsMap,
-  );
+  const points = LinearElementEditor.getPointsGlobalCoordinates(container, elementsMap);
   if (points.length % 2 === 1) {
     const index = Math.floor(container.points.length / 2);
     const midPoint = LinearElementEditor.getPointGlobalCoordinates(
@@ -338,17 +295,11 @@ export const getContainerCenter = (
     return { x: midPoint[0], y: midPoint[1] };
   }
   const index = container.points.length / 2 - 1;
-  let midSegmentMidpoint = LinearElementEditor.getEditorMidPoints(
-    container,
-    elementsMap,
-    appState,
-  )[index];
+  let midSegmentMidpoint = LinearElementEditor.getEditorMidPoints(container, elementsMap, appState)[
+    index
+  ];
   if (!midSegmentMidpoint) {
-    midSegmentMidpoint = LinearElementEditor.getSegmentMidPoint(
-      container,
-      index + 1,
-      elementsMap,
-    );
+    midSegmentMidpoint = LinearElementEditor.getSegmentMidPoint(container, index + 1, elementsMap);
   }
   return { x: midSegmentMidpoint[0], y: midSegmentMidpoint[1] };
 };
@@ -433,17 +384,11 @@ export const suppportsHorizontalAlign = (
   });
 };
 
-const VALID_CONTAINER_TYPES = new Set([
-  "rectangle",
-  "ellipse",
-  "diamond",
-  "arrow",
-]);
+const VALID_CONTAINER_TYPES = new Set(["rectangle", "ellipse", "diamond", "arrow"]);
 
 export const isValidTextContainer = (element: {
   type: ExcalidrawElementType;
-}): element is ExcalidrawTextContainer =>
-  VALID_CONTAINER_TYPES.has(element.type);
+}): element is ExcalidrawTextContainer => VALID_CONTAINER_TYPES.has(element.type);
 
 export const computeContainerDimensionForBoundText = (
   dimension: number,
@@ -471,8 +416,7 @@ export const getBoundTextMaxWidth = (
   const { width } = container;
   if (isArrowElement(container)) {
     const minWidth =
-      (boundTextElement?.fontSize ?? DEFAULT_FONT_SIZE) *
-      ARROW_LABEL_FONT_SIZE_TO_MIN_WIDTH_RATIO;
+      (boundTextElement?.fontSize ?? DEFAULT_FONT_SIZE) * ARROW_LABEL_FONT_SIZE_TO_MIN_WIDTH_RATIO;
     return Math.max(ARROW_LABEL_WIDTH_FRACTION * width, minWidth);
   }
   if (container.type === "ellipse") {
@@ -516,10 +460,7 @@ export const getBoundTextMaxHeight = (
 };
 
 /** retrieves text from text elements and concatenates to a single string */
-export const getTextFromElements = (
-  elements: readonly ExcalidrawElement[],
-  separator = "\n\n",
-) => {
+export const getTextFromElements = (elements: readonly ExcalidrawElement[], separator = "\n\n") => {
   const text = elements
     .reduce((acc: string[], element) => {
       if (isTextElement(element)) {

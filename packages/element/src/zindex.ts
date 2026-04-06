@@ -96,14 +96,8 @@ const getTargetIndexAccountingForBinding = (
     const containerElement = scene.getElement(nextElement.containerId);
     if (containerElement) {
       return direction === "left"
-        ? Math.min(
-            elements.indexOf(containerElement),
-            elements.indexOf(nextElement),
-          )
-        : Math.max(
-            elements.indexOf(containerElement),
-            elements.indexOf(nextElement),
-          );
+        ? Math.min(elements.indexOf(containerElement), elements.indexOf(nextElement))
+        : Math.max(elements.indexOf(containerElement), elements.indexOf(nextElement));
     }
   } else {
     const boundElementId = nextElement.boundElements?.find(
@@ -113,14 +107,8 @@ const getTargetIndexAccountingForBinding = (
       const boundTextElement = scene.getElement(boundElementId);
       if (boundTextElement) {
         return direction === "left"
-          ? Math.min(
-              elements.indexOf(boundTextElement),
-              elements.indexOf(nextElement),
-            )
-          : Math.max(
-              elements.indexOf(boundTextElement),
-              elements.indexOf(nextElement),
-            );
+          ? Math.min(elements.indexOf(boundTextElement), elements.indexOf(nextElement))
+          : Math.max(elements.indexOf(boundTextElement), elements.indexOf(nextElement));
       }
     }
   }
@@ -158,9 +146,7 @@ export const moveArrowAboveBindable = (
   scene: Scene,
   hit?: NonDeletedExcalidrawElement,
 ): readonly OrderedExcalidrawElement[] => {
-  const hoveredElement = hit
-    ? hit
-    : getHoveredElementForBinding(point, elements, elementsMap);
+  const hoveredElement = hit ? hit : getHoveredElementForBinding(point, elements, elementsMap);
 
   if (!hoveredElement) {
     return elements;
@@ -171,11 +157,9 @@ export const moveArrowAboveBindable = (
     ? getContainerElement(hoveredElement, elementsMap)
     : null;
 
-  const bindableIds = [
-    hoveredElement.id,
-    boundTextElement?.id,
-    containerElement?.id,
-  ].filter((id): id is NonDeletedExcalidrawElement["id"] => !!id);
+  const bindableIds = [hoveredElement.id, boundTextElement?.id, containerElement?.id].filter(
+    (id): id is NonDeletedExcalidrawElement["id"] => !!id,
+  );
   const bindableIdx = elements.findIndex((el) => bindableIds.includes(el.id));
   const arrowIdx = elements.findIndex((el) => el.id === arrow.id);
 
@@ -225,11 +209,7 @@ const getTargetIndex = (
 
   const candidateIndex =
     direction === "left"
-      ? findLastIndex(
-          elements,
-          (el) => indexFilter(el),
-          Math.max(0, boundaryIndex - 1),
-        )
+      ? findLastIndex(elements, (el) => indexFilter(el), Math.max(0, boundaryIndex - 1))
       : findIndex(elements, (el) => indexFilter(el), boundaryIndex + 1);
 
   const nextElement = elements[candidateIndex];
@@ -244,12 +224,8 @@ const getTargetIndex = (
       sourceElement?.groupIds.join("") === nextElement?.groupIds.join("")
     ) {
       return (
-        getTargetIndexAccountingForBinding(
-          nextElement,
-          elements,
-          direction,
-          scene,
-        ) ?? candidateIndex
+        getTargetIndexAccountingForBinding(nextElement, elements, direction, scene) ??
+        candidateIndex
       );
     } else if (!nextElement?.groupIds.includes(appState.editingGroupId)) {
       // candidate element is outside current editing group → prevent
@@ -257,10 +233,7 @@ const getTargetIndex = (
     }
   }
 
-  if (
-    !containingFrame &&
-    (nextElement.frameId || isFrameLikeElement(nextElement))
-  ) {
+  if (!containingFrame && (nextElement.frameId || isFrameLikeElement(nextElement))) {
     const frameElements = getContiguousFrameRangeElements(
       elements,
       nextElement.frameId || nextElement.id,
@@ -272,19 +245,12 @@ const getTargetIndex = (
 
   if (!nextElement.groupIds.length) {
     return (
-      getTargetIndexAccountingForBinding(
-        nextElement,
-        elements,
-        direction,
-        scene,
-      ) ?? candidateIndex
+      getTargetIndexAccountingForBinding(nextElement, elements, direction, scene) ?? candidateIndex
     );
   }
 
   const siblingGroupId = appState.editingGroupId
-    ? nextElement.groupIds[
-        nextElement.groupIds.indexOf(appState.editingGroupId) - 1
-      ]
+    ? nextElement.groupIds[nextElement.groupIds.indexOf(appState.editingGroupId) - 1]
     : nextElement.groupIds[nextElement.groupIds.length - 1];
 
   const elementsInSiblingGroup = getElementsInGroup(elements, siblingGroupId);
@@ -294,9 +260,7 @@ const getTargetIndex = (
     // by zIndex (ascending)
     return direction === "left"
       ? elements.indexOf(elementsInSiblingGroup[0])
-      : elements.indexOf(
-          elementsInSiblingGroup[elementsInSiblingGroup.length - 1],
-        );
+      : elements.indexOf(elementsInSiblingGroup[elementsInSiblingGroup.length - 1]);
   }
 
   return candidateIndex;
@@ -329,9 +293,7 @@ const shiftElementsByOne = (
   }
 
   const selectedFrames = new Set<ExcalidrawFrameLikeElement["id"]>(
-    indicesToMove
-      .filter((idx) => isFrameLikeElement(elements[idx]))
-      .map((idx) => elements[idx].id),
+    indicesToMove.filter((idx) => isFrameLikeElement(elements[idx])).map((idx) => elements[idx].id),
   );
 
   groupedIndices.forEach((indices, i) => {
@@ -360,33 +322,19 @@ const shiftElementsByOne = (
     }
 
     const leadingElements =
-      direction === "left"
-        ? elements.slice(0, targetIndex)
-        : elements.slice(0, leadingIndex);
+      direction === "left" ? elements.slice(0, targetIndex) : elements.slice(0, leadingIndex);
     const targetElements = elements.slice(leadingIndex, trailingIndex + 1);
     const displacedElements =
       direction === "left"
         ? elements.slice(targetIndex, leadingIndex)
         : elements.slice(trailingIndex + 1, targetIndex + 1);
     const trailingElements =
-      direction === "left"
-        ? elements.slice(trailingIndex + 1)
-        : elements.slice(targetIndex + 1);
+      direction === "left" ? elements.slice(trailingIndex + 1) : elements.slice(targetIndex + 1);
 
     elements =
       direction === "left"
-        ? [
-            ...leadingElements,
-            ...targetElements,
-            ...displacedElements,
-            ...trailingElements,
-          ]
-        : [
-            ...leadingElements,
-            ...displacedElements,
-            ...targetElements,
-            ...trailingElements,
-          ];
+        ? [...leadingElements, ...targetElements, ...displacedElements, ...trailingElements]
+        : [...leadingElements, ...displacedElements, ...targetElements, ...trailingElements];
   });
 
   syncMovedIndices(elements, targetElementsMap);
@@ -409,14 +357,9 @@ const shiftElementsToEnd = (
   let trailingIndex: number;
   if (direction === "left") {
     if (containingFrame) {
-      leadingIndex = findIndex(elements, (el) =>
-        isOfTargetFrame(el, containingFrame),
-      );
+      leadingIndex = findIndex(elements, (el) => isOfTargetFrame(el, containingFrame));
     } else if (appState.editingGroupId) {
-      const groupElements = getElementsInGroup(
-        elements,
-        appState.editingGroupId,
-      );
+      const groupElements = getElementsInGroup(elements, appState.editingGroupId);
       if (!groupElements.length) {
         return elements;
       }
@@ -428,14 +371,9 @@ const shiftElementsToEnd = (
     trailingIndex = indicesToMove[indicesToMove.length - 1];
   } else {
     if (containingFrame) {
-      trailingIndex = findLastIndex(elements, (el) =>
-        isOfTargetFrame(el, containingFrame),
-      );
+      trailingIndex = findLastIndex(elements, (el) => isOfTargetFrame(el, containingFrame));
     } else if (appState.editingGroupId) {
-      const groupElements = getElementsInGroup(
-        elements,
-        appState.editingGroupId,
-      );
+      const groupElements = getElementsInGroup(elements, appState.editingGroupId);
       if (!groupElements.length) {
         return elements;
       }
@@ -462,18 +400,8 @@ const shiftElementsToEnd = (
   const trailingElements = elements.slice(trailingIndex + 1);
   const nextElements =
     direction === "left"
-      ? [
-          ...leadingElements,
-          ...targetElements,
-          ...displacedElements,
-          ...trailingElements,
-        ]
-      : [
-          ...leadingElements,
-          ...displacedElements,
-          ...targetElements,
-          ...trailingElements,
-        ];
+      ? [...leadingElements, ...targetElements, ...displacedElements, ...trailingElements]
+      : [...leadingElements, ...displacedElements, ...targetElements, ...trailingElements];
 
   syncMovedIndices(nextElements, targetElementsMap);
 
@@ -523,32 +451,19 @@ function shiftElementsAccountingForFrames(
         frameAwareContiguousElementsToMove.regularElements.push(element);
       } else {
         const frameChildren =
-          frameAwareContiguousElementsToMove.frameChildren.get(
-            element.frameId,
-          ) || [];
+          frameAwareContiguousElementsToMove.frameChildren.get(element.frameId) || [];
         frameChildren.push(element);
-        frameAwareContiguousElementsToMove.frameChildren.set(
-          element.frameId,
-          frameChildren,
-        );
+        frameAwareContiguousElementsToMove.frameChildren.set(element.frameId, frameChildren);
       }
     }
   }
 
   let nextElements = allElements;
 
-  const frameChildrenSets = Array.from(
-    frameAwareContiguousElementsToMove.frameChildren.entries(),
-  );
+  const frameChildrenSets = Array.from(frameAwareContiguousElementsToMove.frameChildren.entries());
 
   for (const [frameId, children] of frameChildrenSets) {
-    nextElements = shiftFunction(
-      allElements,
-      appState,
-      direction,
-      frameId,
-      children,
-    );
+    nextElements = shiftFunction(allElements, appState, direction, frameId, children);
   }
 
   return shiftFunction(
@@ -579,26 +494,10 @@ export const moveOneRight = (
   return shiftElementsByOne(allElements, appState, "right", scene);
 };
 
-export const moveAllLeft = (
-  allElements: readonly ExcalidrawElement[],
-  appState: AppState,
-) => {
-  return shiftElementsAccountingForFrames(
-    allElements,
-    appState,
-    "left",
-    shiftElementsToEnd,
-  );
+export const moveAllLeft = (allElements: readonly ExcalidrawElement[], appState: AppState) => {
+  return shiftElementsAccountingForFrames(allElements, appState, "left", shiftElementsToEnd);
 };
 
-export const moveAllRight = (
-  allElements: readonly ExcalidrawElement[],
-  appState: AppState,
-) => {
-  return shiftElementsAccountingForFrames(
-    allElements,
-    appState,
-    "right",
-    shiftElementsToEnd,
-  );
+export const moveAllRight = (allElements: readonly ExcalidrawElement[], appState: AppState) => {
+  return shiftElementsAccountingForFrames(allElements, appState, "right", shiftElementsToEnd);
 };

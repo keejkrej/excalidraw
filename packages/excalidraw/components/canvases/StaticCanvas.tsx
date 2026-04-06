@@ -10,10 +10,7 @@ import type {
 import { isRenderThrottlingEnabled } from "../../reactUtils";
 import { renderStaticScene } from "../../renderer/staticScene";
 
-import type {
-  RenderableElementsMap,
-  StaticCanvasRenderConfig,
-} from "../../scene/types";
+import type { RenderableElementsMap, StaticCanvasRenderConfig } from "../../scene/types";
 import type { AppState, StaticCanvasAppState } from "../../types";
 import type { RoughCanvas } from "roughjs/bin/canvas";
 
@@ -105,10 +102,7 @@ const getRelevantAppStateProps = (appState: AppState): StaticCanvasAppState => {
   return relevantAppStateProps;
 };
 
-const areEqual = (
-  prevProps: StaticCanvasProps,
-  nextProps: StaticCanvasProps,
-) => {
+const areEqual = (prevProps: StaticCanvasProps, nextProps: StaticCanvasProps) => {
   if (
     prevProps.sceneNonce !== nextProps.sceneNonce ||
     prevProps.scale !== nextProps.scale ||

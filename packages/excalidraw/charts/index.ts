@@ -2,11 +2,7 @@ import type { ChartType } from "@excalidraw/element/types";
 
 import { renderBarChart } from "./charts.bar";
 import { renderLineChart } from "./charts.line";
-import {
-  tryParseCells,
-  tryParseNumber,
-  tryParseSpreadsheet,
-} from "./charts.parse";
+import { tryParseCells, tryParseNumber, tryParseSpreadsheet } from "./charts.parse";
 import { renderRadarChart } from "./charts.radar";
 
 import type { ChartElements, Spreadsheet } from "./charts.types";

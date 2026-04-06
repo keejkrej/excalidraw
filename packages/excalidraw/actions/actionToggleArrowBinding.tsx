@@ -11,8 +11,7 @@ export const actionToggleArrowBinding = register({
     predicate: (appState) => appState.bindingPreference === "disabled",
   },
   perform(elements, appState) {
-    const newPreference =
-      appState.bindingPreference === "enabled" ? "disabled" : "enabled";
+    const newPreference = appState.bindingPreference === "enabled" ? "disabled" : "enabled";
     return {
       appState: {
         ...appState,

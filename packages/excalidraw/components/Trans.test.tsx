@@ -21,10 +21,7 @@ describe("Test <Trans/>", () => {
     const { getByTestId } = render(
       <EditorJotaiProvider>
         <div data-testid="test1">
-          <Trans
-            i18nKey={"transTest.key1" as unknown as TranslationKeys}
-            audience="world"
-          />
+          <Trans i18nKey={"transTest.key1" as unknown as TranslationKeys} audience="world" />
         </div>
         <div data-testid="test2">
           <Trans

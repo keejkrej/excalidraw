@@ -52,9 +52,7 @@ describe("exportToBlob", async () => {
     });
 
     it("should warn when using quality with image/png", async () => {
-      const consoleSpy = vi
-        .spyOn(console, "warn")
-        .mockImplementationOnce(() => void 0);
+      const consoleSpy = vi.spyOn(console, "warn").mockImplementationOnce(() => void 0);
       await utils.exportToBlob({
         ...diagramFactory(),
         mimeType: MIME_TYPES.png,
@@ -112,9 +110,7 @@ describe("exportToSvg", () => {
     });
 
     expect(passedElements().length).toBe(3);
-    expect(passedOptions()).toEqual(
-      expect.objectContaining({ exportPadding: 0 }),
-    );
+    expect(passedOptions()).toEqual(expect.objectContaining({ exportPadding: 0 }));
   });
 
   it("with exportEmbedScene", async () => {

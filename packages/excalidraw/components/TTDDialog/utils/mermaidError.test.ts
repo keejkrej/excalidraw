@@ -31,8 +31,7 @@ Expecting 'SEMI', 'NEWLINE', 'SPACE', got 'NODE_STRING'`;
   });
 
   it("does not modify non-Mermaid parse messages", () => {
-    const message =
-      "Unexpected token while parsing JSON. Expecting value at position 10.";
+    const message = "Unexpected token while parsing JSON. Expecting value at position 10.";
 
     expect(formatMermaidParseErrorMessage(message)).toBe(message);
   });
@@ -54,9 +53,7 @@ describe("isMermaidParseSyntaxError", () => {
   });
 
   it("returns true for Mermaid lexical syntax errors", () => {
-    expect(
-      isMermaidParseSyntaxError("Lexical error on line 2. Unrecognized text."),
-    ).toBe(true);
+    expect(isMermaidParseSyntaxError("Lexical error on line 2. Unrecognized text.")).toBe(true);
   });
 
   it("returns false for non-parse errors", () => {
@@ -70,11 +67,9 @@ describe("isMermaidAutoFixableError", () => {
   });
 
   it("returns true for inactive participant runtime errors", () => {
-    expect(
-      isMermaidAutoFixableError(
-        "Trying to inactivate an inactive participant (QA)",
-      ),
-    ).toBe(true);
+    expect(isMermaidAutoFixableError("Trying to inactivate an inactive participant (QA)")).toBe(
+      true,
+    );
   });
 
   it("returns false for non-fixable errors", () => {
@@ -84,17 +79,13 @@ describe("isMermaidAutoFixableError", () => {
 
 describe("getMermaidInactiveParticipant", () => {
   it("extracts the participant id from inactive participant errors", () => {
-    expect(
-      getMermaidInactiveParticipant(
-        "Trying to inactivate an inactive participant (QA)",
-      ),
-    ).toBe("QA");
+    expect(getMermaidInactiveParticipant("Trying to inactivate an inactive participant (QA)")).toBe(
+      "QA",
+    );
   });
 
   it("returns null for unrelated errors", () => {
-    expect(
-      getMermaidInactiveParticipant("Parse error on line 3: ..."),
-    ).toBeNull();
+    expect(getMermaidInactiveParticipant("Parse error on line 3: ...")).toBeNull();
   });
 });
 
@@ -104,9 +95,7 @@ describe("getMermaidErrorLineNumber", () => {
   });
 
   it("extracts line number from lexical error format", () => {
-    expect(
-      getMermaidErrorLineNumber("Lexical error on line 2. Unrecognized text."),
-    ).toBe(2);
+    expect(getMermaidErrorLineNumber("Lexical error on line 2. Unrecognized text.")).toBe(2);
   });
 
   it("returns null for messages without Mermaid line details", () => {
@@ -121,10 +110,7 @@ describe("getMermaidErrorLineNumber", () => {
   deactivate QA`;
 
     expect(
-      getMermaidErrorLineNumber(
-        "Trying to inactivate an inactive participant (QA)",
-        sourceText,
-      ),
+      getMermaidErrorLineNumber("Trying to inactivate an inactive participant (QA)", sourceText),
     ).toBe(5);
   });
 });
@@ -141,15 +127,11 @@ subgraph Layers["X"]
 
     expect(getMermaidSyntaxErrorGuidance(message, source)).toEqual({
       summary: "Syntax error near line 6.",
-      likelyCauses: expect.arrayContaining([
-        "A block is missing an `end` statement.",
-      ]),
+      likelyCauses: expect.arrayContaining(["A block is missing an `end` statement."]),
     });
   });
 
   it("returns null for non-parse errors", () => {
-    expect(
-      getMermaidSyntaxErrorGuidance("Network error", "graph TD"),
-    ).toBeNull();
+    expect(getMermaidSyntaxErrorGuidance("Network error", "graph TD")).toBeNull();
   });
 });

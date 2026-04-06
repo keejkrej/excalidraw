@@ -36,38 +36,23 @@ export const TTDDialogOutput = ({
       : formatMermaidParseErrorMessage(error.message)
     : null;
   const syntaxGuidance =
-    error && !hideErrorDetails
-      ? getMermaidSyntaxErrorGuidance(error.message, sourceText)
-      : null;
-  const showAutoFixButton =
-    !!autoFixAvailable && !!onApplyAutoFix && !hideErrorDetails;
+    error && !hideErrorDetails ? getMermaidSyntaxErrorGuidance(error.message, sourceText) : null;
+  const showAutoFixButton = !!autoFixAvailable && !!onApplyAutoFix && !hideErrorDetails;
 
   const errorMessageLines = errorMessage?.split(/\r?\n/) ?? [];
 
   return (
-    <div
-      className={`ttd-dialog-output-wrapper ${
-        error ? "ttd-dialog-output-wrapper--error" : ""
-      }`}
-    >
+    <div className={`ttd-dialog-output-wrapper ${error ? "ttd-dialog-output-wrapper--error" : ""}`}>
       {error && (
-        <div
-          key="error"
-          data-testid="ttd-dialog-output-error"
-          className="ttd-dialog-output-error"
-        >
+        <div key="error" data-testid="ttd-dialog-output-error" className="ttd-dialog-output-error">
           <div className="ttd-dialog-output-error-content">
-            <div className="ttd-dialog-output-error-icon">
-              {alertTriangleIcon}
-            </div>
+            <div className="ttd-dialog-output-error-icon">{alertTriangleIcon}</div>
             {syntaxGuidance && (
               <div className="ttd-dialog-output-error-summary">
                 <div className="ttd-dialog-output-error-summary__headline">
                   {syntaxGuidance.summary}
                 </div>
-                <div className="ttd-dialog-output-error-summary__label">
-                  Likely causes:
-                </div>
+                <div className="ttd-dialog-output-error-summary__label">Likely causes:</div>
                 <ul className="ttd-dialog-output-error-summary__causes">
                   {syntaxGuidance.likelyCauses.map((cause) => (
                     <li key={cause}>{cause}</li>
@@ -80,9 +65,7 @@ export const TTDDialogOutput = ({
                 <span
                   key={`error-line-${index}`}
                   className={
-                    isMermaidCaretLine(line)
-                      ? "ttd-dialog-output-error-message__caret"
-                      : undefined
+                    isMermaidCaretLine(line) ? "ttd-dialog-output-error-message__caret" : undefined
                   }
                 >
                   {line}

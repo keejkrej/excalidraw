@@ -7,9 +7,7 @@ export const AppWelcomeScreen = React.memo(() => {
 
   return (
     <WelcomeScreen>
-      <WelcomeScreen.Hints.MenuHint>
-        {t("welcomeScreen.app.menuHint")}
-      </WelcomeScreen.Hints.MenuHint>
+      <WelcomeScreen.Hints.MenuHint>{t("welcomeScreen.app.menuHint")}</WelcomeScreen.Hints.MenuHint>
       <WelcomeScreen.Hints.ToolbarHint />
       <WelcomeScreen.Center>
         <WelcomeScreen.Center.Logo />

@@ -20,10 +20,7 @@ interface PropertiesPopoverProps {
   preventAutoFocusOnTouch?: boolean;
 }
 
-export const PropertiesPopover = React.forwardRef<
-  HTMLDivElement,
-  PropertiesPopoverProps
->(
+export const PropertiesPopover = React.forwardRef<HTMLDivElement, PropertiesPopoverProps>(
   (
     {
       className,
@@ -40,8 +37,7 @@ export const PropertiesPopover = React.forwardRef<
     ref,
   ) => {
     const editorInterface = useEditorInterface();
-    const isMobilePortrait =
-      editorInterface.formFactor === "phone" && !editorInterface.isLandscape;
+    const isMobilePortrait = editorInterface.formFactor === "phone" && !editorInterface.isLandscape;
 
     return (
       <Popover.Portal container={container}>
@@ -56,8 +52,7 @@ export const PropertiesPopover = React.forwardRef<
           collisionBoundary={container ?? undefined}
           style={{
             zIndex: "var(--zIndex-ui-styles-popup)",
-            marginLeft:
-              editorInterface.formFactor === "phone" ? "0.5rem" : undefined,
+            marginLeft: editorInterface.formFactor === "phone" ? "0.5rem" : undefined,
           }}
           onPointerLeave={onPointerLeave}
           onKeyDown={onKeyDown}

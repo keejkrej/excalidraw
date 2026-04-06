@@ -17,11 +17,7 @@ import "./TTDDialog.scss";
 
 import { TTDWelcomeMessage } from "./TTDWelcomeMessage";
 
-import type {
-  MermaidToExcalidrawLibProps,
-  TTDPersistenceAdapter,
-  TTTDDialog,
-} from "./types";
+import type { MermaidToExcalidrawLibProps, TTDPersistenceAdapter, TTTDDialog } from "./types";
 
 export const TTDDialog = (
   props:
@@ -56,9 +52,7 @@ const TTDDialogBase = withInternalFallback(
     tab: "text-to-diagram" | "mermaid";
   } & (
     | {
-        onTextSubmit(
-          props: TTTDDialog.OnTextSubmitProps,
-        ): Promise<TTTDDialog.OnTextSubmitRetValue>;
+        onTextSubmit(props: TTTDDialog.OnTextSubmitProps): Promise<TTTDDialog.OnTextSubmitRetValue>;
         renderWelcomeScreen?: TTTDDialog.renderWelcomeScreen;
         renderWarning?: TTTDDialog.renderWarning;
         persistenceAdapter: TTDPersistenceAdapter;
@@ -100,14 +94,10 @@ const TTDDialogBase = withInternalFallback(
               <TTDDialogTabTrigger tab="text-to-diagram">
                 <div className="ttd-dialog-tab-trigger__content">
                   {t("labels.textToDiagram")}
-                  <div className="ttd-dialog-tab-trigger__badge">
-                    {t("chat.aiBeta")}
-                  </div>
+                  <div className="ttd-dialog-tab-trigger__badge">{t("chat.aiBeta")}</div>
                 </div>
               </TTDDialogTabTrigger>
-              <TTDDialogTabTrigger tab="mermaid">
-                {t("mermaid.label")}
-              </TTDDialogTabTrigger>
+              <TTDDialogTabTrigger tab="mermaid">{t("mermaid.label")}</TTDDialogTabTrigger>
             </TTDDialogTabTriggers>
           )}
 

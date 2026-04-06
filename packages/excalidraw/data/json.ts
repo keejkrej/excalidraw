@@ -1,9 +1,4 @@
-import {
-  EXPORT_DATA_TYPES,
-  getExportSource,
-  MIME_TYPES,
-  VERSIONS,
-} from "@excalidraw/common";
+import { EXPORT_DATA_TYPES, getExportSource, MIME_TYPES, VERSIONS } from "@excalidraw/common";
 
 import type { ExcalidrawElement, NonDeleted } from "@excalidraw/element/types";
 
@@ -31,18 +26,10 @@ export type JSONExportData = {
 /**
  * Strips out files which are only referenced by deleted elements
  */
-const filterOutDeletedFiles = (
-  elements: readonly ExcalidrawElement[],
-  files: BinaryFiles,
-) => {
+const filterOutDeletedFiles = (elements: readonly ExcalidrawElement[], files: BinaryFiles) => {
   const nextFiles: BinaryFiles = {};
   for (const element of elements) {
-    if (
-      !element.isDeleted &&
-      "fileId" in element &&
-      element.fileId &&
-      files[element.fileId]
-    ) {
+    if (!element.isDeleted && "fileId" in element && element.fileId && files[element.fileId]) {
       nextFiles[element.fileId] = files[element.fileId];
     }
   }
@@ -61,9 +48,7 @@ export const serializeAsJSON = (
     source: getExportSource(),
     elements,
     appState:
-      type === "local"
-        ? cleanAppStateForExport(appState)
-        : clearAppStateForDatabase(appState),
+      type === "local" ? cleanAppStateForExport(appState) : clearAppStateForDatabase(appState),
     files:
       type === "local"
         ? filterOutDeletedFiles(elements, files)
@@ -120,8 +105,7 @@ export const isValidExcalidrawData = (data?: {
   return (
     data?.type === EXPORT_DATA_TYPES.excalidraw &&
     (!data.elements ||
-      (Array.isArray(data.elements) &&
-        (!data.appState || typeof data.appState === "object")))
+      (Array.isArray(data.elements) && (!data.appState || typeof data.appState === "object")))
   );
 };
 

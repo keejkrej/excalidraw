@@ -19,31 +19,19 @@ import {
   getSelectedGroupForElement,
 } from "./groups";
 
-import {
-  bindElementsToFramesAfterDuplication,
-  getFrameChildren,
-} from "./frame";
+import { bindElementsToFramesAfterDuplication, getFrameChildren } from "./frame";
 
 import { normalizeElementOrder } from "./sortElements";
 
 import { bumpVersion } from "./mutateElement";
 
-import {
-  hasBoundTextElement,
-  isBoundToContainer,
-  isFrameLikeElement,
-} from "./typeChecks";
+import { hasBoundTextElement, isBoundToContainer, isFrameLikeElement } from "./typeChecks";
 
 import { getBoundTextElement, getContainerElement } from "./textElement";
 
 import { fixDuplicatedBindingsAfterDuplication } from "./binding";
 
-import type {
-  ElementsMap,
-  ExcalidrawElement,
-  GroupId,
-  NonDeletedSceneElementsMap,
-} from "./types";
+import type { ElementsMap, ExcalidrawElement, GroupId, NonDeletedSceneElementsMap } from "./types";
 
 /**
  * Duplicate an element, often used in the alt-drag operation.
@@ -77,16 +65,12 @@ export const duplicateElement = <TElement extends ExcalidrawElement>(
     bumpVersion(copy);
   }
 
-  copy.groupIds = getNewGroupIdsForDuplication(
-    copy.groupIds,
-    editingGroupId,
-    (groupId) => {
-      if (!groupIdMapForOperation.has(groupId)) {
-        groupIdMapForOperation.set(groupId, randomId());
-      }
-      return groupIdMapForOperation.get(groupId)!;
-    },
-  );
+  copy.groupIds = getNewGroupIdsForDuplication(copy.groupIds, editingGroupId, (groupId) => {
+    if (!groupIdMapForOperation.has(groupId)) {
+      groupIdMapForOperation.set(groupId, randomId());
+    }
+    return groupIdMapForOperation.get(groupId)!;
+  });
   return copy;
 };
 
@@ -97,10 +81,7 @@ export const duplicateElements = (
     overrides?: (data: {
       duplicateElement: ExcalidrawElement;
       origElement: ExcalidrawElement;
-      origIdToDuplicateId: Map<
-        ExcalidrawElement["id"],
-        ExcalidrawElement["id"]
-      >;
+      origIdToDuplicateId: Map<ExcalidrawElement["id"], ExcalidrawElement["id"]>;
     }) => Partial<ExcalidrawElement>;
   } & (
     | {
@@ -121,10 +102,7 @@ export const duplicateElements = (
          * such as alt-drag or on duplicate action.
          */
         type: "in-place";
-        idsOfElementsToDuplicate: Map<
-          ExcalidrawElement["id"],
-          ExcalidrawElement
-        >;
+        idsOfElementsToDuplicate: Map<ExcalidrawElement["id"], ExcalidrawElement>;
         appState: {
           editingGroupId: AppState["editingGroupId"];
           selectedGroupIds: AppState["selectedGroupIds"];
@@ -156,14 +134,8 @@ export const duplicateElements = (
   const groupIdMap = new Map();
   const duplicatedElements: ExcalidrawElement[] = [];
   const origElements: ExcalidrawElement[] = [];
-  const origIdToDuplicateId = new Map<
-    ExcalidrawElement["id"],
-    ExcalidrawElement["id"]
-  >();
-  const duplicateIdToOrigElement = new Map<
-    ExcalidrawElement["id"],
-    ExcalidrawElement
-  >();
+  const origIdToDuplicateId = new Map<ExcalidrawElement["id"], ExcalidrawElement["id"]>();
+  const duplicateIdToOrigElement = new Map<ExcalidrawElement["id"], ExcalidrawElement>();
   const duplicateElementsMap = new Map<string, ExcalidrawElement>();
   const elementsMap = arrayToMap(elements) as ElementsMap;
   const _idsOfElementsToDuplicate =
@@ -191,46 +163,39 @@ export const duplicateElements = (
   // an element with bound text etc.
   const copyElements = <T extends ExcalidrawElement | ExcalidrawElement[]>(
     element: T,
-  ): T extends ExcalidrawElement[]
-    ? ExcalidrawElement[]
-    : ExcalidrawElement | null => {
+  ): T extends ExcalidrawElement[] ? ExcalidrawElement[] : ExcalidrawElement | null => {
     const elements = castArray(element);
 
-    const _newElements = elements.reduce(
-      (acc: ExcalidrawElement[], element) => {
-        if (processedIds.has(element.id)) {
-          return acc;
-        }
-
-        processedIds.set(element.id, true);
-
-        const newElement = duplicateElement(
-          appState.editingGroupId,
-          groupIdMap,
-          element,
-          opts.randomizeSeed,
-        );
-
-        processedIds.set(newElement.id, true);
-
-        duplicateElementsMap.set(newElement.id, newElement);
-        origIdToDuplicateId.set(element.id, newElement.id);
-        duplicateIdToOrigElement.set(newElement.id, element);
-
-        origElements.push(element);
-        duplicatedElements.push(newElement);
-
-        acc.push(newElement);
+    const _newElements = elements.reduce((acc: ExcalidrawElement[], element) => {
+      if (processedIds.has(element.id)) {
         return acc;
-      },
-      [],
-    );
+      }
+
+      processedIds.set(element.id, true);
+
+      const newElement = duplicateElement(
+        appState.editingGroupId,
+        groupIdMap,
+        element,
+        opts.randomizeSeed,
+      );
+
+      processedIds.set(newElement.id, true);
+
+      duplicateElementsMap.set(newElement.id, newElement);
+      origIdToDuplicateId.set(element.id, newElement.id);
+      duplicateIdToOrigElement.set(newElement.id, element);
+
+      origElements.push(element);
+      duplicatedElements.push(newElement);
+
+      acc.push(newElement);
+      return acc;
+    }, []);
 
     return (
       Array.isArray(element) ? _newElements : _newElements[0] || null
-    ) as T extends ExcalidrawElement[]
-      ? ExcalidrawElement[]
-      : ExcalidrawElement | null;
+    ) as T extends ExcalidrawElement[] ? ExcalidrawElement[] : ExcalidrawElement | null;
   };
 
   // Helper to position cloned elements in the Z-order the product needs it
@@ -252,9 +217,7 @@ export const duplicateElements = (
 
   const frameIdsToDuplicate = new Set(
     elements
-      .filter(
-        (el) => _idsOfElementsToDuplicate.has(el.id) && isFrameLikeElement(el),
-      )
+      .filter((el) => _idsOfElementsToDuplicate.has(el.id) && isFrameLikeElement(el))
       .map((el) => el.id),
   );
 
@@ -272,11 +235,10 @@ export const duplicateElements = (
 
     const groupId = getSelectedGroupForElement(appState, element);
     if (groupId) {
-      const groupElements = getElementsInGroup(elements, groupId).flatMap(
-        (element) =>
-          isFrameLikeElement(element)
-            ? [...getFrameChildren(elements, element.id), element]
-            : [element],
+      const groupElements = getElementsInGroup(elements, groupId).flatMap((element) =>
+        isFrameLikeElement(element)
+          ? [...getFrameChildren(elements, element.id), element]
+          : [element],
       );
 
       const targetIndex = findLastIndex(elementsWithDuplicates, (el) => {
@@ -303,10 +265,7 @@ export const duplicateElements = (
         return el.frameId === frameId || el.id === frameId;
       });
 
-      insertBeforeOrAfterIndex(
-        targetIndex,
-        copyElements([...frameChildren, element]),
-      );
+      insertBeforeOrAfterIndex(targetIndex, copyElements([...frameChildren, element]));
       continue;
     }
 
@@ -317,17 +276,11 @@ export const duplicateElements = (
       const boundTextElement = getBoundTextElement(element, elementsMap);
 
       const targetIndex = findLastIndex(elementsWithDuplicates, (el) => {
-        return (
-          el.id === element.id ||
-          ("containerId" in el && el.containerId === element.id)
-        );
+        return el.id === element.id || ("containerId" in el && el.containerId === element.id);
       });
 
       if (boundTextElement) {
-        insertBeforeOrAfterIndex(
-          targetIndex,
-          copyElements([element, boundTextElement]),
-        );
+        insertBeforeOrAfterIndex(targetIndex, copyElements([element, boundTextElement]));
       } else {
         insertBeforeOrAfterIndex(targetIndex, copyElements(element));
       }
@@ -343,10 +296,7 @@ export const duplicateElements = (
       });
 
       if (container) {
-        insertBeforeOrAfterIndex(
-          targetIndex,
-          copyElements([container, element]),
-        );
+        insertBeforeOrAfterIndex(targetIndex, copyElements([container, element]));
       } else {
         insertBeforeOrAfterIndex(targetIndex, copyElements(element));
       }
@@ -371,11 +321,7 @@ export const duplicateElements = (
     duplicateElementsMap as NonDeletedSceneElementsMap,
   );
 
-  bindElementsToFramesAfterDuplication(
-    elementsWithDuplicates,
-    origElements,
-    origIdToDuplicateId,
-  );
+  bindElementsToFramesAfterDuplication(elementsWithDuplicates, origElements, origIdToDuplicateId);
 
   if (opts.overrides) {
     for (const duplicateElement of duplicatedElements) {
@@ -420,9 +366,7 @@ const _deepCopyElement = (val: any, depth: number = 0) => {
 
   if (objectType === "[object Object]") {
     const tmp =
-      typeof val.constructor === "function"
-        ? Object.create(Object.getPrototypeOf(val))
-        : {};
+      typeof val.constructor === "function" ? Object.create(Object.getPrototypeOf(val)) : {};
     for (const key in val) {
       if (val.hasOwnProperty(key)) {
         // don't copy non-serializable objects like these caches. They'll be
@@ -472,9 +416,7 @@ const _deepCopyElement = (val: any, depth: number = 0) => {
  * Only clones plain objects and arrays. Doesn't clone Date, RegExp, Map, Set,
  * Typed arrays and other non-null objects.
  */
-export const deepCopyElement = <T extends ExcalidrawElement>(
-  val: T,
-): Mutable<T> => {
+export const deepCopyElement = <T extends ExcalidrawElement>(val: T): Mutable<T> => {
   return _deepCopyElement(val);
 };
 

@@ -61,15 +61,7 @@ type ToolButtonProps =
     });
 
 export const ToolButton = React.forwardRef(
-  (
-    {
-      size = "medium",
-      visible = true,
-      className = "",
-      ...props
-    }: ToolButtonProps,
-    ref,
-  ) => {
+  ({ size = "medium", visible = true, className = "", ...props }: ToolButtonProps, ref) => {
     const { id: excalId } = useExcalidrawContainer();
     const innerRef = React.useRef(null);
     React.useImperativeHandle(ref, () => innerRef.current);
@@ -109,23 +101,15 @@ export const ToolButton = React.forwardRef(
 
     const lastPointerTypeRef = useRef<PointerType | null>(null);
 
-    if (
-      props.type === "button" ||
-      props.type === "icon" ||
-      props.type === "submit"
-    ) {
-      const type = (props.type === "icon" ? "button" : props.type) as
-        | "button"
-        | "submit";
+    if (props.type === "button" || props.type === "icon" || props.type === "submit") {
+      const type = (props.type === "icon" ? "button" : props.type) as "button" | "submit";
       return (
         <button
           className={clsx(
             "ToolIcon_type_button",
             sizeCn,
             className,
-            visible && !props.hidden
-              ? "ToolIcon_type_button--show"
-              : "ToolIcon_type_button--hide",
+            visible && !props.hidden ? "ToolIcon_type_button--show" : "ToolIcon_type_button--hide",
             {
               ToolIcon: !props.hidden,
               "ToolIcon--selected": props.selected,
@@ -143,16 +127,10 @@ export const ToolButton = React.forwardRef(
           disabled={isLoading || props.isLoading || !!props.disabled}
         >
           {(props.icon || props.label) && (
-            <div
-              className="ToolIcon__icon"
-              aria-hidden="true"
-              aria-disabled={!!props.disabled}
-            >
+            <div className="ToolIcon__icon" aria-hidden="true" aria-disabled={!!props.disabled}>
               {props.icon || props.label}
               {props.keyBindingLabel && (
-                <span className="ToolIcon__keybinding">
-                  {props.keyBindingLabel}
-                </span>
+                <span className="ToolIcon__keybinding">{props.keyBindingLabel}</span>
               )}
               {props.isLoading && <Spinner />}
             </div>
@@ -198,9 +176,7 @@ export const ToolButton = React.forwardRef(
         <div className="ToolIcon__icon">
           {props.icon}
           {props.keyBindingLabel && (
-            <span className="ToolIcon__keybinding">
-              {props.keyBindingLabel}
-            </span>
+            <span className="ToolIcon__keybinding">{props.keyBindingLabel}</span>
           )}
         </div>
       </label>

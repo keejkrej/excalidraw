@@ -71,15 +71,9 @@ export const actionUnbindText = register({
           getFontString(boundTextElement),
           boundTextElement.lineHeight,
         );
-        const originalContainerHeight = getOriginalContainerHeightFromCache(
-          element.id,
-        );
+        const originalContainerHeight = getOriginalContainerHeightFromCache(element.id);
         resetOriginalContainerCache(element.id);
-        const { x, y } = computeBoundTextPosition(
-          element,
-          boundTextElement,
-          elementsMap,
-        );
+        const { x, y } = computeBoundTextPosition(element, boundTextElement, elementsMap);
         app.scene.mutateElement(boundTextElement as ExcalidrawTextElement, {
           containerId: null,
           width,
@@ -89,12 +83,8 @@ export const actionUnbindText = register({
           y,
         });
         app.scene.mutateElement(element, {
-          boundElements: element.boundElements?.filter(
-            (ele) => ele.id !== boundTextElement.id,
-          ),
-          height: originalContainerHeight
-            ? originalContainerHeight
-            : element.height,
+          boundElements: element.boundElements?.filter((ele) => ele.id !== boundTextElement.id),
+          height: originalContainerHeight ? originalContainerHeight : element.height,
         });
       }
     });
@@ -114,9 +104,7 @@ export const actionBindText = register({
     const selectedElements = app.scene.getSelectedElements(appState);
 
     if (selectedElements.length === 2) {
-      const textElement =
-        isTextElement(selectedElements[0]) ||
-        isTextElement(selectedElements[1]);
+      const textElement = isTextElement(selectedElements[0]) || isTextElement(selectedElements[1]);
 
       let bindingContainer;
       if (isTextBindableContainer(selectedElements[0])) {
@@ -127,10 +115,7 @@ export const actionBindText = register({
       if (
         textElement &&
         bindingContainer &&
-        getBoundTextElement(
-          bindingContainer,
-          app.scene.getNonDeletedElementsMap(),
-        ) === null
+        getBoundTextElement(bindingContainer, app.scene.getNonDeletedElementsMap()) === null
       ) {
         return true;
       }
@@ -143,10 +128,7 @@ export const actionBindText = register({
     let textElement: ExcalidrawTextElement;
     let container: ExcalidrawTextContainer;
 
-    if (
-      isTextElement(selectedElements[0]) &&
-      isTextBindableContainer(selectedElements[1])
-    ) {
+    if (isTextElement(selectedElements[0]) && isTextBindableContainer(selectedElements[1])) {
       textElement = selectedElements[0];
       container = selectedElements[1];
     } else {
@@ -158,7 +140,7 @@ export const actionBindText = register({
       verticalAlign: VERTICAL_ALIGN.MIDDLE,
       textAlign: TEXT_ALIGN.CENTER,
       autoResize: true,
-      angle: (isArrowElement(container) ? 0 : container?.angle ?? 0) as Radians,
+      angle: (isArrowElement(container) ? 0 : (container?.angle ?? 0)) as Radians,
     });
     app.scene.mutateElement(container, {
       boundElements: (container.boundElements || []).concat({
@@ -186,14 +168,10 @@ const pushTextAboveContainer = (
   textElement: ExcalidrawTextElement,
 ) => {
   const updatedElements = elements.slice();
-  const textElementIndex = updatedElements.findIndex(
-    (ele) => ele.id === textElement.id,
-  );
+  const textElementIndex = updatedElements.findIndex((ele) => ele.id === textElement.id);
   updatedElements.splice(textElementIndex, 1);
 
-  const containerIndex = updatedElements.findIndex(
-    (ele) => ele.id === container.id,
-  );
+  const containerIndex = updatedElements.findIndex((ele) => ele.id === container.id);
   updatedElements.splice(containerIndex + 1, 0, textElement);
   syncMovedIndices(updatedElements, arrayToMap([container, textElement]));
 
@@ -206,14 +184,10 @@ const pushContainerBelowText = (
   textElement: ExcalidrawTextElement,
 ) => {
   const updatedElements = elements.slice();
-  const containerIndex = updatedElements.findIndex(
-    (ele) => ele.id === container.id,
-  );
+  const containerIndex = updatedElements.findIndex((ele) => ele.id === container.id);
   updatedElements.splice(containerIndex, 1);
 
-  const textElementIndex = updatedElements.findIndex(
-    (ele) => ele.id === textElement.id,
-  );
+  const textElementIndex = updatedElements.findIndex((ele) => ele.id === textElement.id);
   updatedElements.splice(textElementIndex, 0, container);
   syncMovedIndices(updatedElements, arrayToMap([container, textElement]));
 
@@ -263,14 +237,8 @@ export const actionWrapTextInContainer = register({
           locked: false,
           x: textElement.x - BOUND_TEXT_PADDING,
           y: textElement.y - BOUND_TEXT_PADDING,
-          width: computeContainerDimensionForBoundText(
-            textElement.width,
-            "rectangle",
-          ),
-          height: computeContainerDimensionForBoundText(
-            textElement.height,
-            "rectangle",
-          ),
+          width: computeContainerDimensionForBoundText(textElement.width, "rectangle"),
+          height: computeContainerDimensionForBoundText(textElement.height, "rectangle"),
           groupIds: textElement.groupIds,
           frameId: textElement.frameId,
         });

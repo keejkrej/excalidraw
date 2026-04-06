@@ -8,10 +8,7 @@ import type { ValueOf } from "@excalidraw/common/utility-types";
 
 import { useExcalidrawAppState } from "../App";
 
-import {
-  getDropdownMenuItemClassName,
-  useHandleDropdownMenuItemSelect,
-} from "./common";
+import { getDropdownMenuItemClassName, useHandleDropdownMenuItemSelect } from "./common";
 import MenuItemContent from "./DropdownMenuItemContent";
 
 import type { JSX } from "react";
@@ -41,11 +38,7 @@ const DropdownMenuItem = ({
   const handleSelect = useHandleDropdownMenuItemSelect(onSelect);
 
   return (
-    <DropdownMenuPrimitive.Item
-      className="radix-menu-item"
-      onSelect={handleSelect}
-      asChild
-    >
+    <DropdownMenuPrimitive.Item className="radix-menu-item" onSelect={handleSelect} asChild>
       <button
         {...rest}
         value={value}

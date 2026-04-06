@@ -3,34 +3,20 @@ import clsx from "clsx";
 import debounce from "lodash.debounce";
 import { Fragment, memo, useEffect, useMemo, useRef, useState } from "react";
 
-import {
-  CLASSES,
-  EVENT,
-  FONT_FAMILY,
-  FRAME_STYLE,
-  getLineHeight,
-} from "@excalidraw/common";
+import { CLASSES, EVENT, FONT_FAMILY, FRAME_STYLE, getLineHeight } from "@excalidraw/common";
 
 import { isElementCompletelyInViewport } from "@excalidraw/element";
 
 import { measureText } from "@excalidraw/element";
 
-import {
-  KEYS,
-  randomInteger,
-  addEventListener,
-  getFontString,
-} from "@excalidraw/common";
+import { KEYS, randomInteger, addEventListener, getFontString } from "@excalidraw/common";
 
 import { newTextElement } from "@excalidraw/element";
 import { isTextElement, isFrameLikeElement } from "@excalidraw/element";
 
 import { getDefaultFrameName } from "@excalidraw/element/frame";
 
-import type {
-  ExcalidrawFrameLikeElement,
-  ExcalidrawTextElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawFrameLikeElement, ExcalidrawTextElement } from "@excalidraw/element/types";
 
 import { atom, useAtom } from "../editor-jotai";
 
@@ -40,13 +26,7 @@ import { t } from "../i18n";
 import { useApp, useExcalidrawSetAppState } from "./App";
 import { Button } from "./Button";
 import { TextField } from "./TextField";
-import {
-  collapseDownIcon,
-  upIcon,
-  searchIcon,
-  frameToolIcon,
-  TextIcon,
-} from "./icons";
+import { collapseDownIcon, upIcon, searchIcon, frameToolIcon, TextIcon } from "./icons";
 
 import "./SearchMenu.scss";
 
@@ -128,15 +108,7 @@ export const SearchMenu = () => {
         });
       });
     }
-  }, [
-    isSearching,
-    searchQuery,
-    elementsMap,
-    app,
-    setAppState,
-    setFocusIndex,
-    lastSceneNonceRef,
-  ]);
+  }, [isSearching, searchQuery, elementsMap, app, setAppState, setFocusIndex, lastSceneNonceRef]);
 
   const goToNextItem = () => {
     if (searchMatches.items.length > 0) {
@@ -157,9 +129,7 @@ export const SearchMenu = () => {
           return 0;
         }
 
-        return focusIndex - 1 < 0
-          ? searchMatches.items.length - 1
-          : focusIndex - 1;
+        return focusIndex - 1 < 0 ? searchMatches.items.length - 1 : focusIndex - 1;
       });
     }
   };
@@ -171,9 +141,7 @@ export const SearchMenu = () => {
       }
 
       const focusedId =
-        focusIndex !== null
-          ? state.searchMatches?.matches[focusIndex]?.id || null
-          : null;
+        focusIndex !== null ? state.searchMatches?.matches[focusIndex]?.id || null : null;
 
       return {
         searchMatches: {
@@ -213,8 +181,7 @@ export const SearchMenu = () => {
         const FONT_SIZE_LEGIBILITY_THRESHOLD = 14;
 
         const fontSize = matchAsElement.fontSize;
-        const isTextTiny =
-          fontSize * zoomValue < FONT_SIZE_LEGIBILITY_THRESHOLD;
+        const isTextTiny = fontSize * zoomValue < FONT_SIZE_LEGIBILITY_THRESHOLD;
 
         if (
           !isElementCompletelyInViewport(
@@ -280,11 +247,7 @@ export const SearchMenu = () => {
 
   useEffect(() => {
     const eventHandler = (event: KeyboardEvent) => {
-      if (
-        event.key === KEYS.ESCAPE &&
-        !app.state.openDialog &&
-        !app.state.openPopup
-      ) {
+      if (event.key === KEYS.ESCAPE && !app.state.openDialog && !app.state.openPopup) {
         event.preventDefault();
         event.stopPropagation();
         setAppState({
@@ -312,10 +275,7 @@ export const SearchMenu = () => {
         }
       }
 
-      if (
-        event.target instanceof HTMLElement &&
-        event.target.closest(".layer-ui__search")
-      ) {
+      if (event.target instanceof HTMLElement && event.target.closest(".layer-ui__search")) {
         if (stableState.searchMatches.items.length) {
           if (event.key === KEYS.ENTER) {
             event.stopPropagation();
@@ -342,9 +302,7 @@ export const SearchMenu = () => {
   }, [setAppState, stableState, app]);
 
   const matchCount = `${searchMatches.items.length} ${
-    searchMatches.items.length === 1
-      ? t("search.singleResult")
-      : t("search.multipleResults")
+    searchMatches.items.length === 1 ? t("search.singleResult") : t("search.multipleResults")
   }`;
 
   return (
@@ -419,11 +377,9 @@ export const SearchMenu = () => {
           </>
         )}
 
-        {searchMatches.items.length === 0 &&
-          searchQuery &&
-          searchedQueryRef.current && (
-            <div style={{ margin: "1rem auto" }}>{t("search.noMatch")}</div>
-          )}
+        {searchMatches.items.length === 0 && searchQuery && searchedQueryRef.current && (
+          <div style={{ margin: "1rem auto" }}>{t("search.noMatch")}</div>
+        )}
       </div>
 
       <MatchList
@@ -449,9 +405,7 @@ const ListItem = (props: {
       props.preview.indexInSearchQuery,
       props.preview.indexInSearchQuery + props.searchQuery.length,
     ),
-    props.preview.previewText.slice(
-      props.preview.indexInSearchQuery + props.searchQuery.length,
-    ),
+    props.preview.previewText.slice(props.preview.indexInSearchQuery + props.searchQuery.length),
     props.preview.moreAfter ? "..." : "",
   ];
 
@@ -486,8 +440,7 @@ interface MatchListProps {
 
 const MatchListBase = (props: MatchListProps) => {
   const frameNameMatches = useMemo(
-    () =>
-      props.matches.items.filter((match) => isFrameLikeElement(match.element)),
+    () => props.matches.items.filter((match) => isFrameLikeElement(match.element)),
     [props.matches],
   );
 
@@ -548,11 +501,7 @@ const areEqual = (prevProps: MatchListProps, nextProps: MatchListProps) => {
 
 const MatchList = memo(MatchListBase, areEqual);
 
-const getMatchPreview = (
-  text: string,
-  index: number,
-  searchQuery: SearchQuery,
-) => {
+const getMatchPreview = (text: string, index: number, searchQuery: SearchQuery) => {
   const WORDS_BEFORE = 2;
   const WORDS_AFTER = 5;
 
@@ -562,10 +511,7 @@ const getMatchPreview = (
   // text = "small", query = "smal", complete before
   const isQueryCompleteBefore = substrBeforeQuery.endsWith(" ");
   const startWordIndex =
-    wordsBeforeQuery.length -
-    WORDS_BEFORE -
-    1 -
-    (isQueryCompleteBefore ? 0 : 1);
+    wordsBeforeQuery.length - WORDS_BEFORE - 1 - (isQueryCompleteBefore ? 0 : 1);
   let wordsBeforeAsString =
     wordsBeforeQuery.slice(startWordIndex <= 0 ? 0 : startWordIndex).join(" ") +
     (isQueryCompleteBefore ? " " : "");
@@ -582,12 +528,9 @@ const getMatchPreview = (
   // text = "small", query = "mall", complete after
   // text = "small", query = "smal", not complete after
   const isQueryCompleteAfter = !substrAfterQuery.startsWith(" ");
-  const numberOfWordsToTake = isQueryCompleteAfter
-    ? WORDS_AFTER + 1
-    : WORDS_AFTER;
+  const numberOfWordsToTake = isQueryCompleteAfter ? WORDS_AFTER + 1 : WORDS_AFTER;
   const wordsAfterAsString =
-    (isQueryCompleteAfter ? "" : " ") +
-    wordsAfter.slice(0, numberOfWordsToTake).join(" ");
+    (isQueryCompleteAfter ? "" : " ") + wordsAfter.slice(0, numberOfWordsToTake).join(" ");
 
   return {
     indexInSearchQuery: wordsBeforeAsString.length,
@@ -597,10 +540,7 @@ const getMatchPreview = (
   };
 };
 
-const normalizeWrappedText = (
-  wrappedText: string,
-  originalText: string,
-): string => {
+const normalizeWrappedText = (wrappedText: string, originalText: string): string => {
   const wrappedLines = wrappedText.split("\n");
   const normalizedLines: string[] = [];
   let originalIndex = 0;
@@ -610,10 +550,7 @@ const normalizeWrappedText = (
     const nextLine = wrappedLines[i + 1];
 
     if (nextLine) {
-      const nextLineIndexInOriginal = originalText.indexOf(
-        nextLine,
-        originalIndex,
-      );
+      const nextLineIndexInOriginal = originalText.indexOf(nextLine, originalIndex);
 
       if (nextLineIndexInOriginal > currentLine.length + originalIndex) {
         let j = nextLineIndexInOriginal - (currentLine.length + originalIndex);
@@ -637,10 +574,7 @@ const getMatchedLines = (
   searchQuery: SearchQuery,
   index: number,
 ) => {
-  const normalizedText = normalizeWrappedText(
-    textElement.text,
-    textElement.originalText,
-  );
+  const normalizedText = normalizeWrappedText(textElement.text, textElement.originalText);
 
   const lines = normalizedText.split("\n");
 
@@ -665,10 +599,7 @@ const getMatchedLines = (
   }
 
   let startIndex = index;
-  let remainingQuery = textElement.originalText.slice(
-    index,
-    index + searchQuery.length,
-  );
+  let remainingQuery = textElement.originalText.slice(index, index + searchQuery.length);
   const matchedLines: SearchMatch["matchedLines"] = [];
 
   for (const lineIndexRange of lineIndexRanges) {
@@ -676,24 +607,14 @@ const getMatchedLines = (
       break;
     }
 
-    if (
-      startIndex >= lineIndexRange.startIndex &&
-      startIndex <= lineIndexRange.endIndex
-    ) {
+    if (startIndex >= lineIndexRange.startIndex && startIndex <= lineIndexRange.endIndex) {
       const matchCapacity = lineIndexRange.endIndex + 1 - startIndex;
-      const textToStart = lineIndexRange.line.slice(
-        0,
-        startIndex - lineIndexRange.startIndex,
-      );
+      const textToStart = lineIndexRange.line.slice(0, startIndex - lineIndexRange.startIndex);
 
       const matchedWord = remainingQuery.slice(0, matchCapacity);
       remainingQuery = remainingQuery.slice(matchCapacity);
 
-      const offset = measureText(
-        textToStart,
-        getFontString(textElement),
-        textElement.lineHeight,
-      );
+      const offset = measureText(textToStart, getFontString(textElement), textElement.lineHeight);
 
       // measureText returns a non-zero width for the empty string
       // which is not what we're after here, hence the check and the correction
@@ -796,13 +717,9 @@ const handleSearch = debounce(
     }
 
     const elements = app.scene.getNonDeletedElements();
-    const texts = elements.filter((el) =>
-      isTextElement(el),
-    ) as ExcalidrawTextElement[];
+    const texts = elements.filter((el) => isTextElement(el)) as ExcalidrawTextElement[];
 
-    const frames = elements.filter((el) =>
-      isFrameLikeElement(el),
-    ) as ExcalidrawFrameLikeElement[];
+    const frames = elements.filter((el) => isFrameLikeElement(el)) as ExcalidrawFrameLikeElement[];
 
     texts.sort((a, b) => a.y - b.y);
     frames.sort((a, b) => a.y - b.y);
@@ -839,12 +756,7 @@ const handleSearch = debounce(
 
       while ((match = regex.exec(name)) !== null) {
         const preview = getMatchPreview(name, match.index, searchQuery);
-        const matchedLines = getMatchInFrame(
-          frame,
-          searchQuery,
-          match.index,
-          app.state.zoom.value,
-        );
+        const matchedLines = getMatchInFrame(frame, searchQuery, match.index, app.state.zoom.value);
 
         if (matchedLines.length > 0) {
           frameMatches.push({
@@ -858,17 +770,13 @@ const handleSearch = debounce(
       }
     }
 
-    const visibleIds = new Set(
-      app.visibleElements.map((visibleElement) => visibleElement.id),
-    );
+    const visibleIds = new Set(app.visibleElements.map((visibleElement) => visibleElement.id));
 
     // putting frame matches first
     const matchItems: SearchMatchItem[] = [...frameMatches, ...textMatches];
 
     const focusIndex =
-      matchItems.findIndex((matchItem) =>
-        visibleIds.has(matchItem.element.id),
-      ) ?? null;
+      matchItems.findIndex((matchItem) => visibleIds.has(matchItem.element.id)) ?? null;
 
     cb(matchItems, focusIndex);
   },

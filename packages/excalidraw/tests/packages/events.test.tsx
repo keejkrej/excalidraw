@@ -20,9 +20,7 @@ describe("event callbacks", () => {
   beforeEach(async () => {
     const excalidrawAPIPromise = resolvablePromise<ExcalidrawImperativeAPI>();
     await render(
-      <Excalidraw
-        onExcalidrawAPI={(api) => excalidrawAPIPromise.resolve(api as any)}
-      />,
+      <Excalidraw onExcalidrawAPI={(api) => excalidrawAPIPromise.resolve(api as any)} />,
     );
     excalidrawAPI = await excalidrawAPIPromise;
   });
@@ -82,9 +80,7 @@ describe("event callbacks", () => {
       excalidrawAPI,
       container: expect.any(HTMLDivElement),
     });
-    await expect(excalidrawAPI.onEvent("editor:initialize")).resolves.toBe(
-      excalidrawAPI,
-    );
+    await expect(excalidrawAPI.onEvent("editor:initialize")).resolves.toBe(excalidrawAPI);
   });
 
   it("should call onMount before onInitialize props", async () => {
@@ -127,9 +123,7 @@ describe("event callbacks", () => {
       // files
       {},
     );
-    expect(onChange.mock?.lastCall?.[1].viewBackgroundColor).not.toBe(
-      origBackgroundColor,
-    );
+    expect(onChange.mock?.lastCall?.[1].viewBackgroundColor).not.toBe(origBackgroundColor);
   });
 
   it("should trigger onPointerDown/onPointerUp on canvas pointerDown/pointerUp", async () => {

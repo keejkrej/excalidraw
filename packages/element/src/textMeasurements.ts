@@ -36,8 +36,7 @@ export const getApproxMinLineWidth = (
   const maxCharWidth = getMaxCharWidth(font);
   if (maxCharWidth === 0) {
     return (
-      measureText(DUMMY_TEXT.split("").join("\n"), font, lineHeight).width +
-      BOUND_TEXT_PADDING * 2
+      measureText(DUMMY_TEXT.split("").join("\n"), font, lineHeight).width + BOUND_TEXT_PADDING * 2
     );
   }
   return maxCharWidth + BOUND_TEXT_PADDING * 2;

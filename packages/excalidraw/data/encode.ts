@@ -16,8 +16,8 @@ export const toByteString = (data: string | Uint8Array | ArrayBuffer) => {
     typeof data === "string"
       ? new TextEncoder().encode(data)
       : data instanceof Uint8Array
-      ? data
-      : new Uint8Array(data);
+        ? data
+        : new Uint8Array(data);
   let bstring = "";
   for (const byte of bytes) {
     bstring += String.fromCharCode(byte);
@@ -52,9 +52,7 @@ export const stringToBase64 = (str: string, isByteString = false) => {
 
 // async to align with stringToBase64
 export const base64ToString = (base64: string, isByteString = false) => {
-  return isByteString
-    ? window.atob(base64)
-    : byteStringToString(window.atob(base64));
+  return isByteString ? window.atob(base64) : byteStringToString(window.atob(base64));
 };
 
 export const base64ToArrayBuffer = (base64: string): ArrayBuffer => {
@@ -126,9 +124,7 @@ export const decode = (data: EncodedData): string => {
   switch (data.encoding) {
     case "bstring":
       // if compressed, do not double decode the bstring
-      decoded = data.compressed
-        ? data.encoded
-        : byteStringToString(data.encoded);
+      decoded = data.compressed ? data.encoded : byteStringToString(data.encoded);
       break;
     default:
       throw new Error(`decode: unknown encoding "${data.encoding}"`);
@@ -173,12 +169,7 @@ const DATA_VIEW_BITS_MAP = { 1: 8, 2: 16, 4: 32 } as const;
 // getter
 function dataView(buffer: Uint8Array, bytes: 1 | 2 | 4, offset: number): number;
 // setter
-function dataView(
-  buffer: Uint8Array,
-  bytes: 1 | 2 | 4,
-  offset: number,
-  value: number,
-): Uint8Array;
+function dataView(buffer: Uint8Array, bytes: 1 | 2 | 4, offset: number, value: number): Uint8Array;
 /**
  * abstraction over DataView that serves as a typed getter/setter in case
  * you're using constants for the byte size and want to ensure there's no
@@ -236,12 +227,7 @@ const concatBuffers = (...buffers: Uint8Array[]): Uint8Array<ArrayBuffer> => {
   cursor += VERSION_DATAVIEW_BYTES;
 
   for (const buffer of buffers) {
-    dataView(
-      bufferView,
-      NEXT_CHUNK_SIZE_DATAVIEW_BYTES,
-      cursor,
-      buffer.byteLength,
-    );
+    dataView(bufferView, NEXT_CHUNK_SIZE_DATAVIEW_BYTES, cursor, buffer.byteLength);
     cursor += NEXT_CHUNK_SIZE_DATAVIEW_BYTES;
 
     bufferView.set(buffer, cursor);
@@ -258,11 +244,7 @@ const splitBuffers = (concatenatedBuffer: Uint8Array) => {
   let cursor = 0;
 
   // first chunk is the version
-  const version = dataView(
-    concatenatedBuffer,
-    NEXT_CHUNK_SIZE_DATAVIEW_BYTES,
-    cursor,
-  );
+  const version = dataView(concatenatedBuffer, NEXT_CHUNK_SIZE_DATAVIEW_BYTES, cursor);
   // If version is outside of the supported versions, throw an error.
   // This usually means the buffer wasn't encoded using this API, so we'd only
   // waste compute.
@@ -273,11 +255,7 @@ const splitBuffers = (concatenatedBuffer: Uint8Array) => {
   cursor += VERSION_DATAVIEW_BYTES;
 
   while (true) {
-    const chunkSize = dataView(
-      concatenatedBuffer,
-      NEXT_CHUNK_SIZE_DATAVIEW_BYTES,
-      cursor,
-    );
+    const chunkSize = dataView(concatenatedBuffer, NEXT_CHUNK_SIZE_DATAVIEW_BYTES, cursor);
     cursor += NEXT_CHUNK_SIZE_DATAVIEW_BYTES;
 
     buffers.push(concatenatedBuffer.slice(cursor, cursor + chunkSize));
@@ -337,13 +315,9 @@ export const compressData = async <T extends Record<string, any> = never>(
     encryption: "AES-GCM",
   };
 
-  const encodingMetadataBuffer = new TextEncoder().encode(
-    JSON.stringify(fileInfo),
-  );
+  const encodingMetadataBuffer = new TextEncoder().encode(JSON.stringify(fileInfo));
 
-  const contentsMetadataBuffer = new TextEncoder().encode(
-    JSON.stringify(options.metadata || null),
-  );
+  const contentsMetadataBuffer = new TextEncoder().encode(JSON.stringify(options.metadata || null));
 
   const { iv, buffer } = await _encryptAndCompress(
     concatBuffers(contentsMetadataBuffer, dataBuffer),
@@ -360,9 +334,7 @@ const _decryptAndDecompress = async (
   decryptionKey: string,
   isCompressed: boolean,
 ) => {
-  decryptedBuffer = new Uint8Array(
-    await decryptData(iv, decryptedBuffer, decryptionKey),
-  );
+  decryptedBuffer = new Uint8Array(await decryptData(iv, decryptedBuffer, decryptionKey));
 
   if (isCompressed) {
     return inflate(decryptedBuffer);
@@ -392,9 +364,7 @@ export const decompressData = async <T extends Record<string, any>>(
       ),
     );
 
-    const metadata = JSON.parse(
-      new TextDecoder().decode(contentsMetadataBuffer),
-    ) as T;
+    const metadata = JSON.parse(new TextDecoder().decode(contentsMetadataBuffer)) as T;
 
     return {
       /** metadata source is always JSON so we can decode it here */
@@ -403,10 +373,7 @@ export const decompressData = async <T extends Record<string, any>>(
       data: contentsBuffer,
     };
   } catch (error: any) {
-    console.error(
-      `Error during decompressing and decrypting the file.`,
-      encodingMetadata,
-    );
+    console.error(`Error during decompressing and decrypting the file.`, encodingMetadata);
     throw error;
   }
 };

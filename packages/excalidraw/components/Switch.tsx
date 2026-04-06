@@ -10,13 +10,7 @@ export type SwitchProps = {
   disabled?: boolean;
 };
 
-export const Switch = ({
-  title,
-  name,
-  checked,
-  onChange,
-  disabled = false,
-}: SwitchProps) => {
+export const Switch = ({ title, name, checked, onChange, disabled = false }: SwitchProps) => {
   return (
     <div className={clsx("Switch", { toggled: checked, disabled })}>
       <input

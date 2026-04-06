@@ -41,11 +41,7 @@ const ConditionalTooltipWrapper = ({
   children: React.ReactNode;
   username?: string | null;
 }) =>
-  shouldWrap ? (
-    <Tooltip label={username || "Unknown user"}>{children}</Tooltip>
-  ) : (
-    <>{children}</>
-  );
+  shouldWrap ? <Tooltip label={username || "Unknown user"}>{children}</Tooltip> : <>{children}</>;
 
 const renderCollaborator = ({
   actionManager,
@@ -83,13 +79,7 @@ const renderCollaborator = ({
 
 type UserListUserObject = Pick<
   Collaborator,
-  | "avatarUrl"
-  | "id"
-  | "socketId"
-  | "username"
-  | "isInCall"
-  | "isSpeaking"
-  | "isMuted"
+  "avatarUrl" | "id" | "socketId" | "username" | "isInCall" | "isSpeaking" | "isMuted"
 >;
 
 type UserListProps = {
@@ -113,10 +103,7 @@ export const UserList = React.memo(
   ({ className, mobile, collaborators, userToFollow }: UserListProps) => {
     const actionManager = useExcalidrawActionManager();
 
-    const uniqueCollaboratorsMap = new Map<
-      ClientId,
-      MarkRequired<Collaborator, "socketId">
-    >();
+    const uniqueCollaboratorsMap = new Map<ClientId, MarkRequired<Collaborator, "socketId">>();
 
     collaborators.forEach((collaborator, socketId) => {
       const userId = (collaborator.id || socketId) as ClientId;
@@ -127,14 +114,13 @@ export const UserList = React.memo(
       );
     });
 
-    const uniqueCollaboratorsArray = Array.from(
-      uniqueCollaboratorsMap.values(),
-    ).filter((collaborator) => collaborator.username?.trim());
+    const uniqueCollaboratorsArray = Array.from(uniqueCollaboratorsMap.values()).filter(
+      (collaborator) => collaborator.username?.trim(),
+    );
 
     const [searchTerm, setSearchTerm] = React.useState("");
-    const filteredCollaborators = uniqueCollaboratorsArray.filter(
-      (collaborator) =>
-        collaborator.username?.toLowerCase().includes(searchTerm),
+    const filteredCollaborators = uniqueCollaboratorsArray.filter((collaborator) =>
+      collaborator.username?.toLowerCase().includes(searchTerm),
     );
 
     const userListWrapper = React.useRef<HTMLDivElement | null>(null);
@@ -169,10 +155,7 @@ export const UserList = React.memo(
 
     const [maxAvatars, setMaxAvatars] = React.useState(DEFAULT_MAX_AVATARS);
 
-    const firstNCollaborators = uniqueCollaboratorsArray.slice(
-      0,
-      maxAvatars - 1,
-    );
+    const firstNCollaborators = uniqueCollaboratorsArray.slice(0, maxAvatars - 1);
 
     const firstNAvatarsJSX = firstNCollaborators.map((collaborator) =>
       renderCollaborator({
@@ -219,8 +202,7 @@ export const UserList = React.memo(
                 sideOffset={10}
               >
                 <Island padding={2}>
-                  {uniqueCollaboratorsArray.length >=
-                    SHOW_COLLABORATORS_FILTER_AT && (
+                  {uniqueCollaboratorsArray.length >= SHOW_COLLABORATORS_FILTER_AT && (
                     <QuickSearch
                       placeholder={t("quickSearch.placeholder")}
                       onChange={setSearchTerm}
@@ -240,8 +222,7 @@ export const UserList = React.memo(
                               collaborator,
                               socketId: collaborator.socketId,
                               withName: true,
-                              isBeingFollowed:
-                                collaborator.socketId === userToFollow,
+                              isBeingFollowed: collaborator.socketId === userToFollow,
                             }),
                           ),
                         ]
@@ -282,11 +263,7 @@ export const UserList = React.memo(
         // this checks order of collaborators in the map is the same
         // as previous render
         socketId !== nextCollaboratorSocketIds.next().value ||
-        !isShallowEqual(
-          collaborator,
-          nextCollaborator,
-          collaboratorComparatorKeys,
-        )
+        !isShallowEqual(collaborator, nextCollaborator, collaboratorComparatorKeys)
       ) {
         return false;
       }

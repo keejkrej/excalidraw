@@ -37,10 +37,7 @@ beforeEach(() => {
 
 const { h } = window;
 
-type ExcalidrawElementType = Exclude<
-  ExcalidrawElement,
-  ExcalidrawSelectionElement
->["type"];
+type ExcalidrawElementType = Exclude<ExcalidrawElement, ExcalidrawSelectionElement>["type"];
 
 const populateElements = (
   elements: {
@@ -98,11 +95,7 @@ const populateElements = (
   API.setElements(
     newElements.map((element, index, elements) => {
       const nextElement = elements[index + 1];
-      if (
-        nextElement &&
-        "containerId" in nextElement &&
-        element.id === nextElement.containerId
-      ) {
+      if (nextElement && "containerId" in nextElement && element.id === nextElement.containerId) {
         return {
           ...element,
           boundElements: [{ type: "text", id: nextElement.id }],
@@ -256,11 +249,7 @@ describe("z-index manipulation", () => {
 
     // elements should not duplicate
     assertZindex({
-      elements: [
-        { id: "A", containerId: "C" },
-        { id: "B" },
-        { id: "C", isSelected: true },
-      ],
+      elements: [{ id: "A", containerId: "C" }, { id: "B" }, { id: "C", isSelected: true }],
       operations: [
         [actionSendBackward, ["A", "C", "B"]],
         // noop
@@ -677,11 +666,7 @@ describe("z-index manipulation", () => {
     });
 
     assertZindex({
-      elements: [
-        { id: "A" },
-        { id: "B", isSelected: true },
-        { id: "C", isSelected: true },
-      ],
+      elements: [{ id: "A" }, { id: "B", isSelected: true }, { id: "C", isSelected: true }],
       operations: [
         // noop
         [actionBringToFront, ["A", "B", "C"]],
@@ -689,11 +674,7 @@ describe("z-index manipulation", () => {
     });
 
     assertZindex({
-      elements: [
-        { id: "A", isSelected: true },
-        { id: "B", isSelected: true },
-        { id: "C" },
-      ],
+      elements: [{ id: "A", isSelected: true }, { id: "B", isSelected: true }, { id: "C" }],
       operations: [
         [actionBringToFront, ["C", "A", "B"]],
         // noop
@@ -813,11 +794,7 @@ describe("z-index manipulation", () => {
     });
 
     assertZindex({
-      elements: [
-        { id: "A", isSelected: true },
-        { id: "B", isSelected: true },
-        { id: "C" },
-      ],
+      elements: [{ id: "A", isSelected: true }, { id: "B", isSelected: true }, { id: "C" }],
       operations: [
         // noop
         [actionSendToBack, ["A", "B", "C"]],
@@ -825,11 +802,7 @@ describe("z-index manipulation", () => {
     });
 
     assertZindex({
-      elements: [
-        { id: "A" },
-        { id: "B", isSelected: true },
-        { id: "C", isSelected: true },
-      ],
+      elements: [{ id: "A" }, { id: "B", isSelected: true }, { id: "C", isSelected: true }],
       operations: [
         [actionSendToBack, ["B", "C", "A"]],
         // noop
@@ -1161,11 +1134,7 @@ describe("z-index manipulation", () => {
 
   it("text-container binding should be atomic", () => {
     assertZindex({
-      elements: [
-        { id: "A", isSelected: true },
-        { id: "B" },
-        { id: "C", containerId: "B" },
-      ],
+      elements: [{ id: "A", isSelected: true }, { id: "B" }, { id: "C", containerId: "B" }],
       operations: [
         [actionBringForward, ["B", "C", "A"]],
         [actionSendBackward, ["A", "B", "C"]],
@@ -1173,11 +1142,7 @@ describe("z-index manipulation", () => {
     });
 
     assertZindex({
-      elements: [
-        { id: "A" },
-        { id: "B", isSelected: true },
-        { id: "C", containerId: "B" },
-      ],
+      elements: [{ id: "A" }, { id: "B", isSelected: true }, { id: "C", containerId: "B" }],
       operations: [
         [actionSendBackward, ["B", "C", "A"]],
         [actionBringForward, ["A", "B", "C"]],
@@ -1377,15 +1342,9 @@ describe("z-indexing with frames", () => {
       ],
       operations: [
         // +1
-        [
-          actionBringForward,
-          ["F1_2", "F1_1", "F1", "R1", "F2_2", "F2_1", "F2", "R2"],
-        ],
+        [actionBringForward, ["F1_2", "F1_1", "F1", "R1", "F2_2", "F2_1", "F2", "R2"]],
         // noop
-        [
-          actionBringForward,
-          ["F1_2", "F1_1", "F1", "R1", "F2_2", "F2_1", "F2", "R2"],
-        ],
+        [actionBringForward, ["F1_2", "F1_1", "F1", "R1", "F2_2", "F2_1", "F2", "R2"]],
       ],
     });
   });

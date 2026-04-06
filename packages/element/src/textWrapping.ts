@@ -106,7 +106,7 @@ const CJK = {
    *         ↑ BREAK AFTER "」"
    */
   // eslint-disable-next-line prettier/prettier
-  OPENING:/（［｛〈《｟｢「『【〖〔〘〚＜〝/u,
+  OPENING: /（［｛〈《｟｢「『【〖〔〘〚＜〝/u,
   CLOSING: /）］｝〉》｠｣」』】〗〕〙〛＞。．，、〟‥？！：；・〜〞/u,
   /**
    * Currency symbols break before, not after
@@ -119,8 +119,7 @@ const CJK = {
 
 const EMOJI = {
   FLAG: /\p{RI}\p{RI}/u,
-  JOINER:
-    /(?:\p{Emoji_Modifier}|\uFE0F\u20E3?|[\u{E0020}-\u{E007E}]+\u{E007F})?/u,
+  JOINER: /(?:\p{Emoji_Modifier}|\uFE0F\u20E3?|[\u{E0020}-\u{E007E}]+\u{E007F})?/u,
   ZWJ: /\u200D/u,
   ANY: /[\p{Emoji}]/u,
   MOST: /[\p{Extended_Pictographic}\p{Emoji_Presentation}]/u,
@@ -136,10 +135,7 @@ const EMOJI = {
  * Does not include advanced CJK breaking rules, but covers most of the core cases, especially for latin.
  */
 const getLineBreakRegexSimple = () =>
-  Regex.or(
-    getEmojiRegex(),
-    Break.On(COMMON.HYPHEN, COMMON.WHITESPACE, CJK.CHAR),
-  );
+  Regex.or(getEmojiRegex(), Break.On(COMMON.HYPHEN, COMMON.WHITESPACE, CJK.CHAR));
 
 /**
  * Specifies the line breaking rules based for alphabetic-based languages,
@@ -156,12 +152,8 @@ const getLineBreakRegexAdvanced = () =>
     Break.Before(COMMON.WHITESPACE).Build(),
     Break.After(COMMON.WHITESPACE, COMMON.HYPHEN).Build(),
     // Rules for CJK (chars, symbols, currency)
-    Break.Before(CJK.CHAR, CJK.CURRENCY)
-      .NotPrecededBy(COMMON.OPENING, CJK.OPENING)
-      .Build(),
-    Break.After(CJK.CHAR)
-      .NotFollowedBy(COMMON.HYPHEN, COMMON.CLOSING, CJK.CLOSING)
-      .Build(),
+    Break.Before(CJK.CHAR, CJK.CURRENCY).NotPrecededBy(COMMON.OPENING, CJK.OPENING).Build(),
+    Break.After(CJK.CHAR).NotFollowedBy(COMMON.HYPHEN, COMMON.CLOSING, CJK.CLOSING).Build(),
     // Rules for opening and closing punctuation
     Break.BeforeMany(CJK.OPENING).NotPrecededBy(COMMON.OPENING).Build(),
     Break.AfterMany(CJK.CLOSING).NotFollowedBy(COMMON.CLOSING).Build(),
@@ -224,18 +216,15 @@ const Regex = {
   /**
    * Joins regexes into a single regex with "or" operator.
    */
-  or: (...regexes: RegExp[]): RegExp =>
-    Regex.build(regexes.map((x) => x.source).join("|")),
+  or: (...regexes: RegExp[]): RegExp => Regex.build(regexes.map((x) => x.source).join("|")),
   /**
    * Puts regexes into a matching group.
    */
-  group: (...regexes: RegExp[]): RegExp =>
-    Regex.build(`(${Regex.join(...regexes)})`),
+  group: (...regexes: RegExp[]): RegExp => Regex.build(`(${Regex.join(...regexes)})`),
   /**
    * Puts regexes into a character class.
    */
-  class: (...regexes: RegExp[]): RegExp =>
-    Regex.build(`[${Regex.join(...regexes)}]`),
+  class: (...regexes: RegExp[]): RegExp => Regex.build(`[${Regex.join(...regexes)}]`),
 };
 
 /**
@@ -256,10 +245,7 @@ const Break = {
   Before: (...regexes: RegExp[]) => {
     const joined = Regex.join(...regexes);
     const builder = () => Regex.build(`(?=[${joined}])`);
-    return Break.Chain(builder) as Omit<
-      ReturnType<typeof Break.Chain>,
-      "FollowedBy"
-    >;
+    return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "FollowedBy">;
   },
   /**
    * Break after the given class of characters.
@@ -267,10 +253,7 @@ const Break = {
   After: (...regexes: RegExp[]) => {
     const joined = Regex.join(...regexes);
     const builder = () => Regex.build(`(?<=[${joined}])`);
-    return Break.Chain(builder) as Omit<
-      ReturnType<typeof Break.Chain>,
-      "PreceededBy"
-    >;
+    return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "PreceededBy">;
   },
   /**
    * Break before one or multiple characters of the same class.
@@ -278,10 +261,7 @@ const Break = {
   BeforeMany: (...regexes: RegExp[]) => {
     const joined = Regex.join(...regexes);
     const builder = () => Regex.build(`(?<![${joined}])(?=[${joined}])`);
-    return Break.Chain(builder) as Omit<
-      ReturnType<typeof Break.Chain>,
-      "FollowedBy"
-    >;
+    return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "FollowedBy">;
   },
   /**
    * Break after one or multiple character from the same class.
@@ -289,10 +269,7 @@ const Break = {
   AfterMany: (...regexes: RegExp[]) => {
     const joined = Regex.join(...regexes);
     const builder = () => Regex.build(`(?<=[${joined}])(?![${joined}])`);
-    return Break.Chain(builder) as Omit<
-      ReturnType<typeof Break.Chain>,
-      "PreceededBy"
-    >;
+    return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "PreceededBy">;
   },
   /**
    * Do not break before the given class of characters.
@@ -300,10 +277,7 @@ const Break = {
   NotBefore: (...regexes: RegExp[]) => {
     const joined = Regex.join(...regexes);
     const builder = () => Regex.build(`(?![${joined}])`);
-    return Break.Chain(builder) as Omit<
-      ReturnType<typeof Break.Chain>,
-      "NotFollowedBy"
-    >;
+    return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "NotFollowedBy">;
   },
   /**
    * Do not break after the given class of characters.
@@ -311,10 +285,7 @@ const Break = {
   NotAfter: (...regexes: RegExp[]) => {
     const joined = Regex.join(...regexes);
     const builder = () => Regex.build(`(?<![${joined}])`);
-    return Break.Chain(builder) as Omit<
-      ReturnType<typeof Break.Chain>,
-      "NotPrecededBy"
-    >;
+    return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "NotPrecededBy">;
   },
   Chain: (rootBuilder: () => RegExp) => ({
     /**
@@ -328,10 +299,7 @@ const Break = {
       const root = rootBuilder();
       const preceeded = Break.After(...regexes).Build();
       const builder = () => Regex.and(preceeded, root);
-      return Break.Chain(builder) as Omit<
-        ReturnType<typeof Break.Chain>,
-        "PreceededBy"
-      >;
+      return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "PreceededBy">;
     },
     /**
      * Specify additional class of characters that should follow the root regex.
@@ -340,10 +308,7 @@ const Break = {
       const root = rootBuilder();
       const followed = Break.Before(...regexes).Build();
       const builder = () => Regex.and(root, followed);
-      return Break.Chain(builder) as Omit<
-        ReturnType<typeof Break.Chain>,
-        "FollowedBy"
-      >;
+      return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "FollowedBy">;
     },
     /**
      * Specify additional class of characters that should not precede the root regex.
@@ -352,10 +317,7 @@ const Break = {
       const root = rootBuilder();
       const notPreceeded = Break.NotAfter(...regexes).Build();
       const builder = () => Regex.and(notPreceeded, root);
-      return Break.Chain(builder) as Omit<
-        ReturnType<typeof Break.Chain>,
-        "NotPrecededBy"
-      >;
+      return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "NotPrecededBy">;
     },
     /**
      * Specify additional class of characters that should not follow the root regex.
@@ -364,10 +326,7 @@ const Break = {
       const root = rootBuilder();
       const notFollowed = Break.NotBefore(...regexes).Build();
       const builder = () => Regex.and(root, notFollowed);
-      return Break.Chain(builder) as Omit<
-        ReturnType<typeof Break.Chain>,
-        "NotFollowedBy"
-      >;
+      return Break.Chain(builder) as Omit<ReturnType<typeof Break.Chain>, "NotFollowedBy">;
     },
   }),
 };
@@ -394,11 +353,7 @@ export const parseTokens = (line: string) => {
  * This is a convenience adapter over `getWrappedTextLines()` for call sites
  * that only need the rendered wrapped string and not the source offsets.
  */
-export const wrapText = (
-  text: string,
-  font: FontString,
-  maxWidth: number,
-): string => {
+export const wrapText = (text: string, font: FontString, maxWidth: number): string => {
   return getWrappedTextLines(text, font, maxWidth)
     .map((line) => line.text)
     .join("\n");
@@ -545,9 +500,7 @@ const wrapLine = (
       tokenIndex++;
     } else {
       // push & reset, but don't iterate on the next token, as we didn't use it yet!
-      lines.push(
-        trimLineEndAtSoftBreak(currentLine, currentLineStart, currentLineEnd),
-      );
+      lines.push(trimLineEndAtSoftBreak(currentLine, currentLineStart, currentLineEnd));
 
       // purposefully not iterating and not setting `currentLine` to `token`, so that we could use a simple !currentLine check above
       currentLine = "";
@@ -559,13 +512,7 @@ const wrapLine = (
 
   // iterator done, push the trailing line if exists
   if (currentLine) {
-    const trailingLine = trimLine(
-      currentLine,
-      currentLineStart,
-      currentLineEnd,
-      font,
-      maxWidth,
-    );
+    const trailingLine = trimLine(currentLine, currentLineStart, currentLineEnd, font, maxWidth);
     lines.push(trailingLine);
   }
 
@@ -670,11 +617,7 @@ const trimLine = (
   }
 
   // defensively default to `trimeEnd` in case the regex does not match
-  let [, trimmedLine, whitespaces] = line.match(/^(.+?)(\s+)$/) ?? [
-    line,
-    line.trimEnd(),
-    "",
-  ];
+  let [, trimmedLine, whitespaces] = line.match(/^(.+?)(\s+)$/) ?? [line, line.trimEnd(), ""];
 
   let trimmedLineWidth = getLineWidth(trimmedLine, font);
 
@@ -702,11 +645,7 @@ const trimLine = (
  * survive into the rendered line even though it still exists in the original
  * text.
  */
-const trimLineEndAtSoftBreak = (
-  line: string,
-  start: number,
-  end: number,
-): WrappedTextLine => {
+const trimLineEndAtSoftBreak = (line: string, start: number, end: number): WrappedTextLine => {
   const trimmedLine = line.trimEnd();
 
   return {

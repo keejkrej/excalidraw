@@ -1,7 +1,4 @@
-import type {
-  ExcalidrawElement,
-  OrderedExcalidrawElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawElement, OrderedExcalidrawElement } from "@excalidraw/element/types";
 
 import type { CaptureUpdateActionType } from "@excalidraw/element";
 
@@ -14,12 +11,7 @@ import type {
 } from "../types";
 import type React from "react";
 
-export type ActionSource =
-  | "ui"
-  | "keyboard"
-  | "contextMenu"
-  | "api"
-  | "commandPalette";
+export type ActionSource = "ui" | "keyboard" | "contextMenu" | "api" | "commandPalette";
 
 /** if false, the action should be prevented */
 export type ActionResult =
@@ -154,10 +146,7 @@ export type PanelComponentProps = {
   appProps: ExcalidrawProps;
   data?: Record<string, any>;
   app: AppClassProperties;
-  renderAction: (
-    name: ActionName,
-    data?: PanelComponentProps["data"],
-  ) => React.JSX.Element | null;
+  renderAction: (name: ActionName, data?: PanelComponentProps["data"]) => React.JSX.Element | null;
 };
 
 export interface Action<TData = any> {
@@ -172,10 +161,7 @@ export interface Action<TData = any> {
   keywords?: string[];
   icon?:
     | React.ReactNode
-    | ((
-        appState: UIAppState,
-        elements: readonly ExcalidrawElement[],
-      ) => React.ReactNode);
+    | ((appState: UIAppState, elements: readonly ExcalidrawElement[]) => React.ReactNode);
   PanelComponent?: React.FC<PanelComponentProps>;
   perform: ActionFn<TData>;
   keyPriority?: number;

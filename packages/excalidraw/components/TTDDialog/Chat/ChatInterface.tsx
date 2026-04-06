@@ -95,9 +95,7 @@ export const ChatInterface = ({
   };
 
   const canSend =
-    currentPrompt.trim().length > 3 &&
-    !isGenerating &&
-    (rateLimits?.rateLimitRemaining ?? 1) > 0;
+    currentPrompt.trim().length > 3 && !isGenerating && (rateLimits?.rateLimitRemaining ?? 1) > 0;
 
   const canStop = isGenerating && !!onAbort;
 
@@ -132,9 +130,7 @@ export const ChatInterface = ({
               isLastMessage={index === messages.length - 1}
               renderWarning={renderWarning}
               // so we don't allow to repair parse errors which aren't the last message
-              allowFixingParseError={
-                message.errorType === "parse" && index === messages.length - 1
-              }
+              allowFixingParseError={message.errorType === "parse" && index === messages.length - 1}
             />
           ))
         )}
@@ -146,9 +142,7 @@ export const ChatInterface = ({
           <div
             className="chat-interface__input-wrapper"
             style={{
-              borderColor: isGenerating
-                ? "var(--dialog-border-color)"
-                : undefined,
+              borderColor: isGenerating ? "var(--dialog-border-color)" : undefined,
             }}
           >
             <textarea
@@ -162,10 +156,10 @@ export const ChatInterface = ({
                 isGenerating
                   ? t("chat.generating")
                   : rateLimits?.rateLimitRemaining === 0
-                  ? t("chat.rateLimit.messageLimitInputPlaceholder")
-                  : messages.length > 0
-                  ? t("chat.inputPlaceholderWithMessages")
-                  : t("chat.inputPlaceholder", { shortcut: "Shift + Enter" })
+                    ? t("chat.rateLimit.messageLimitInputPlaceholder")
+                    : messages.length > 0
+                      ? t("chat.inputPlaceholderWithMessages")
+                      : t("chat.inputPlaceholder", { shortcut: "Shift + Enter" })
               }
               disabled={rateLimits?.rateLimitRemaining === 0}
               rows={1}
@@ -178,10 +172,7 @@ export const ChatInterface = ({
               disabled={!canSend && !canStop}
               type="button"
             >
-              <InlineIcon
-                size="1.5em"
-                icon={isGenerating ? StopIcon : ArrowRightIcon}
-              />
+              <InlineIcon size="1.5em" icon={isGenerating ? StopIcon : ArrowRightIcon} />
             </button>
           </div>
         </div>

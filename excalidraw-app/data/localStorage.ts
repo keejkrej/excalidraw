@@ -1,7 +1,4 @@
-import {
-  clearAppStateForLocalStorage,
-  getDefaultAppState,
-} from "@excalidraw/excalidraw/appState";
+import { clearAppStateForLocalStorage, getDefaultAppState } from "@excalidraw/excalidraw/appState";
 
 import type { ExcalidrawElement } from "@excalidraw/element/types";
 import type { AppState } from "@excalidraw/excalidraw/types";
@@ -10,10 +7,7 @@ import { STORAGE_KEYS } from "../app_constants";
 
 export const saveUsernameToLocalStorage = (username: string) => {
   try {
-    localStorage.setItem(
-      STORAGE_KEYS.LOCAL_STORAGE_COLLAB,
-      JSON.stringify({ username }),
-    );
+    localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_COLLAB, JSON.stringify({ username }));
   } catch (error: any) {
     // Unable to access window.localStorage
     console.error(error);
@@ -61,9 +55,7 @@ export const importFromLocalStorage = () => {
     try {
       appState = {
         ...getDefaultAppState(),
-        ...clearAppStateForLocalStorage(
-          JSON.parse(savedState) as Partial<AppState>,
-        ),
+        ...clearAppStateForLocalStorage(JSON.parse(savedState) as Partial<AppState>),
       };
     } catch (error: any) {
       console.error(error);

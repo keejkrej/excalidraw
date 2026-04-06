@@ -7,9 +7,7 @@ import type { DropdownMenuItemProps } from "./DropdownMenuItem";
 const DropdownMenuItemCheckbox = (
   props: Omit<DropdownMenuItemProps, "icon"> & { checked: boolean },
 ) => {
-  return (
-    <DropdownMenuItem {...props} icon={props.checked ? checkIcon : emptyIcon} />
-  );
+  return <DropdownMenuItem {...props} icon={props.checked ? checkIcon : emptyIcon} />;
 };
 
 export default DropdownMenuItemCheckbox;

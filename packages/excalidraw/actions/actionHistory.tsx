@@ -1,10 +1,4 @@
-import {
-  isWindows,
-  KEYS,
-  matchKey,
-  arrayToMap,
-  MOBILE_ACTION_BUTTON_BG,
-} from "@excalidraw/common";
+import { isWindows, KEYS, matchKey, arrayToMap, MOBILE_ACTION_BUTTON_BG } from "@excalidraw/common";
 
 import { CaptureUpdateAction } from "@excalidraw/element";
 
@@ -47,9 +41,7 @@ const executeHistoryAction = (
     const [nextElementsMap, nextAppState] = result;
 
     // order by fractional indices in case the map was accidently modified in the meantime
-    const nextElements = orderByFractionalIndex(
-      Array.from(nextElementsMap.values()),
-    );
+    const nextElements = orderByFractionalIndex(Array.from(nextElementsMap.values()));
 
     return {
       appState: nextAppState,
@@ -73,15 +65,11 @@ export const createUndoAction: ActionCreator = (history) => ({
     executeHistoryAction(app, appState, () =>
       history.undo(arrayToMap(elements) as SceneElementsMap, appState),
     ),
-  keyTest: (event) =>
-    event[KEYS.CTRL_OR_CMD] && matchKey(event, KEYS.Z) && !event.shiftKey,
+  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && matchKey(event, KEYS.Z) && !event.shiftKey,
   PanelComponent: ({ appState, updateData, data, app }) => {
     const { isUndoStackEmpty } = useEmitter<HistoryChangedEvent>(
       history.onHistoryChangedEmitter,
-      new HistoryChangedEvent(
-        history.isUndoStackEmpty,
-        history.isRedoStackEmpty,
-      ),
+      new HistoryChangedEvent(history.isUndoStackEmpty, history.isRedoStackEmpty),
     );
     const isMobile = useStylesPanelMode() === "mobile";
 
@@ -118,10 +106,7 @@ export const createRedoAction: ActionCreator = (history) => ({
   PanelComponent: ({ appState, updateData, data, app }) => {
     const { isRedoStackEmpty } = useEmitter(
       history.onHistoryChangedEmitter,
-      new HistoryChangedEvent(
-        history.isUndoStackEmpty,
-        history.isRedoStackEmpty,
-      ),
+      new HistoryChangedEvent(history.isUndoStackEmpty, history.isRedoStackEmpty),
     );
     const isMobile = useStylesPanelMode() === "mobile";
 

@@ -82,10 +82,7 @@ export const TTDChatPanel = ({
           count: rateLimits.rateLimitRemaining,
         }),
         variant: "rateLimit",
-        className:
-          rateLimits.rateLimitRemaining < 5
-            ? "ttd-dialog-panel__rate-limit--danger"
-            : "",
+        className: rateLimits.rateLimitRemaining < 5 ? "ttd-dialog-panel__rate-limit--danger" : "",
       });
     }
 

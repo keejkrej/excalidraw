@@ -21,10 +21,7 @@ import type { ActionManager } from "../actions/manager";
 
 import type { ExportOpts, BinaryFiles, UIAppState } from "../types";
 
-export type ExportCB = (
-  elements: readonly NonDeletedExcalidrawElement[],
-  scale?: number,
-) => void;
+export type ExportCB = (elements: readonly NonDeletedExcalidrawElement[], scale?: number) => void;
 
 const JSONExportModal = ({
   elements,
@@ -55,8 +52,7 @@ const JSONExportModal = ({
             <h2>{t("exportDialog.disk_title")}</h2>
             <div className="Card-details">
               {t("exportDialog.disk_details")}
-              {!nativeFileSystemSupported &&
-                actionManager.renderAction("changeProjectName")}
+              {!nativeFileSystemSupported && actionManager.renderAction("changeProjectName")}
             </div>
             <ToolButton
               className="Card-button"
@@ -93,8 +89,7 @@ const JSONExportModal = ({
             />
           </Card>
         )}
-        {exportOpts.renderCustomUI &&
-          exportOpts.renderCustomUI(elements, appState, files, canvas)}
+        {exportOpts.renderCustomUI && exportOpts.renderCustomUI(elements, appState, files, canvas)}
       </div>
     </div>
   );

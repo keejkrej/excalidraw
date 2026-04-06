@@ -13,12 +13,12 @@ const PACKAGES_DIR = path.resolve(__dirname, "../packages");
  * Returns the arguments for the release script.
  *
  * Usage examples:
- * - yarn release --help                          -> prints this help message
- * - yarn release                                 -> publishes `@excalidraw` packages with "test" tag and "-[hash]" version suffix
- * - yarn release --tag=test                      -> same as above
- * - yarn release --tag=next                      -> publishes `@excalidraw` packages with "next" tag and version "-[hash]" suffix
- * - yarn release --tag=next --non-interactive    -> skips interactive prompts (runs on CI/CD), otherwise same as above
- * - yarn release --tag=latest --version=0.19.0   -> publishes `@excalidraw` packages with "latest" tag and version "0.19.0" & prepares changelog for the release
+ * - bun run release --help                          -> prints this help message
+ * - bun run release                                 -> publishes `@excalidraw` packages with "test" tag and "-[hash]" version suffix
+ * - bun run release --tag=test                      -> same as above
+ * - bun run release --tag=next                      -> publishes `@excalidraw` packages with "next" tag and version "-[hash]" suffix
+ * - bun run release --tag=next --non-interactive    -> skips interactive prompts (runs on CI/CD), otherwise same as above
+ * - bun run release --tag=latest --version=0.19.0   -> publishes `@excalidraw` packages with "latest" tag and version "0.19.0" & prepares changelog for the release
  *
  * @returns [tag, version, nonInteractive]
  */
@@ -35,11 +35,11 @@ const getArguments = () => {
   --non-interactive                              -> (optional) disables interactive prompts`);
 
       console.info(`\nUsage examples:
-  - yarn release                                 -> publishes \`@excalidraw\` packages with "test" tag and "-[hash]" version suffix
-  - yarn release --tag=test                      -> same as above
-  - yarn release --tag=next                      -> publishes \`@excalidraw\` packages with "next" tag and version "-[hash]" suffix
-  - yarn release --tag=next --non-interactive    -> skips interactive prompts (runs on CI/CD), otherwise same as above
-  - yarn release --tag=latest --version=0.19.0   -> publishes \`@excalidraw\` packages with "latest" tag and version "0.19.0" & prepares changelog for the release`);
+  - bun run release                                 -> publishes \`@excalidraw\` packages with "test" tag and "-[hash]" version suffix
+  - bun run release --tag=test                      -> same as above
+  - bun run release --tag=next                      -> publishes \`@excalidraw\` packages with "next" tag and version "-[hash]" suffix
+  - bun run release --tag=next --non-interactive    -> skips interactive prompts (runs on CI/CD), otherwise same as above
+  - bun run release --tag=latest --version=0.19.0   -> publishes \`@excalidraw\` packages with "latest" tag and version "0.19.0" & prepares changelog for the release`);
 
       process.exit(0);
     }
@@ -69,9 +69,7 @@ const getArguments = () => {
 
   if (!version) {
     // set the next version based on the excalidraw package version + commit hash
-    const excalidrawPackageVersion = require(getPackageJsonPath(
-      "excalidraw",
-    )).version;
+    const excalidrawPackageVersion = require(getPackageJsonPath("excalidraw")).version;
 
     const hash = getShortCommitHash();
 
@@ -143,38 +141,31 @@ const askToCommit = (tag, nextVersion) => {
       output: process.stdout,
     });
 
-    rl.question(
-      "Would you like to commit these changes to git? (Y/n): ",
-      (answer) => {
-        rl.close();
+    rl.question("Would you like to commit these changes to git? (Y/n): ", (answer) => {
+      rl.close();
 
-        if (answer.toLowerCase() === "y") {
-          execSync(`git add -u`);
-          execSync(
-            `git commit -m "chore: release @excalidraw/excalidraw@${nextVersion} 🎉"`,
-          );
-        } else {
-          console.warn(
-            "Skipping commit. Don't forget to commit manually later!",
-          );
-        }
+      if (answer.toLowerCase() === "y") {
+        execSync(`git add -u`);
+        execSync(`git commit -m "chore: release @excalidraw/excalidraw@${nextVersion} 🎉"`);
+      } else {
+        console.warn("Skipping commit. Don't forget to commit manually later!");
+      }
 
-        resolve();
-      },
-    );
+      resolve();
+    });
   });
 };
 
 const buildPackages = () => {
-  console.info("Running yarn install...");
-  execSync(`yarn --frozen-lockfile`, { stdio: "inherit" });
+  console.info("Running bun install...");
+  execSync(`bun install --frozen-lockfile`, { stdio: "inherit" });
 
   console.info("Removing existing build artifacts...");
-  execSync(`yarn rm:build`, { stdio: "inherit" });
+  execSync(`bun run rm:build`, { stdio: "inherit" });
 
   for (const packageName of PACKAGES) {
     console.info(`Building "@excalidraw/${packageName}"...`);
-    execSync(`yarn run build:esm`, {
+    execSync(`bun run build:esm`, {
       cwd: path.resolve(PACKAGES_DIR, packageName),
       stdio: "inherit",
     });
@@ -188,33 +179,28 @@ const askToPublish = (tag, version) => {
       output: process.stdout,
     });
 
-    rl.question(
-      "Would you like to publish these changes to npm? (Y/n): ",
-      (answer) => {
-        rl.close();
+    rl.question("Would you like to publish these changes to npm? (Y/n): ", (answer) => {
+      rl.close();
 
-        if (answer.toLowerCase() === "y") {
-          publishPackages(tag, version);
-        } else {
-          console.info("Skipping publish.");
-        }
+      if (answer.toLowerCase() === "y") {
+        publishPackages(tag, version);
+      } else {
+        console.info("Skipping publish.");
+      }
 
-        resolve();
-      },
-    );
+      resolve();
+    });
   });
 };
 
 const publishPackages = (tag, version) => {
   for (const packageName of PACKAGES) {
-    execSync(`yarn publish --tag ${tag}`, {
+    execSync(`npm publish --tag ${tag}`, {
       cwd: path.resolve(PACKAGES_DIR, packageName),
       stdio: "inherit",
     });
 
-    console.info(
-      `Published "@excalidraw/${packageName}@${tag}" with version "${version}"! 🎉`,
-    );
+    console.info(`Published "@excalidraw/${packageName}@${tag}" with version "${version}"! 🎉`);
   }
 };
 

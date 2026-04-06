@@ -25,10 +25,7 @@ export class TTDIndexedDBAdapter {
    */
   static async loadChats(): Promise<SavedChats> {
     try {
-      const data = await get<SavedChats>(
-        TTDIndexedDBAdapter.key,
-        TTDIndexedDBAdapter.store,
-      );
+      const data = await get<SavedChats>(TTDIndexedDBAdapter.key, TTDIndexedDBAdapter.store);
       return data || [];
     } catch (error) {
       console.warn("Failed to load TTD chats from IndexedDB:", error);

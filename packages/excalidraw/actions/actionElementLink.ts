@@ -23,19 +23,13 @@ export const actionCopyElementLink = register({
 
     try {
       if (window.location) {
-        const idAndType = getLinkIdAndTypeFromSelection(
-          selectedElements,
-          appState,
-        );
+        const idAndType = getLinkIdAndTypeFromSelection(selectedElements, appState);
 
         if (idAndType) {
           await copyTextToSystemClipboard(
             app.props.generateLinkForSelection
               ? app.props.generateLinkForSelection(idAndType.id, idAndType.type)
-              : defaultGetElementLinkFromSelection(
-                  idAndType.id,
-                  idAndType.type,
-                ),
+              : defaultGetElementLinkFromSelection(idAndType.id, idAndType.type),
           );
 
           return {
@@ -77,10 +71,7 @@ export const actionLinkToElement = register({
   perform: (elements, appState, _, app) => {
     const selectedElements = getSelectedElements(elements, appState);
 
-    if (
-      selectedElements.length !== 1 ||
-      !canCreateLinkFromElements(selectedElements)
-    ) {
+    if (selectedElements.length !== 1 || !canCreateLinkFromElements(selectedElements)) {
       return {
         elements,
         appState,

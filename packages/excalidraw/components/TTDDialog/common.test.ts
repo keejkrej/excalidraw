@@ -43,18 +43,14 @@ describe("convertMermaidToExcalidraw", () => {
       .mockRejectedValueOnce(originalError)
       .mockRejectedValueOnce(fallbackError);
 
-    const mermaidDefinition =
-      'graph TD\nA["One"]\nB["Two"]x\nC["Three"]\nD["Four"]';
+    const mermaidDefinition = 'graph TD\nA["One"]\nB["Two"]x\nC["Three"]\nD["Four"]';
 
     const result = await convertMermaidToExcalidraw(
       createConvertArgs(mermaidDefinition, parseMermaidToExcalidraw),
     );
 
     expect(parseMermaidToExcalidraw).toHaveBeenCalledTimes(2);
-    expect(parseMermaidToExcalidraw).toHaveBeenNthCalledWith(
-      1,
-      mermaidDefinition,
-    );
+    expect(parseMermaidToExcalidraw).toHaveBeenNthCalledWith(1, mermaidDefinition);
     expect(parseMermaidToExcalidraw).toHaveBeenNthCalledWith(
       2,
       mermaidDefinition.replace(/"/g, "'"),

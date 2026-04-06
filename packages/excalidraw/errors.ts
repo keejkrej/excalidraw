@@ -17,9 +17,7 @@ export class AbortError extends DOMException {
   }
 }
 
-type ImageSceneDataErrorCode =
-  | "IMAGE_NOT_CONTAINS_SCENE_DATA"
-  | "IMAGE_SCENE_DATA_ERROR";
+type ImageSceneDataErrorCode = "IMAGE_NOT_CONTAINS_SCENE_DATA" | "IMAGE_SCENE_DATA_ERROR";
 
 export class ImageSceneDataError extends Error {
   public code;

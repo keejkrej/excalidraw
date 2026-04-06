@@ -6,11 +6,7 @@ interface HotkeyLabelProps {
   keyLabel: string | number;
   isShade?: boolean;
 }
-const HotkeyLabel = ({
-  color,
-  keyLabel,
-  isShade = false,
-}: HotkeyLabelProps) => {
+const HotkeyLabel = ({ color, keyLabel, isShade = false }: HotkeyLabelProps) => {
   return (
     <div
       className="color-picker__button__hotkey-label"

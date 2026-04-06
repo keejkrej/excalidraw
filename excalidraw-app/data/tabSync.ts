@@ -26,9 +26,7 @@ export const updateBrowserStateVersion = (type: BrowserStateTypes) => {
 
 export const resetBrowserStateVersions = () => {
   try {
-    for (const key of Object.keys(
-      LOCAL_STATE_VERSIONS,
-    ) as BrowserStateTypes[]) {
+    for (const key of Object.keys(LOCAL_STATE_VERSIONS) as BrowserStateTypes[]) {
       const timestamp = -1;
       localStorage.setItem(key, JSON.stringify(timestamp));
       LOCAL_STATE_VERSIONS[key] = timestamp;

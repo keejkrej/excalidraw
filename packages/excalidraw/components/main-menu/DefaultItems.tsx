@@ -39,13 +39,7 @@ import DropdownMenuItemCheckbox from "../dropdownMenu/DropdownMenuItemCheckbox";
 import DropdownMenuItemContentRadio from "../dropdownMenu/DropdownMenuItemContentRadio";
 import DropdownMenuItemLink from "../dropdownMenu/DropdownMenuItemLink";
 import DropdownMenuSub from "../dropdownMenu/DropdownMenuSub";
-import {
-  GithubIcon,
-  DiscordIcon,
-  XBrandIcon,
-  settingsIcon,
-  emptyIcon,
-} from "../icons";
+import { GithubIcon, DiscordIcon, XBrandIcon, settingsIcon, emptyIcon } from "../icons";
 import {
   boltIcon,
   DeviceDesktopIcon,
@@ -285,9 +279,7 @@ export const ToggleTheme = (
         event.preventDefault();
 
         if (props?.onSelect) {
-          props.onSelect(
-            appState.theme === THEME.DARK ? THEME.LIGHT : THEME.DARK,
-          );
+          props.onSelect(appState.theme === THEME.DARK ? THEME.LIGHT : THEME.DARK);
         } else {
           return actionManager.executeAction(actionToggleTheme);
         }
@@ -295,15 +287,9 @@ export const ToggleTheme = (
       icon={appState.theme === THEME.DARK ? SunIcon : MoonIcon}
       data-testid="toggle-dark-mode"
       shortcut={shortcut}
-      aria-label={
-        appState.theme === THEME.DARK
-          ? t("buttons.lightMode")
-          : t("buttons.darkMode")
-      }
+      aria-label={appState.theme === THEME.DARK ? t("buttons.lightMode") : t("buttons.darkMode")}
     >
-      {appState.theme === THEME.DARK
-        ? t("buttons.lightMode")
-        : t("buttons.darkMode")}
+      {appState.theme === THEME.DARK ? t("buttons.lightMode") : t("buttons.darkMode")}
     </DropdownMenuItem>
   );
 };
@@ -315,10 +301,7 @@ export const ChangeCanvasBackground = () => {
   const actionManager = useExcalidrawActionManager();
   const appProps = useAppProps();
 
-  if (
-    appState.viewModeEnabled ||
-    !appProps.UIOptions.canvasActions.changeViewBackgroundColor
-  ) {
+  if (appState.viewModeEnabled || !appProps.UIOptions.canvasActions.changeViewBackgroundColor) {
     return null;
   }
   return (
@@ -371,11 +354,7 @@ export const Socials = () => {
       >
         GitHub
       </DropdownMenuItemLink>
-      <DropdownMenuItemLink
-        icon={XBrandIcon}
-        href="https://x.com/excalidraw"
-        aria-label="X"
-      >
+      <DropdownMenuItemLink icon={XBrandIcon} href="https://x.com/excalidraw" aria-label="X">
         {t("labels.followUs")}
       </DropdownMenuItemLink>
       <DropdownMenuItemLink

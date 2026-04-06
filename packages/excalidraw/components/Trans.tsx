@@ -50,9 +50,7 @@ const getTransChildren = (
             children: [],
           });
         } else {
-          console.warn(
-            `Trans: missed to pass in prop ${name} for interpolating ${format}`,
-          );
+          console.warn(`Trans: missed to pass in prop ${name} for interpolating ${format}`);
         }
       } else if (tagEndMatch !== null) {
         // If tag end match is found, this means we need to replace the content with
@@ -65,19 +63,13 @@ const getTransChildren = (
         const name = tagEndMatch[1];
         if (name === stack[stack.length - 1].name) {
           const item = stack.pop()!;
-          const itemChildren = React.createElement(
-            React.Fragment,
-            {},
-            ...item.children,
-          );
+          const itemChildren = React.createElement(React.Fragment, {}, ...item.children);
           const fn = props[item.name];
           if (typeof fn === "function") {
             stack[stack.length - 1].children.push(fn(itemChildren));
           }
         } else {
-          console.warn(
-            `Trans: unexpected end tag ${match} for interpolating ${format}`,
-          );
+          console.warn(`Trans: unexpected end tag ${match} for interpolating ${format}`);
         }
       } else if (keyMatch !== null) {
         // The match is for {{key}}. Check if the key is present in props and set
@@ -89,9 +81,7 @@ const getTransChildren = (
         if (props.hasOwnProperty(name)) {
           stack[stack.length - 1].children.push(props[name] as React.ReactNode);
         } else {
-          console.warn(
-            `Trans: key ${name} not in props for interpolating ${format}`,
-          );
+          console.warn(`Trans: key ${name} not in props for interpolating ${format}`);
         }
       } else {
         // If none of cases match means we just need to push the string
@@ -161,11 +151,7 @@ const Trans = ({
   const { t } = useI18n();
 
   // This is needed to avoid unique key error in list which gets rendered from getTransChildren
-  return React.createElement(
-    React.Fragment,
-    {},
-    ...getTransChildren(t(i18nKey), props),
-  );
+  return React.createElement(React.Fragment, {}, ...getTransChildren(t(i18nKey), props));
 };
 
 export default Trans;

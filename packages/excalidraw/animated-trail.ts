@@ -1,10 +1,6 @@
 import { LaserPointer } from "@excalidraw/laser-pointer";
 
-import {
-  SVG_NS,
-  getSvgPathFromStroke,
-  sceneCoordsToViewportCoords,
-} from "@excalidraw/common";
+import { SVG_NS, getSvgPathFromStroke, sceneCoordsToViewportCoords } from "@excalidraw/common";
 
 import type { LaserPointerOptions } from "@excalidraw/laser-pointer";
 
@@ -38,8 +34,7 @@ export class AnimatedTrail implements Trail {
   constructor(
     private animationFrameHandler: AnimationFrameHandler,
     protected app: App,
-    private options: Partial<LaserPointerOptions> &
-      Partial<AnimatedTrailOptions>,
+    private options: Partial<LaserPointerOptions> & Partial<AnimatedTrailOptions>,
   ) {
     this.animationFrameHandler.register(this, this.onFrame.bind(this));
 
@@ -161,37 +156,21 @@ export class AnimatedTrail implements Trail {
 
     this.trailElement.setAttribute("d", svgPaths);
     if (this.trailAnimation) {
-      this.trailElement.setAttribute(
-        "fill",
-        (this.options.fill ?? (() => "black"))(this),
-      );
-      this.trailElement.setAttribute(
-        "stroke",
-        (this.options.stroke ?? (() => "black"))(this),
-      );
+      this.trailElement.setAttribute("fill", (this.options.fill ?? (() => "black"))(this));
+      this.trailElement.setAttribute("stroke", (this.options.stroke ?? (() => "black"))(this));
     } else {
-      this.trailElement.setAttribute(
-        "fill",
-        (this.options.fill ?? (() => "black"))(this),
-      );
+      this.trailElement.setAttribute("fill", (this.options.fill ?? (() => "black"))(this));
     }
   }
 
   private drawTrail(trail: LaserPointer, state: AppState): string {
-    const _stroke = trail
-      .getStrokeOutline(trail.options.size / state.zoom.value)
-      .map(([x, y]) => {
-        const result = sceneCoordsToViewportCoords(
-          { sceneX: x, sceneY: y },
-          state,
-        );
+    const _stroke = trail.getStrokeOutline(trail.options.size / state.zoom.value).map(([x, y]) => {
+      const result = sceneCoordsToViewportCoords({ sceneX: x, sceneY: y }, state);
 
-        return [result.x, result.y];
-      });
+      return [result.x, result.y];
+    });
 
-    const stroke = this.trailAnimation
-      ? _stroke.slice(0, _stroke.length / 2)
-      : _stroke;
+    const stroke = this.trailAnimation ? _stroke.slice(0, _stroke.length / 2) : _stroke;
 
     return getSvgPathFromStroke(stroke, true);
   }

@@ -8,9 +8,7 @@ import ConfirmDialog from "./ConfirmDialog";
 export const activeConfirmDialogAtom = atom<"clearCanvas" | null>(null);
 
 export const ActiveConfirmDialog = () => {
-  const [activeConfirmDialog, setActiveConfirmDialog] = useAtom(
-    activeConfirmDialogAtom,
-  );
+  const [activeConfirmDialog, setActiveConfirmDialog] = useAtom(activeConfirmDialogAtom);
   const actionManager = useExcalidrawActionManager();
 
   if (!activeConfirmDialog) {

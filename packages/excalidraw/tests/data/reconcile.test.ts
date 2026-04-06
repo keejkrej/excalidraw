@@ -2,10 +2,7 @@ import { syncInvalidIndices } from "@excalidraw/element";
 
 import { randomInteger, cloneJSON } from "@excalidraw/common";
 
-import type {
-  ExcalidrawElement,
-  OrderedExcalidrawElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawElement, OrderedExcalidrawElement } from "@excalidraw/element/types";
 
 import { reconcileElements } from "../../data/reconcile";
 
@@ -85,16 +82,12 @@ const test = <U extends `${string}:${"L" | "R"}`>(
   const reconciledIndices = reconciled.map((x) => x.index);
 
   expect(target.length).toEqual(reconciled.length);
-  expect(reconciledIndices.length).toEqual(
-    new Set([...reconciledIndices]).size,
-  ); // expect no duplicated indices
+  expect(reconciledIndices.length).toEqual(new Set([...reconciledIndices]).size); // expect no duplicated indices
   assert.deepEqual(
     reconciledIds,
     target.map((uid) => {
       const [, id, source] = uid.match(/^(\w+):([LR])$/)!;
-      const element = (source === "L" ? _local : _remote).find(
-        (e) => e.id === id,
-      )!;
+      const element = (source === "L" ? _local : _remote).find((e) => e.id === id)!;
 
       return element.id;
     }),
@@ -171,16 +164,8 @@ describe("elements reconciliation", () => {
     test(["A:2", "B:2"], ["B:1", "A:1"], ["A:L", "B:L"]);
     test(["A", "B", "C"], ["A", "B:2", "G", "C"], ["A:L", "B:R", "G:R", "C:L"]);
     test(["A", "B", "C"], ["A", "B:2", "G"], ["A:R", "B:R", "C:L", "G:R"]);
-    test(
-      ["A:2", "B:2", "C"],
-      ["D", "B:1", "A:3"],
-      ["D:R", "B:L", "A:R", "C:L"],
-    );
-    test(
-      ["A:2", "B:2", "C"],
-      ["D", "B:2", "A:3", "C"],
-      ["D:R", "B:L", "A:R", "C:L"],
-    );
+    test(["A:2", "B:2", "C"], ["D", "B:1", "A:3"], ["D:R", "B:L", "A:R", "C:L"]);
+    test(["A:2", "B:2", "C"], ["D", "B:2", "A:3", "C"], ["D:R", "B:L", "A:R", "C:L"]);
     test(
       ["A", "B", "C", "D", "E", "F"],
       ["A", "B:2", "X", "E:2", "F", "Y"],
@@ -188,42 +173,22 @@ describe("elements reconciliation", () => {
     );
 
     // fractional elements (previously annotated)
-    test(
-      ["A", "B", "C"],
-      ["A", "B", "X", "Y", "Z"],
-      ["A:R", "B:R", "C:L", "X:R", "Y:R", "Z:R"],
-    );
+    test(["A", "B", "C"], ["A", "B", "X", "Y", "Z"], ["A:R", "B:R", "C:L", "X:R", "Y:R", "Z:R"]);
 
     test(["A"], ["X", "Y"], ["A:L", "X:R", "Y:R"]);
     test(["A"], ["X", "Y", "Z"], ["A:L", "X:R", "Y:R", "Z:R"]);
     test(["A", "B"], ["C", "D", "F"], ["A:L", "C:R", "B:L", "D:R", "F:R"]);
 
-    test(
-      ["A", "B", "C", "D"],
-      ["C:1", "B", "D:1"],
-      ["A:L", "C:R", "B:L", "D:R"],
-    );
-    test(
-      ["A", "B", "C"],
-      ["X", "A", "Y", "B", "Z"],
-      ["X:R", "A:R", "Y:R", "B:L", "C:L", "Z:R"],
-    );
-    test(
-      ["B", "A", "C"],
-      ["X", "A", "Y", "B", "Z"],
-      ["X:R", "A:R", "C:L", "Y:R", "B:R", "Z:R"],
-    );
+    test(["A", "B", "C", "D"], ["C:1", "B", "D:1"], ["A:L", "C:R", "B:L", "D:R"]);
+    test(["A", "B", "C"], ["X", "A", "Y", "B", "Z"], ["X:R", "A:R", "Y:R", "B:L", "C:L", "Z:R"]);
+    test(["B", "A", "C"], ["X", "A", "Y", "B", "Z"], ["X:R", "A:R", "C:L", "Y:R", "B:R", "Z:R"]);
     test(["A", "B"], ["A", "X", "Y"], ["A:R", "B:L", "X:R", "Y:R"]);
     test(
       ["A", "B", "C", "D", "E"],
       ["A", "X", "C", "Y", "D", "Z"],
       ["A:R", "B:L", "X:R", "C:R", "Y:R", "D:R", "E:L", "Z:R"],
     );
-    test(
-      ["X", "Y", "Z"],
-      ["A", "B", "C"],
-      ["A:R", "X:L", "B:R", "Y:L", "C:R", "Z:L"],
-    );
+    test(["X", "Y", "Z"], ["A", "B", "C"], ["A:R", "X:L", "B:R", "Y:L", "C:R", "Z:L"]);
     test(
       ["X", "Y", "Z"],
       ["A", "B", "C", "X", "D", "Y", "Z"],
@@ -234,23 +199,11 @@ describe("elements reconciliation", () => {
       ["C", "X", "A", "Y", "D", "E:1"],
       ["B:L", "C:L", "X:R", "A:R", "Y:R", "D:R", "E:R"],
     );
-    test(
-      ["C:1", "B", "D:1"],
-      ["A", "B", "C:1", "D:1"],
-      ["A:R", "B:R", "C:R", "D:R"],
-    );
+    test(["C:1", "B", "D:1"], ["A", "B", "C:1", "D:1"], ["A:R", "B:R", "C:R", "D:R"]);
 
-    test(
-      ["C:1", "B", "D:1"],
-      ["A", "B", "C:2", "D:1"],
-      ["A:R", "B:L", "C:R", "D:L"],
-    );
+    test(["C:1", "B", "D:1"], ["A", "B", "C:2", "D:1"], ["A:R", "B:L", "C:R", "D:L"]);
 
-    test(
-      ["A", "B", "C", "D"],
-      ["A", "C:1", "B", "D:1"],
-      ["A:L", "C:R", "B:L", "D:R"],
-    );
+    test(["A", "B", "C", "D"], ["A", "C:1", "B", "D:1"], ["A:L", "C:R", "B:L", "D:R"]);
 
     test(
       ["A", "B", "C", "D"],
@@ -258,23 +211,11 @@ describe("elements reconciliation", () => {
       ["C:R", "D:L", "X:R", "B:R", "Y:R", "A:R", "Z:R"],
     );
 
-    test(
-      ["A", "B", "C", "D"],
-      ["A", "B:1", "C:1"],
-      ["A:R", "B:R", "C:R", "D:L"],
-    );
+    test(["A", "B", "C", "D"], ["A", "B:1", "C:1"], ["A:R", "B:R", "C:R", "D:L"]);
 
-    test(
-      ["A", "B", "C", "D"],
-      ["A", "C:1", "B:1"],
-      ["A:R", "C:R", "B:R", "D:L"],
-    );
+    test(["A", "B", "C", "D"], ["A", "C:1", "B:1"], ["A:R", "C:R", "B:R", "D:L"]);
 
-    test(
-      ["A", "B", "C", "D"],
-      ["A", "C:1", "B", "D:1"],
-      ["A:R", "C:R", "B:R", "D:R"],
-    );
+    test(["A", "B", "C", "D"], ["A", "C:1", "B", "D:1"], ["A:R", "C:R", "B:R", "D:R"]);
 
     test(["A:1", "B:1", "C"], ["B:2"], ["A:L", "B:R", "C:L"]);
     test(["A:1", "B:1", "C"], ["B:2", "C:2"], ["A:L", "B:R", "C:R"]);
@@ -290,26 +231,14 @@ describe("elements reconciliation", () => {
     // concurrent convergency
     test(["A", "B", "C"], ["A", "B", "D"], ["A:R", "B:R", "C:L", "D:R"]);
     test(["A", "B", "E"], ["A", "B", "D"], ["A:R", "B:R", "D:R", "E:L"]);
-    test(
-      ["A", "B", "C"],
-      ["A", "B", "D", "E"],
-      ["A:R", "B:R", "C:L", "D:R", "E:R"],
-    );
-    test(
-      ["A", "B", "E"],
-      ["A", "B", "D", "C"],
-      ["A:R", "B:R", "D:R", "E:L", "C:R"],
-    );
+    test(["A", "B", "C"], ["A", "B", "D", "E"], ["A:R", "B:R", "C:L", "D:R", "E:R"]);
+    test(["A", "B", "E"], ["A", "B", "D", "C"], ["A:R", "B:R", "D:R", "E:L", "C:R"]);
     test(["A", "B"], ["B", "D"], ["A:L", "B:R", "D:R"]);
     test(["C", "A", "B"], ["C", "B", "D"], ["C:R", "A:L", "B:R", "D:R"]);
   });
 
   it("test identical elements reconciliation", () => {
-    const testIdentical = (
-      local: ElementLike[],
-      remote: ElementLike[],
-      expected: Id[],
-    ) => {
+    const testIdentical = (local: ElementLike[], remote: ElementLike[], expected: Id[]) => {
       const ret = reconcileElements(
         local as unknown as OrderedExcalidrawElement[],
         remote as unknown as RemoteExcalidrawElement[],

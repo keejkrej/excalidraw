@@ -1,13 +1,7 @@
 import React from "react";
 import { vi } from "vitest";
 
-import {
-  FONT_FAMILY,
-  CODES,
-  KEYS,
-  reseed,
-  MQ_MIN_WIDTH_DESKTOP,
-} from "@excalidraw/common";
+import { FONT_FAMILY, CODES, KEYS, reseed, MQ_MIN_WIDTH_DESKTOP } from "@excalidraw/common";
 
 import { setDateTimeForTests } from "@excalidraw/common";
 
@@ -42,14 +36,10 @@ const finger2 = new Pointer("touch", 2);
  * to debug where a test failure came from.
  */
 const checkpoint = (name: string) => {
-  expect(renderStaticScene.mock.calls.length).toMatchSnapshot(
-    `[${name}] number of renders`,
-  );
+  expect(renderStaticScene.mock.calls.length).toMatchSnapshot(`[${name}] number of renders`);
   expect(h.state).toMatchSnapshot(`[${name}] appState`);
   expect(h.elements.length).toMatchSnapshot(`[${name}] number of elements`);
-  h.elements.forEach((element, i) =>
-    expect(element).toMatchSnapshot(`[${name}] element ${i}`),
-  );
+  h.elements.forEach((element, i) => expect(element).toMatchSnapshot(`[${name}] element ${i}`));
 
   checkpointHistory(h.history, name);
 };
@@ -207,17 +197,13 @@ describe("regression tests", () => {
     mouse.down(10, 10);
     mouse.up(10, 10);
 
-    expect(
-      h.elements.filter((element) => element.type === "rectangle").length,
-    ).toBe(1);
+    expect(h.elements.filter((element) => element.type === "rectangle").length).toBe(1);
     Keyboard.withModifierKeys({ alt: true }, () => {
       mouse.down(-8, -8);
       mouse.up(10, 10);
     });
 
-    expect(
-      h.elements.filter((element) => element.type === "rectangle").length,
-    ).toBe(2);
+    expect(h.elements.filter((element) => element.type === "rectangle").length).toBe(2);
   });
 
   it("click-drag to select a group", () => {
@@ -240,10 +226,7 @@ describe("regression tests", () => {
     mouse.restorePosition(...finalPosition);
     mouse.up(5, 5);
 
-    expect(
-      h.elements.filter((element) => h.state.selectedElementIds[element.id])
-        .length,
-    ).toBe(2);
+    expect(h.elements.filter((element) => h.state.selectedElementIds[element.id]).length).toBe(2);
   });
 
   it("shift-click to multiselect, then drag", () => {
@@ -604,11 +587,7 @@ describe("regression tests", () => {
       Keyboard.keyPress(KEYS.G);
     });
 
-    expect(h.elements.map((element) => element.id)).toEqual([
-      ids[1],
-      ids[0],
-      ids[2],
-    ]);
+    expect(h.elements.map((element) => element.id)).toEqual([ids[1], ids[0], ids[2]]);
   });
 
   it("supports nested groups", () => {
@@ -921,10 +900,8 @@ describe("regression tests", () => {
 
     expect(API.getSelectedElements().length).toBe(2);
 
-    const { x: firstElementPrevX, y: firstElementPrevY } =
-      API.getSelectedElements()[0];
-    const { x: secondElementPrevX, y: secondElementPrevY } =
-      API.getSelectedElements()[1];
+    const { x: firstElementPrevX, y: firstElementPrevY } = API.getSelectedElements()[0];
+    const { x: secondElementPrevX, y: secondElementPrevY } = API.getSelectedElements()[1];
 
     // drag elements from point on common bounding box that doesn't hit any of the elements
     mouse.reset();

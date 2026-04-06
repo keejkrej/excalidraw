@@ -1,10 +1,6 @@
 import { exportToCanvas, exportToSvg } from "@excalidraw/utils";
 
-import {
-  applyDarkModeFilter,
-  FONT_FAMILY,
-  FRAME_STYLE,
-} from "@excalidraw/common";
+import { applyDarkModeFilter, FONT_FAMILY, FRAME_STYLE } from "@excalidraw/common";
 
 import type {
   ExcalidrawTextElement,
@@ -60,11 +56,7 @@ describe("exportToSvg", () => {
   };
 
   it("with default arguments", async () => {
-    const svgElement = await exportUtils.exportToSvg(
-      ELEMENTS,
-      DEFAULT_OPTIONS,
-      null,
-    );
+    const svgElement = await exportUtils.exportToSvg(ELEMENTS, DEFAULT_OPTIONS, null);
 
     expect(svgElement).toMatchSnapshot();
   });
@@ -104,10 +96,7 @@ describe("exportToSvg", () => {
       null,
     );
 
-    expect(svgElement.querySelector("rect")).toHaveAttribute(
-      "fill",
-      BACKGROUND_COLOR,
-    );
+    expect(svgElement.querySelector("rect")).toHaveAttribute("fill", BACKGROUND_COLOR);
   });
 
   it("with dark mode", async () => {
@@ -125,9 +114,7 @@ describe("exportToSvg", () => {
 
     textElements.forEach((textEl) => {
       // fill color should be inverted in dark mode
-      expect(textEl.getAttribute("fill")).toBe(
-        applyDarkModeFilter(textFixture.strokeColor),
-      );
+      expect(textEl.getAttribute("fill")).toBe(applyDarkModeFilter(textFixture.strokeColor));
     });
   });
 
@@ -143,10 +130,7 @@ describe("exportToSvg", () => {
 
     expect(svgElement).toHaveAttribute("height", ELEMENT_HEIGHT.toString());
     expect(svgElement).toHaveAttribute("width", ELEMENT_WIDTH.toString());
-    expect(svgElement).toHaveAttribute(
-      "viewBox",
-      `0 0 ${ELEMENT_WIDTH} ${ELEMENT_HEIGHT}`,
-    );
+    expect(svgElement).toHaveAttribute("viewBox", `0 0 ${ELEMENT_WIDTH} ${ELEMENT_HEIGHT}`);
   });
 
   it("with scale", async () => {
@@ -162,14 +146,8 @@ describe("exportToSvg", () => {
       null,
     );
 
-    expect(svgElement).toHaveAttribute(
-      "height",
-      (ELEMENT_HEIGHT * SCALE).toString(),
-    );
-    expect(svgElement).toHaveAttribute(
-      "width",
-      (ELEMENT_WIDTH * SCALE).toString(),
-    );
+    expect(svgElement).toHaveAttribute("height", (ELEMENT_HEIGHT * SCALE).toString());
+    expect(svgElement).toHaveAttribute("width", (ELEMENT_WIDTH * SCALE).toString());
   });
 
   it("with exportEmbedScene", async () => {
@@ -196,9 +174,7 @@ describe("exportToSvg", () => {
 
 describe("exporting frames", () => {
   const getFrameNameHeight = (exportType: "canvas" | "svg") => {
-    const height =
-      FRAME_STYLE.nameFontSize * FRAME_STYLE.nameLineHeight +
-      FRAME_STYLE.nameOffsetY;
+    const height = FRAME_STYLE.nameFontSize * FRAME_STYLE.nameLineHeight + FRAME_STYLE.nameOffsetY;
     // canvas truncates dimensions to integers
     if (exportType === "canvas") {
       return Math.trunc(height);
@@ -308,9 +284,7 @@ describe("exporting frames", () => {
       // frame child is exported
       expect(svg.querySelector(`[data-id="${frameChild.id}"]`)).not.toBeNull();
       // overlapping element is exported
-      expect(
-        svg.querySelector(`[data-id="${rectOverlapping.id}"]`),
-      ).not.toBeNull();
+      expect(svg.querySelector(`[data-id="${rectOverlapping.id}"]`)).not.toBeNull();
 
       expect(svg.getAttribute("width")).toBe(frame.width.toString());
       expect(svg.getAttribute("height")).toBe(frame.height.toString());
@@ -422,13 +396,9 @@ describe("exporting frames", () => {
       expect(svg.querySelector(`[data-id="${frame1Child.id}"]`)).not.toBeNull();
       expect(svg.querySelector(`[data-id="${frame2Child.id}"]`)).not.toBeNull();
       // overlapping elements or non-overlapping elements should not be exported
-      expect(
-        svg.querySelector(`[data-id="${frame2Overlapping.id}"]`),
-      ).toBeNull();
+      expect(svg.querySelector(`[data-id="${frame2Overlapping.id}"]`)).toBeNull();
 
-      expect(svg.getAttribute("width")).toBe(
-        (frame2.x + frame2.width).toString(),
-      );
+      expect(svg.getAttribute("width")).toBe((frame2.x + frame2.width).toString());
       expect(svg.getAttribute("height")).toBe(
         (frame2.y + frame2.height + getFrameNameHeight("svg")).toString(),
       );

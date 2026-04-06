@@ -138,8 +138,7 @@ export const ExcalifontFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _3,
     descriptors: {
-      unicodeRange:
-        "U+37e,U+384-38a,U+38c,U+38e-393,U+395-3a1,U+3a3-3a8,U+3aa-3cf,U+3d7",
+      unicodeRange: "U+37e,U+384-38a,U+38c,U+38e-393,U+395-3a1,U+3a3-3a8,U+3aa-3cf,U+3d7",
     },
   },
   {
@@ -152,8 +151,7 @@ export const ExcalifontFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _5,
     descriptors: {
-      unicodeRange:
-        "U+462-463,U+472-475,U+4d8-4d9,U+4e2-4e3,U+4e6-4e9,U+4ee-4ef",
+      unicodeRange: "U+462-463,U+472-475,U+4d8-4d9,U+4e2-4e3,U+4e6-4e9,U+4ee-4ef",
     },
   },
   { uri: _6, descriptors: { unicodeRange: "U+300-301,U+303" } },

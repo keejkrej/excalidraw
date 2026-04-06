@@ -15,10 +15,7 @@ export const assertSidebarDockButton = async <T extends boolean>(
     ? { dockButton: null; sidebar: HTMLElement }
     : { dockButton: HTMLElement; sidebar: HTMLElement }
 > => {
-  const sidebar =
-    GlobalTestState.renderResult.container.querySelector<HTMLElement>(
-      ".sidebar",
-    );
+  const sidebar = GlobalTestState.renderResult.container.querySelector<HTMLElement>(".sidebar");
   expect(sidebar).not.toBe(null);
   const dockButton = queryByTestId(sidebar!, "sidebar-dock");
   if (hasDockButton) {
@@ -35,9 +32,7 @@ export const assertExcalidrawWithSidebar = async (
   test: () => void,
 ) => {
   await render(
-    <Excalidraw initialData={{ appState: { openSidebar: { name } } }}>
-      {sidebar}
-    </Excalidraw>,
+    <Excalidraw initialData={{ appState: { openSidebar: { name } } }}>{sidebar}</Excalidraw>,
   );
   await withExcalidrawDimensions({ width: 1920, height: 1080 }, test);
 };

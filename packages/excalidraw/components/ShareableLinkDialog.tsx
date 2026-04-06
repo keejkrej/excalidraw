@@ -52,14 +52,7 @@ export const ShareableLinkDialog = ({
       <div className="ShareableLinkDialog">
         <h3>Shareable link</h3>
         <div className="ShareableLinkDialog__linkRow">
-          <TextField
-            ref={ref}
-            label="Link"
-            readonly
-            fullWidth
-            value={link}
-            selectOnRender
-          />
+          <TextField ref={ref} label="Link" readonly fullWidth value={link} selectOnRender />
           <FilledButton
             size="large"
             label={t("buttons.copyLink")}
@@ -71,9 +64,7 @@ export const ShareableLinkDialog = ({
             }}
           />
         </div>
-        <div className="ShareableLinkDialog__description">
-          🔒 {t("alerts.uploadedSecurly")}
-        </div>
+        <div className="ShareableLinkDialog__description">🔒 {t("alerts.uploadedSecurly")}</div>
       </div>
     </Dialog>
   );

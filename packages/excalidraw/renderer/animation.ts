@@ -45,8 +45,7 @@ export class AnimationController {
     if (AnimationController.animations.size > 0) {
       for (const [key, animation] of AnimationController.animations) {
         const now = performance.now();
-        const deltaTime =
-          animation.lastTime === 0 ? 0 : now - animation.lastTime;
+        const deltaTime = animation.lastTime === 0 ? 0 : now - animation.lastTime;
 
         const state = animation.animation({
           deltaTime,

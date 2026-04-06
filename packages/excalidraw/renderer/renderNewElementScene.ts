@@ -24,10 +24,7 @@ const _renderNewElementScene = ({
   renderConfig,
 }: NewElementSceneRenderConfig) => {
   if (canvas) {
-    const [normalizedWidth, normalizedHeight] = getNormalizedCanvasDimensions(
-      canvas,
-      scale,
-    );
+    const [normalizedWidth, normalizedHeight] = getNormalizedCanvasDimensions(canvas, scale);
 
     const context = bootstrapCanvas({
       canvas,
@@ -52,30 +49,15 @@ const _renderNewElementScene = ({
 
       const frameId = newElement.frameId || appState.frameToHighlight?.id;
 
-      if (
-        frameId &&
-        appState.frameRendering.enabled &&
-        appState.frameRendering.clip
-      ) {
+      if (frameId && appState.frameRendering.enabled && appState.frameRendering.clip) {
         const frame = getTargetFrame(newElement, elementsMap, appState);
 
-        if (
-          frame &&
-          shouldApplyFrameClip(newElement, frame, appState, elementsMap)
-        ) {
+        if (frame && shouldApplyFrameClip(newElement, frame, appState, elementsMap)) {
           frameClip(frame, context, renderConfig, appState);
         }
       }
 
-      renderElement(
-        newElement,
-        elementsMap,
-        allElementsMap,
-        rc,
-        context,
-        renderConfig,
-        appState,
-      );
+      renderElement(newElement, elementsMap, allElementsMap, rc, context, renderConfig, appState);
     } else {
       context.clearRect(0, 0, normalizedWidth, normalizedHeight);
     }
@@ -84,11 +66,9 @@ const _renderNewElementScene = ({
   }
 };
 
-export const renderNewElementSceneThrottled = throttleRAF(
-  (config: NewElementSceneRenderConfig) => {
-    _renderNewElementScene(config);
-  },
-);
+export const renderNewElementSceneThrottled = throttleRAF((config: NewElementSceneRenderConfig) => {
+  _renderNewElementScene(config);
+});
 
 export const renderNewElementScene = (
   renderConfig: NewElementSceneRenderConfig,

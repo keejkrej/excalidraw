@@ -1,8 +1,4 @@
-import {
-  applyDarkModeFilter,
-  COLOR_PALETTE,
-  rgbToHex,
-} from "@excalidraw/common";
+import { applyDarkModeFilter, COLOR_PALETTE, rgbToHex } from "@excalidraw/common";
 
 describe("COLOR_PALETTE", () => {
   it("color palette doesn't regress", () => {
@@ -177,9 +173,7 @@ describe("applyDarkModeFilter", () => {
 
       transformedPalette.black = applyDarkModeFilter(COLOR_PALETTE.black);
       transformedPalette.white = applyDarkModeFilter(COLOR_PALETTE.white);
-      transformedPalette.transparent = applyDarkModeFilter(
-        COLOR_PALETTE.transparent,
-      );
+      transformedPalette.transparent = applyDarkModeFilter(COLOR_PALETTE.transparent);
 
       // Transform color arrays
       for (const colorName of [
@@ -197,9 +191,7 @@ describe("applyDarkModeFilter", () => {
         "bronze",
       ] as const) {
         const shades = COLOR_PALETTE[colorName];
-        transformedPalette[colorName] = shades.map((shade) =>
-          applyDarkModeFilter(shade),
-        );
+        transformedPalette[colorName] = shades.map((shade) => applyDarkModeFilter(shade));
       }
 
       expect(transformedPalette).toMatchSnapshot();

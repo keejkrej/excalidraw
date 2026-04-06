@@ -58,9 +58,7 @@ export const isIframeElement = (
 export const isIframeLikeElement = (
   element: ExcalidrawElement | null,
 ): element is ExcalidrawIframeLikeElement => {
-  return (
-    !!element && (element.type === "iframe" || element.type === "embeddable")
-  );
+  return !!element && (element.type === "iframe" || element.type === "embeddable");
 };
 
 export const isTextElement = (
@@ -84,10 +82,7 @@ export const isMagicFrameElement = (
 export const isFrameLikeElement = (
   element: ExcalidrawElement | null,
 ): element is ExcalidrawFrameLikeElement => {
-  return (
-    element != null &&
-    (element.type === "frame" || element.type === "magicframe")
-  );
+  return element != null && (element.type === "frame" || element.type === "magicframe");
 };
 
 export const isFreeDrawElement = (
@@ -96,9 +91,7 @@ export const isFreeDrawElement = (
   return element != null && isFreeDrawElementType(element.type);
 };
 
-export const isFreeDrawElementType = (
-  elementType: ExcalidrawElementType,
-): boolean => {
+export const isFreeDrawElementType = (elementType: ExcalidrawElementType): boolean => {
   return elementType === "freedraw";
 };
 
@@ -129,29 +122,19 @@ export const isElbowArrow = (
 /**
  * sharp or curved arrow, but not elbow
  */
-export const isSimpleArrow = (
-  element?: ExcalidrawElement,
-): element is ExcalidrawArrowElement => {
+export const isSimpleArrow = (element?: ExcalidrawElement): element is ExcalidrawArrowElement => {
   return isArrowElement(element) && !element.elbowed;
 };
 
-export const isSharpArrow = (
-  element?: ExcalidrawElement,
-): element is ExcalidrawArrowElement => {
+export const isSharpArrow = (element?: ExcalidrawElement): element is ExcalidrawArrowElement => {
   return isArrowElement(element) && !element.elbowed && !element.roundness;
 };
 
-export const isCurvedArrow = (
-  element?: ExcalidrawElement,
-): element is ExcalidrawArrowElement => {
-  return (
-    isArrowElement(element) && !element.elbowed && element.roundness !== null
-  );
+export const isCurvedArrow = (element?: ExcalidrawElement): element is ExcalidrawArrowElement => {
+  return isArrowElement(element) && !element.elbowed && element.roundness !== null;
 };
 
-export const isLinearElementType = (
-  elementType: ElementOrToolType,
-): boolean => {
+export const isLinearElementType = (elementType: ElementOrToolType): boolean => {
   return (
     elementType === "arrow" || elementType === "line" // || elementType === "freedraw"
   );
@@ -168,9 +151,7 @@ export const isBindingElement = (
   );
 };
 
-export const isBindingElementType = (
-  elementType: ElementOrToolType,
-): boolean => {
+export const isBindingElementType = (elementType: ElementOrToolType): boolean => {
   return elementType === "arrow";
 };
 
@@ -241,9 +222,7 @@ export const isTextBindableContainer = (
   );
 };
 
-export const isExcalidrawElement = (
-  element: any,
-): element is ExcalidrawElement => {
+export const isExcalidrawElement = (element: any): element is ExcalidrawElement => {
   const type: ExcalidrawElementType | undefined = element?.type;
   if (!type) {
     return false;
@@ -274,19 +253,14 @@ export const isExcalidrawElement = (
 export const isFlowchartNodeElement = (
   element: ExcalidrawElement,
 ): element is ExcalidrawFlowchartNodeElement => {
-  return (
-    element.type === "rectangle" ||
-    element.type === "ellipse" ||
-    element.type === "diamond"
-  );
+  return element.type === "rectangle" || element.type === "ellipse" || element.type === "diamond";
 };
 
 export const hasBoundTextElement = (
   element: ExcalidrawElement | null,
 ): element is MarkNonNullable<ExcalidrawBindableElement, "boundElements"> => {
   return (
-    isTextBindableContainer(element) &&
-    !!element.boundElements?.some(({ type }) => type === "text")
+    isTextBindableContainer(element) && !!element.boundElements?.some(({ type }) => type === "text")
   );
 };
 
@@ -306,10 +280,7 @@ export const isArrowBoundToElement = (element: ExcalidrawArrowElement) => {
 };
 
 export const isUsingAdaptiveRadius = (type: string) =>
-  type === "rectangle" ||
-  type === "embeddable" ||
-  type === "iframe" ||
-  type === "image";
+  type === "rectangle" || type === "embeddable" || type === "iframe" || type === "image";
 
 export const isUsingProportionalRadius = (type: string) =>
   type === "line" || type === "arrow" || type === "diamond";
@@ -327,19 +298,14 @@ export const canApplyRoundnessTypeToElement = (
   ) {
     return true;
   }
-  if (
-    roundnessType === ROUNDNESS.PROPORTIONAL_RADIUS &&
-    isUsingProportionalRadius(element.type)
-  ) {
+  if (roundnessType === ROUNDNESS.PROPORTIONAL_RADIUS && isUsingProportionalRadius(element.type)) {
     return true;
   }
 
   return false;
 };
 
-export const getDefaultRoundnessTypeForElement = (
-  element: ExcalidrawElement,
-) => {
+export const getDefaultRoundnessTypeForElement = (element: ExcalidrawElement) => {
   if (isUsingProportionalRadius(element.type)) {
     return {
       type: ROUNDNESS.PROPORTIONAL_RADIUS,
@@ -377,15 +343,11 @@ export const getLinearElementSubType = (
  * If you want to check if points *can* be turned into a polygon, use
  *  canBecomePolygon(points).
  */
-export const isValidPolygon = (
-  points: ExcalidrawLineElement["points"],
-): boolean => {
+export const isValidPolygon = (points: ExcalidrawLineElement["points"]): boolean => {
   return points.length > 3 && pointsEqual(points[0], points[points.length - 1]);
 };
 
-export const canBecomePolygon = (
-  points: ExcalidrawLineElement["points"],
-): boolean => {
+export const canBecomePolygon = (points: ExcalidrawLineElement["points"]): boolean => {
   return (
     points.length > 3 ||
     // 3-point polygons can't have all points in a single line

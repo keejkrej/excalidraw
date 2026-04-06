@@ -17,10 +17,7 @@ import { TTDDialogOutput } from "./TTDDialogOutput";
 import { TTDDialogPanel } from "./TTDDialogPanel";
 import { TTDDialogPanels } from "./TTDDialogPanels";
 import { TTDDialogSubmitShortcut } from "./TTDDialogSubmitShortcut";
-import {
-  getMermaidErrorLineNumber,
-  isMermaidAutoFixableError,
-} from "./utils/mermaidError";
+import { getMermaidErrorLineNumber, isMermaidAutoFixableError } from "./utils/mermaidError";
 import { getMermaidAutoFixCandidates } from "./utils/mermaidAutoFix";
 import {
   convertMermaidToExcalidraw,
@@ -68,9 +65,7 @@ const MermaidToExcalidraw = ({
   isActive?: boolean;
 }) => {
   const [text, setText] = useState(
-    () =>
-      EditorLocalStorage.get<string>(EDITOR_LS_KEYS.MERMAID_TO_EXCALIDRAW) ||
-      MERMAID_EXAMPLE,
+    () => EditorLocalStorage.get<string>(EDITOR_LS_KEYS.MERMAID_TO_EXCALIDRAW) || MERMAID_EXAMPLE,
   );
   const deferredText = useDeferredValue(text);
   const [error, setError] = useState<Error | null>(null);
@@ -186,10 +181,7 @@ const MermaidToExcalidraw = ({
             if (!nextErrorMessage) {
               continue;
             }
-            const nextCandidates = getMermaidAutoFixCandidates(
-              current.text,
-              nextErrorMessage,
-            );
+            const nextCandidates = getMermaidAutoFixCandidates(current.text, nextErrorMessage);
             for (const nextCandidate of nextCandidates) {
               if (!seen.has(nextCandidate)) {
                 queue.push({
@@ -236,11 +228,7 @@ const MermaidToExcalidraw = ({
         <Trans
           i18nKey="mermaid.description"
           flowchartLink={(el) => (
-            <a
-              href="https://mermaid.js.org/syntax/flowchart.html"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href="https://mermaid.js.org/syntax/flowchart.html" target="_blank" rel="noreferrer">
               {el}
             </a>
           )}

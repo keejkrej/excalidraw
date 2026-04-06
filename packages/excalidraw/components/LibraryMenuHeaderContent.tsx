@@ -19,21 +19,13 @@ import PublishLibrary from "./PublishLibrary";
 import { ToolButton } from "./ToolButton";
 import Trans from "./Trans";
 import DropdownMenu from "./dropdownMenu/DropdownMenu";
-import {
-  DotsIcon,
-  ExportIcon,
-  LoadIcon,
-  publishIcon,
-  TrashIcon,
-} from "./icons";
+import { DotsIcon, ExportIcon, LoadIcon, publishIcon, TrashIcon } from "./icons";
 
 import type Library from "../data/library";
 import type { LibraryItem, LibraryItems, UIAppState } from "../types";
 
-const getSelectedItems = (
-  libraryItems: LibraryItems,
-  selectedItems: LibraryItem["id"][],
-) => libraryItems.filter((item) => selectedItems.includes(item.id));
+const getSelectedItems = (libraryItems: LibraryItems, selectedItems: LibraryItem["id"][]) =>
+  libraryItems.filter((item) => selectedItems.includes(item.id));
 
 export const LibraryDropdownMenuButton: React.FC<{
   setAppState: React.Component<any, UIAppState>["setState"];
@@ -55,9 +47,7 @@ export const LibraryDropdownMenuButton: React.FC<{
   className,
 }) => {
   const [libraryItemsData] = useAtom(libraryItemsAtom);
-  const [isLibraryMenuOpen, setIsLibraryMenuOpen] = useAtom(
-    isLibraryMenuOpenAtom,
-  );
+  const [isLibraryMenuOpen, setIsLibraryMenuOpen] = useAtom(isLibraryMenuOpenAtom);
 
   const renderRemoveLibAlert = () => {
     const content = selectedItems.length
@@ -90,16 +80,11 @@ export const LibraryDropdownMenuButton: React.FC<{
 
   const itemsSelected = !!selectedItems.length;
   const items = itemsSelected
-    ? libraryItemsData.libraryItems.filter((item) =>
-        selectedItems.includes(item.id),
-      )
+    ? libraryItemsData.libraryItems.filter((item) => selectedItems.includes(item.id))
     : libraryItemsData.libraryItems;
-  const resetLabel = itemsSelected
-    ? t("buttons.remove")
-    : t("buttons.resetLibrary");
+  const resetLabel = itemsSelected ? t("buttons.remove") : t("buttons.resetLibrary");
 
-  const [showPublishLibraryDialog, setShowPublishLibraryDialog] =
-    useState(false);
+  const [showPublishLibraryDialog, setShowPublishLibraryDialog] = useState(false);
   const [publishLibSuccess, setPublishLibSuccess] = useState<null | {
     url: string;
     authorName: string;
@@ -117,11 +102,7 @@ export const LibraryDropdownMenuButton: React.FC<{
             i18nKey="publishSuccessDialog.content"
             authorName={publishLibSuccess!.authorName}
             link={(el) => (
-              <a
-                href={publishLibSuccess?.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={publishLibSuccess?.url} target="_blank" rel="noopener noreferrer">
                 {el}
               </a>
             )}
@@ -179,9 +160,7 @@ export const LibraryDropdownMenuButton: React.FC<{
   };
 
   const onLibraryExport = async () => {
-    const libraryItems = itemsSelected
-      ? items
-      : await library.getLatestLibrary();
+    const libraryItems = itemsSelected ? items : await library.getLatestLibrary();
     saveLibraryAsJSON(libraryItems)
       .catch(muteFSAbortError)
       .catch((error) => {
@@ -192,9 +171,7 @@ export const LibraryDropdownMenuButton: React.FC<{
   const renderLibraryMenu = () => {
     return (
       <DropdownMenu open={isLibraryMenuOpen}>
-        <DropdownMenu.Trigger
-          onToggle={() => setIsLibraryMenuOpen(!isLibraryMenuOpen)}
-        >
+        <DropdownMenu.Trigger onToggle={() => setIsLibraryMenuOpen(!isLibraryMenuOpen)}>
           {DotsIcon}
         </DropdownMenu.Trigger>
         <DropdownMenu.Content
@@ -230,10 +207,7 @@ export const LibraryDropdownMenuButton: React.FC<{
             </DropdownMenu.Item>
           )}
           {!!items.length && (
-            <DropdownMenu.Item
-              onSelect={() => setShowRemoveLibAlert(true)}
-              icon={TrashIcon}
-            >
+            <DropdownMenu.Item onSelect={() => setShowRemoveLibAlert(true)} icon={TrashIcon}>
               {resetLabel}
             </DropdownMenu.Item>
           )}
@@ -252,21 +226,12 @@ export const LibraryDropdownMenuButton: React.FC<{
       {showPublishLibraryDialog && (
         <PublishLibrary
           onClose={() => setShowPublishLibraryDialog(false)}
-          libraryItems={getSelectedItems(
-            libraryItemsData.libraryItems,
-            selectedItems,
-          )}
+          libraryItems={getSelectedItems(libraryItemsData.libraryItems, selectedItems)}
           appState={appState}
-          onSuccess={(data) =>
-            onPublishLibSuccess(data, libraryItemsData.libraryItems)
-          }
+          onSuccess={(data) => onPublishLibSuccess(data, libraryItemsData.libraryItems)}
           onError={(error) => window.alert(error)}
-          updateItemsInStorage={() =>
-            library.setLibrary(libraryItemsData.libraryItems)
-          }
-          onRemove={(id: string) =>
-            onSelectItems(selectedItems.filter((_id) => _id !== id))
-          }
+          updateItemsInStorage={() => library.setLibrary(libraryItemsData.libraryItems)}
+          onRemove={(id: string) => onSelectItems(selectedItems.filter((_id) => _id !== id))}
         />
       )}
       {publishLibSuccess && renderPublishSuccess()}
@@ -291,9 +256,7 @@ export const LibraryDropdownMenu = ({
   const [libraryItemsData] = useAtom(libraryItemsAtom);
 
   const removeFromLibrary = async (libraryItems: LibraryItems) => {
-    const nextItems = libraryItems.filter(
-      (item) => !selectedItems.includes(item.id),
-    );
+    const nextItems = libraryItems.filter((item) => !selectedItems.includes(item.id));
     library.setLibrary(nextItems).catch(() => {
       setAppState({ errorMessage: t("alerts.errorRemovingFromLibrary") });
     });
@@ -315,9 +278,7 @@ export const LibraryDropdownMenu = ({
       selectedItems={selectedItems}
       onSelectItems={onSelectItems}
       library={library}
-      onRemoveFromLibrary={() =>
-        removeFromLibrary(libraryItemsData.libraryItems)
-      }
+      onRemoveFromLibrary={() => removeFromLibrary(libraryItemsData.libraryItems)}
       resetLibrary={resetLibrary}
       className={className}
     />

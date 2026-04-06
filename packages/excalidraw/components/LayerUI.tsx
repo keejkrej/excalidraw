@@ -27,11 +27,7 @@ import { useAtom, useAtomValue } from "../editor-jotai";
 import { t } from "../i18n";
 import { calculateScrollCenter } from "../scene";
 
-import {
-  SelectedShapeActions,
-  ShapesSwitcher,
-  CompactShapeActions,
-} from "./Actions";
+import { SelectedShapeActions, ShapesSwitcher, CompactShapeActions } from "./Actions";
 import { LoadingMessage } from "./LoadingMessage";
 import { LockButton } from "./LockButton";
 import { MobileMenu } from "./MobileMenu";
@@ -111,9 +107,7 @@ const DefaultMainMenu: React.FC<{
       {/* FIXME we should to test for this inside the item itself */}
       {UIOptions.canvasActions.export && <MainMenu.DefaultItems.Export />}
       {/* FIXME we should to test for this inside the item itself */}
-      {UIOptions.canvasActions.saveAsImage && (
-        <MainMenu.DefaultItems.SaveAsImage />
-      )}
+      {UIOptions.canvasActions.saveAsImage && <MainMenu.DefaultItems.SaveAsImage />}
       <MainMenu.DefaultItems.SearchMenu />
       <MainMenu.DefaultItems.Help />
       <MainMenu.DefaultItems.ClearCanvas />
@@ -205,10 +199,7 @@ const LayerUI = ({
   };
 
   const renderImageExportDialog = () => {
-    if (
-      !UIOptions.canvasActions.saveAsImage ||
-      appState.openDialog?.name !== "imageExport"
-    ) {
+    if (!UIOptions.canvasActions.saveAsImage || appState.openDialog?.name !== "imageExport") {
       return null;
     }
 
@@ -285,10 +276,7 @@ const LayerUI = ({
   };
 
   const renderFixedSideContainer = () => {
-    const shouldRenderSelectedShapeActions = showSelectedShapeActions(
-      appState,
-      elements,
-    );
+    const shouldRenderSelectedShapeActions = showSelectedShapeActions(appState, elements);
 
     const shouldShowStats =
       appState.stats.open &&
@@ -299,107 +287,93 @@ const LayerUI = ({
     return (
       <FixedSideContainer side="top">
         <div className="App-menu App-menu_top">
-          <Stack.Col
-            gap={spacing.menuTopGap}
-            className={clsx("App-menu_top__left")}
-          >
+          <Stack.Col gap={spacing.menuTopGap} className={clsx("App-menu_top__left")}>
             {renderCanvasActions()}
             <div
               className={clsx("selected-shape-actions-container", {
-                "selected-shape-actions-container--compact":
-                  isCompactStylesPanel,
+                "selected-shape-actions-container--compact": isCompactStylesPanel,
               })}
             >
               {shouldRenderSelectedShapeActions && renderSelectedShapeActions()}
             </div>
           </Stack.Col>
-          {!appState.viewModeEnabled &&
-            appState.openDialog?.name !== "elementLinkSelector" && (
-              <Section heading="shapes" className="shapes-section">
-                {(heading: React.ReactNode) => (
-                  <div style={{ position: "relative" }}>
-                    {renderWelcomeScreen && (
-                      <tunnels.WelcomeScreenToolbarHintTunnel.Out />
-                    )}
-                    <Stack.Col gap={spacing.toolbarColGap} align="start">
-                      <Stack.Row
-                        gap={spacing.toolbarRowGap}
-                        className={clsx("App-toolbar-container", {
+          {!appState.viewModeEnabled && appState.openDialog?.name !== "elementLinkSelector" && (
+            <Section heading="shapes" className="shapes-section">
+              {(heading: React.ReactNode) => (
+                <div style={{ position: "relative" }}>
+                  {renderWelcomeScreen && <tunnels.WelcomeScreenToolbarHintTunnel.Out />}
+                  <Stack.Col gap={spacing.toolbarColGap} align="start">
+                    <Stack.Row
+                      gap={spacing.toolbarRowGap}
+                      className={clsx("App-toolbar-container", {
+                        "zen-mode": appState.zenModeEnabled,
+                      })}
+                    >
+                      <Island
+                        padding={spacing.islandPadding}
+                        className={clsx("App-toolbar", {
                           "zen-mode": appState.zenModeEnabled,
+                          "App-toolbar--compact": isCompactStylesPanel,
                         })}
                       >
-                        <Island
-                          padding={spacing.islandPadding}
-                          className={clsx("App-toolbar", {
-                            "zen-mode": appState.zenModeEnabled,
-                            "App-toolbar--compact": isCompactStylesPanel,
-                          })}
-                        >
-                          <HintViewer
-                            appState={appState}
-                            isMobile={editorInterface.formFactor === "phone"}
-                            editorInterface={editorInterface}
+                        <HintViewer
+                          appState={appState}
+                          isMobile={editorInterface.formFactor === "phone"}
+                          editorInterface={editorInterface}
+                          app={app}
+                        />
+                        {heading}
+                        <Stack.Row gap={spacing.toolbarInnerRowGap}>
+                          <PenModeButton
+                            zenModeEnabled={appState.zenModeEnabled}
+                            checked={appState.penMode}
+                            onChange={() => onPenModeToggle(null)}
+                            title={t("toolBar.penMode")}
+                            penDetected={appState.penDetected}
+                          />
+                          <LockButton
+                            checked={appState.activeTool.locked}
+                            onChange={onLockToggle}
+                            title={t("toolBar.lock")}
+                          />
+
+                          <div className="App-toolbar__divider" />
+
+                          <ShapesSwitcher
+                            setAppState={setAppState}
+                            activeTool={appState.activeTool}
+                            UIOptions={UIOptions}
                             app={app}
                           />
-                          {heading}
-                          <Stack.Row gap={spacing.toolbarInnerRowGap}>
-                            <PenModeButton
-                              zenModeEnabled={appState.zenModeEnabled}
-                              checked={appState.penMode}
-                              onChange={() => onPenModeToggle(null)}
-                              title={t("toolBar.penMode")}
-                              penDetected={appState.penDetected}
-                            />
-                            <LockButton
-                              checked={appState.activeTool.locked}
-                              onChange={onLockToggle}
-                              title={t("toolBar.lock")}
-                            />
-
-                            <div className="App-toolbar__divider" />
-
-                            <ShapesSwitcher
-                              setAppState={setAppState}
-                              activeTool={appState.activeTool}
-                              UIOptions={UIOptions}
-                              app={app}
-                            />
-                          </Stack.Row>
+                        </Stack.Row>
+                      </Island>
+                      {isCollaborating && (
+                        <Island
+                          style={{
+                            marginLeft: spacing.collabMarginLeft,
+                            alignSelf: "center",
+                            height: "fit-content",
+                          }}
+                        >
+                          <LaserPointerButton
+                            title={t("toolBar.laser")}
+                            checked={appState.activeTool.type === TOOL_TYPE.laser}
+                            onChange={() => app.setActiveTool({ type: TOOL_TYPE.laser })}
+                            isMobile
+                          />
                         </Island>
-                        {isCollaborating && (
-                          <Island
-                            style={{
-                              marginLeft: spacing.collabMarginLeft,
-                              alignSelf: "center",
-                              height: "fit-content",
-                            }}
-                          >
-                            <LaserPointerButton
-                              title={t("toolBar.laser")}
-                              checked={
-                                appState.activeTool.type === TOOL_TYPE.laser
-                              }
-                              onChange={() =>
-                                app.setActiveTool({ type: TOOL_TYPE.laser })
-                              }
-                              isMobile
-                            />
-                          </Island>
-                        )}
-                      </Stack.Row>
-                    </Stack.Col>
-                  </div>
-                )}
-              </Section>
-            )}
+                      )}
+                    </Stack.Row>
+                  </Stack.Col>
+                </div>
+              )}
+            </Section>
+          )}
           <div
-            className={clsx(
-              "layer-ui__wrapper__top-right zen-mode-transition",
-              {
-                "transition-right": appState.zenModeEnabled,
-                "layer-ui__wrapper__top-right--compact": isCompactStylesPanel,
-              },
-            )}
+            className={clsx("layer-ui__wrapper__top-right zen-mode-transition", {
+              "transition-right": appState.zenModeEnabled,
+              "layer-ui__wrapper__top-right--compact": isCompactStylesPanel,
+            })}
           >
             {appState.collaborators.size > 0 && (
               <UserList
@@ -407,15 +381,11 @@ const LayerUI = ({
                 userToFollow={appState.userToFollow?.socketId || null}
               />
             )}
-            {renderTopRightUI?.(
-              editorInterface.formFactor === "phone",
-              appState,
-            )}
+            {renderTopRightUI?.(editorInterface.formFactor === "phone", appState)}
             {!appState.viewModeEnabled &&
               appState.openDialog?.name !== "elementLinkSelector" &&
               // hide button when sidebar docked
-              (!isSidebarDocked ||
-                appState.openSidebar?.name !== DEFAULT_SIDEBAR.name) && (
+              (!isSidebarDocked || appState.openSidebar?.name !== DEFAULT_SIDEBAR.name) && (
                 <tunnels.DefaultSidebarTriggerTunnel.Out />
               )}
             {shouldShowStats && (
@@ -441,9 +411,7 @@ const LayerUI = ({
           trackEvent(
             "sidebar",
             `toggleDock (${docked ? "dock" : "undock"})`,
-            `(${
-              editorInterface.formFactor === "phone" ? "mobile" : "desktop"
-            })`,
+            `(${editorInterface.formFactor === "phone" ? "mobile" : "desktop"})`,
           );
         }}
       />
@@ -471,9 +439,7 @@ const LayerUI = ({
             trackEvent(
               "sidebar",
               `${DEFAULT_SIDEBAR.name} (open)`,
-              `button (${
-                editorInterface.formFactor === "phone" ? "mobile" : "desktop"
-              })`,
+              `button (${editorInterface.formFactor === "phone" ? "mobile" : "desktop"})`,
             );
           }
         }}
@@ -496,10 +462,7 @@ const LayerUI = ({
             setEyeDropperState(null);
           }}
           onChange={(colorPickerType, color, selectedElements, { altKey }) => {
-            if (
-              colorPickerType !== "elementBackground" &&
-              colorPickerType !== "elementStroke"
-            ) {
+            if (colorPickerType !== "elementBackground" && colorPickerType !== "elementStroke") {
               return;
             }
 
@@ -511,8 +474,8 @@ const LayerUI = ({
                       ? "strokeColor"
                       : "backgroundColor"
                     : colorPickerType === "elementBackground"
-                    ? "backgroundColor"
-                    : "strokeColor"]: color,
+                      ? "backgroundColor"
+                      : "strokeColor"]: color,
                 });
                 ShapeCache.delete(element);
               }
@@ -591,9 +554,7 @@ const LayerUI = ({
           <div
             className="layer-ui__wrapper"
             style={
-              appState.openSidebar &&
-              isSidebarDocked &&
-              editorInterface.canFitSidebar
+              appState.openSidebar && isSidebarDocked && editorInterface.canFitSidebar
                 ? { width: `calc(100% - var(--right-sidebar-width))` }
                 : {}
             }
@@ -641,17 +602,14 @@ const LayerUI = ({
   return (
     <UIAppStateContext.Provider value={appState}>
       <TunnelsJotaiProvider>
-        <TunnelsContext.Provider value={tunnels}>
-          {layerUIJSX}
-        </TunnelsContext.Provider>
+        <TunnelsContext.Provider value={tunnels}>{layerUIJSX}</TunnelsContext.Provider>
       </TunnelsJotaiProvider>
     </UIAppStateContext.Provider>
   );
 };
 
 const stripIrrelevantAppStateProps = (appState: AppState): UIAppState => {
-  const { startBoundElement, cursorButton, scrollX, scrollY, ...ret } =
-    appState;
+  const { startBoundElement, cursorButton, scrollX, scrollY, ...ret } = appState;
   return ret;
 };
 

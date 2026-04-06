@@ -65,9 +65,7 @@ class DataTransfer {
   public items: DataTransferItemList = new DataTransferItemList();
 
   get files() {
-    return this.items
-      .filter((item) => item.kind === "file")
-      .map((item) => item.getAsFile()!);
+    return this.items.filter((item) => item.kind === "file").map((item) => item.getAsFile()!);
   }
 
   add(data: string | File, type: string = ""): void {

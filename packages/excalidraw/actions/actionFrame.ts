@@ -2,10 +2,7 @@ import { getNonDeletedElements } from "@excalidraw/element";
 import { mutateElement } from "@excalidraw/element";
 import { newFrameElement } from "@excalidraw/element";
 import { isFrameLikeElement } from "@excalidraw/element";
-import {
-  addElementsToFrame,
-  removeAllElementsFromFrame,
-} from "@excalidraw/element";
+import { addElementsToFrame, removeAllElementsFromFrame } from "@excalidraw/element";
 import { getFrameChildren } from "@excalidraw/element";
 
 import { KEYS, updateActiveTool } from "@excalidraw/common";
@@ -26,15 +23,10 @@ import { register } from "./register";
 
 import type { AppClassProperties, AppState, UIAppState } from "../types";
 
-const isSingleFrameSelected = (
-  appState: UIAppState,
-  app: AppClassProperties,
-) => {
+const isSingleFrameSelected = (appState: UIAppState, app: AppClassProperties) => {
   const selectedElements = app.scene.getSelectedElements(appState);
 
-  return (
-    selectedElements.length === 1 && isFrameLikeElement(selectedElements[0])
-  );
+  return selectedElements.length === 1 && isFrameLikeElement(selectedElements[0]);
 };
 
 export const actionSelectAllElementsInFrame = register({
@@ -42,8 +34,7 @@ export const actionSelectAllElementsInFrame = register({
   label: "labels.selectAllElementsInFrame",
   trackEvent: { category: "canvas" },
   perform: (elements, appState, _, app) => {
-    const selectedElement =
-      app.scene.getSelectedElements(appState).at(0) || null;
+    const selectedElement = app.scene.getSelectedElements(appState).at(0) || null;
 
     if (isFrameLikeElement(selectedElement)) {
       const elementsInFrame = getFrameChildren(
@@ -55,10 +46,13 @@ export const actionSelectAllElementsInFrame = register({
         elements,
         appState: {
           ...appState,
-          selectedElementIds: elementsInFrame.reduce((acc, element) => {
-            acc[element.id] = true;
-            return acc;
-          }, {} as Record<ExcalidrawElement["id"], true>),
+          selectedElementIds: elementsInFrame.reduce(
+            (acc, element) => {
+              acc[element.id] = true;
+              return acc;
+            },
+            {} as Record<ExcalidrawElement["id"], true>,
+          ),
         },
         captureUpdate: CaptureUpdateAction.IMMEDIATELY,
       };
@@ -70,8 +64,7 @@ export const actionSelectAllElementsInFrame = register({
       captureUpdate: CaptureUpdateAction.EVENTUALLY,
     };
   },
-  predicate: (elements, appState, _, app) =>
-    isSingleFrameSelected(appState, app),
+  predicate: (elements, appState, _, app) => isSingleFrameSelected(appState, app),
 });
 
 export const actionRemoveAllElementsFromFrame = register({
@@ -79,8 +72,7 @@ export const actionRemoveAllElementsFromFrame = register({
   label: "labels.removeAllElementsFromFrame",
   trackEvent: { category: "history" },
   perform: (elements, appState, _, app) => {
-    const selectedElement =
-      app.scene.getSelectedElements(appState).at(0) || null;
+    const selectedElement = app.scene.getSelectedElements(appState).at(0) || null;
 
     if (isFrameLikeElement(selectedElement)) {
       return {
@@ -101,8 +93,7 @@ export const actionRemoveAllElementsFromFrame = register({
       captureUpdate: CaptureUpdateAction.EVENTUALLY,
     };
   },
-  predicate: (elements, appState, _, app) =>
-    isSingleFrameSelected(appState, app),
+  predicate: (elements, appState, _, app) => isSingleFrameSelected(appState, app),
 });
 
 export const actionupdateFrameRendering = register({
@@ -187,10 +178,7 @@ export const actionWrapSelectionInFrame = register({
 
     // for a selected partial group, we want to remove it from the remainder of the group
     if (appState.editingGroupId) {
-      const elementsInGroup = getElementsInGroup(
-        selectedElements,
-        appState.editingGroupId,
-      );
+      const elementsInGroup = getElementsInGroup(selectedElements, appState.editingGroupId);
 
       for (const elementInGroup of elementsInGroup) {
         const index = elementInGroup.groupIds.indexOf(appState.editingGroupId);

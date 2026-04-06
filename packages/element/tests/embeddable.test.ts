@@ -96,8 +96,7 @@ describe("YouTube timestamp parsing", () => {
   });
 
   it("should handle playlist URLs with timestamps", () => {
-    const url =
-      "https://www.youtube.com/playlist?list=PLrAXtmRdnEQy1KbG5lbfgQ0-PKQY6FKYZ&t=60";
+    const url = "https://www.youtube.com/playlist?list=PLrAXtmRdnEQy1KbG5lbfgQ0-PKQY6FKYZ&t=60";
     const result = getEmbedLink(url);
 
     expect(result).toBeTruthy();
@@ -139,8 +138,7 @@ describe("YouTube timestamp parsing", () => {
   });
 
   it("should preserve other URL parameters", () => {
-    const url =
-      "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=90&feature=youtu.be&list=PLtest";
+    const url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=90&feature=youtu.be&list=PLtest";
     const result = getEmbedLink(url);
 
     expect(result).toBeTruthy();
@@ -156,18 +154,15 @@ describe("Google Drive video embedding", () => {
   it.each([
     {
       url: "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz123456/view?usp=sharing",
-      expectedLink:
-        "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz123456/preview",
+      expectedLink: "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz123456/preview",
     },
     {
       url: "https://drive.google.com/open?id=1AbCdEfGhIjKlMnOpQrStUvWxYz123456",
-      expectedLink:
-        "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz123456/preview",
+      expectedLink: "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz123456/preview",
     },
     {
       url: "https://drive.google.com/uc?export=download&id=1AbCdEfGhIjKlMnOpQrStUvWxYz123456",
-      expectedLink:
-        "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz123456/preview",
+      expectedLink: "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz123456/preview",
     },
   ])("should normalize Google Drive link: $url", ({ url, expectedLink }) => {
     const result = getEmbedLink(url);
@@ -195,8 +190,7 @@ describe("Google Drive video embedding", () => {
   });
 
   it("should preserve timestamp when available", () => {
-    const url =
-      "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz123456/view?t=9";
+    const url = "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz123456/view?t=9";
     const result = getEmbedLink(url);
 
     expect(result).toBeTruthy();

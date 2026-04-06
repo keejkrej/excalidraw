@@ -21,9 +21,7 @@ export const resaveAsImageWithScene = async (
   const fileHandleType = getFileHandleType(fileHandle);
 
   if (!isImageFileHandleType(fileHandleType)) {
-    throw new Error(
-      "fileHandle should exist and should be of type svg or png when resaving",
-    );
+    throw new Error("fileHandle should exist and should be of type svg or png when resaving");
   }
 
   let { elements, appState, files } = await data;
@@ -35,11 +33,7 @@ export const resaveAsImageWithScene = async (
     exportEmbedScene: true,
   };
 
-  const { exportedElements, exportingFrame } = prepareElementsForExport(
-    elements,
-    appState,
-    false,
-  );
+  const { exportedElements, exportingFrame } = prepareElementsForExport(elements, appState, false);
 
   await exportCanvas(fileHandleType, exportedElements, appState, files, {
     exportBackground,

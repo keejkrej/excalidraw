@@ -1,8 +1,4 @@
-import {
-  isTransparent,
-  mapFind,
-  reduceToCommonValue,
-} from "@excalidraw/common";
+import { isTransparent, mapFind, reduceToCommonValue } from "@excalidraw/common";
 import { vi } from "vitest";
 
 // Import directly to avoid the @excalidraw/common throttleRAF mock from setupTests.ts.
@@ -35,20 +31,14 @@ describe("@excalidraw/common/utils", () => {
       const o = {};
       expect(reduceToCommonValue([o, o])).toEqual(o);
 
-      expect(
-        reduceToCommonValue([{ a: 1 }, { a: 1, b: 2 }], (o) => o.a),
-      ).toEqual(1);
-      expect(
-        reduceToCommonValue(new Set([{ a: 1 }, { a: 1, b: 2 }]), (o) => o.a),
-      ).toEqual(1);
+      expect(reduceToCommonValue([{ a: 1 }, { a: 1, b: 2 }], (o) => o.a)).toEqual(1);
+      expect(reduceToCommonValue(new Set([{ a: 1 }, { a: 1, b: 2 }]), (o) => o.a)).toEqual(1);
     });
 
     it("should return `null` when values are different", () => {
       expect(reduceToCommonValue([1, 2, 3])).toEqual(null);
       expect(reduceToCommonValue(new Set([1, 2]))).toEqual(null);
-      expect(reduceToCommonValue([{ a: 1 }, { a: 2 }], (o) => o.a)).toEqual(
-        null,
-      );
+      expect(reduceToCommonValue([{ a: 1 }, { a: 2 }], (o) => o.a)).toEqual(null);
     });
 
     it("should return `null` when some values are nullable", () => {
@@ -100,13 +90,11 @@ describe("@excalidraw/common/utils", () => {
       frameCallbacks = new Map();
       nextFrameId = 0;
 
-      vi.spyOn(window, "requestAnimationFrame").mockImplementation(
-        (callback) => {
-          const frameId = ++nextFrameId;
-          frameCallbacks.set(frameId, callback);
-          return frameId;
-        },
-      );
+      vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+        const frameId = ++nextFrameId;
+        frameCallbacks.set(frameId, callback);
+        return frameId;
+      });
 
       vi.spyOn(window, "cancelAnimationFrame").mockImplementation((frameId) => {
         frameCallbacks.delete(frameId);

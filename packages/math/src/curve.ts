@@ -56,10 +56,8 @@ function solveWithAnalyticalJacobian<Point extends GlobalPoint | LocalPoint>(
       t0_3 * curve[3][1];
 
     // Compute line point at parameter s0
-    const lineX =
-      lineSegment[0][0] + s0 * (lineSegment[1][0] - lineSegment[0][0]);
-    const lineY =
-      lineSegment[0][1] + s0 * (lineSegment[1][1] - lineSegment[0][1]);
+    const lineX = lineSegment[0][0] + s0 * (lineSegment[1][0] - lineSegment[0][0]);
+    const lineY = lineSegment[0][1] + s0 * (lineSegment[1][1] - lineSegment[0][1]);
 
     // Function values
     const fx = bezierX - lineX;
@@ -140,14 +138,7 @@ const calculate = <Point extends GlobalPoint | LocalPoint>(
   tolerance: number = 1e-2,
   iterLimit: number = 4,
 ) => {
-  const solution = solveWithAnalyticalJacobian(
-    c,
-    l,
-    t0,
-    s0,
-    tolerance,
-    iterLimit,
-  );
+  const solution = solveWithAnalyticalJacobian(c, l, t0, s0, tolerance, iterLimit);
 
   if (!solution) {
     return null;
@@ -165,9 +156,7 @@ const calculate = <Point extends GlobalPoint | LocalPoint>(
 /**
  * Computes the intersection between a cubic spline and a line segment.
  */
-export function curveIntersectLineSegment<
-  Point extends GlobalPoint | LocalPoint,
->(
+export function curveIntersectLineSegment<Point extends GlobalPoint | LocalPoint>(
   c: Curve<Point>,
   l: LineSegment<Point>,
   opts?: {
@@ -175,35 +164,17 @@ export function curveIntersectLineSegment<
     iterLimit?: number;
   },
 ): Point[] {
-  let solution = calculate(
-    initial_guesses[0],
-    l,
-    c,
-    opts?.tolerance,
-    opts?.iterLimit,
-  );
+  let solution = calculate(initial_guesses[0], l, c, opts?.tolerance, opts?.iterLimit);
   if (solution) {
     return [solution];
   }
 
-  solution = calculate(
-    initial_guesses[1],
-    l,
-    c,
-    opts?.tolerance,
-    opts?.iterLimit,
-  );
+  solution = calculate(initial_guesses[1], l, c, opts?.tolerance, opts?.iterLimit);
   if (solution) {
     return [solution];
   }
 
-  solution = calculate(
-    initial_guesses[2],
-    l,
-    c,
-    opts?.tolerance,
-    opts?.iterLimit,
-  );
+  solution = calculate(initial_guesses[2], l, c, opts?.tolerance, opts?.iterLimit);
   if (solution) {
     return [solution];
   }
@@ -263,9 +234,7 @@ export function curveClosestPoint<Point extends GlobalPoint | LocalPoint>(
 
   const t0 = Math.max((closestStep - 1) / maxSteps, 0);
   const t1 = Math.min((closestStep + 1) / maxSteps, 1);
-  const solution = localMinimum(t0, t1, (t) =>
-    pointDistance(p, bezierEquation(c, t)),
-  );
+  const solution = localMinimum(t0, t1, (t) => pointDistance(p, bezierEquation(c, t)));
 
   if (!solution) {
     return null;
@@ -297,9 +266,7 @@ export function curvePointDistance<Point extends GlobalPoint | LocalPoint>(
 /**
  * Determines if the parameter is a Curve
  */
-export function isCurve<P extends GlobalPoint | LocalPoint>(
-  v: unknown,
-): v is Curve<P> {
+export function isCurve<P extends GlobalPoint | LocalPoint>(v: unknown): v is Curve<P> {
   return (
     Array.isArray(v) &&
     v.length === 4 &&
@@ -330,10 +297,7 @@ export function curveTangent<Point extends GlobalPoint | LocalPoint>(
   );
 }
 
-export function curveCatmullRomQuadraticApproxPoints(
-  points: GlobalPoint[],
-  tension = 0.5,
-) {
+export function curveCatmullRomQuadraticApproxPoints(points: GlobalPoint[], tension = 0.5) {
   if (points.length < 2) {
     return;
   }
@@ -346,18 +310,16 @@ export function curveCatmullRomQuadraticApproxPoints(
     const cpX = p1[0] + ((p2[0] - p0[0]) * tension) / 2;
     const cpY = p1[1] + ((p2[1] - p0[1]) * tension) / 2;
 
-    pointSets.push([
-      pointFrom<GlobalPoint>(cpX, cpY),
-      pointFrom<GlobalPoint>(p2[0], p2[1]),
-    ]);
+    pointSets.push([pointFrom<GlobalPoint>(cpX, cpY), pointFrom<GlobalPoint>(p2[0], p2[1])]);
   }
 
   return pointSets;
 }
 
-export function curveCatmullRomCubicApproxPoints<
-  Point extends GlobalPoint | LocalPoint,
->(points: Point[], tension = 0.5) {
+export function curveCatmullRomCubicApproxPoints<Point extends GlobalPoint | LocalPoint>(
+  points: Point[],
+  tension = 0.5,
+) {
   if (points.length < 2) {
     return;
   }
@@ -444,9 +406,7 @@ export function offsetPointsForQuadraticBezier(
  * @param c The curve to calculate the length of
  * @returns The approximated length of the curve
  */
-export function curveLength<P extends GlobalPoint | LocalPoint>(
-  c: Curve<P>,
-): number {
+export function curveLength<P extends GlobalPoint | LocalPoint>(c: Curve<P>): number {
   const z2 = 0.5;
   let sum = 0;
 
@@ -454,8 +414,7 @@ export function curveLength<P extends GlobalPoint | LocalPoint>(
     const t = z2 * LegendreGaussN24TValues[i] + z2;
     const derivativeVector = curveTangent(c, t);
     const magnitude = Math.sqrt(
-      derivativeVector[0] * derivativeVector[0] +
-        derivativeVector[1] * derivativeVector[1],
+      derivativeVector[0] * derivativeVector[0] + derivativeVector[1] * derivativeVector[1],
     );
     sum += LegendreGaussN24CValues[i] * magnitude;
   }
@@ -493,8 +452,7 @@ export function curveLengthAtParameter<P extends GlobalPoint | LocalPoint>(
     const parameter = z1 * LegendreGaussN24TValues[i] + z2;
     const derivativeVector = curveTangent(c, parameter);
     const magnitude = Math.sqrt(
-      derivativeVector[0] * derivativeVector[0] +
-        derivativeVector[1] * derivativeVector[1],
+      derivativeVector[0] * derivativeVector[0] + derivativeVector[1] * derivativeVector[1],
     );
     sum += LegendreGaussN24CValues[i] * magnitude;
   }

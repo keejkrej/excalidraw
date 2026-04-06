@@ -28,11 +28,7 @@ export const alignElements = (
   const selectionBoundingBox = getCommonBoundingBox(selectedElements);
 
   return groups.flatMap((group) => {
-    const translation = calculateTranslation(
-      group,
-      selectionBoundingBox,
-      alignment,
-    );
+    const translation = calculateTranslation(group, selectionBoundingBox, alignment);
     return group.map((element) => {
       // update element
       const updatedEle = scene.mutateElement(element, {

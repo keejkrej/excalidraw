@@ -2,10 +2,7 @@ import { KEYS, invariant, toBrandedType } from "@excalidraw/common";
 
 import { type GlobalPoint, pointFrom, type LocalPoint } from "@excalidraw/math";
 
-import type {
-  AppState,
-  PendingExcalidrawElements,
-} from "@excalidraw/excalidraw/types";
+import type { AppState, PendingExcalidrawElements } from "@excalidraw/excalidraw/types";
 
 import { bindBindingElement } from "./binding";
 import { updateElbowArrowPoints } from "./elbowArrow";
@@ -74,11 +71,9 @@ const getNodeRelatives = (
         isElbowArrow(el) &&
         // we want check existence of the opposite binding, in the direction
         // we're interested in
-        (oppositeBinding =
-          el[type === "predecessors" ? "startBinding" : "endBinding"]) &&
+        (oppositeBinding = el[type === "predecessors" ? "startBinding" : "endBinding"]) &&
         // similarly, we need to filter only arrows bound to target node
-        el[type === "predecessors" ? "endBinding" : "startBinding"]
-          ?.elementId === node.id
+        el[type === "predecessors" ? "endBinding" : "startBinding"]?.elementId === node.id
       ) {
         const relative = elementsMap.get(oppositeBinding.elementId);
 
@@ -86,20 +81,16 @@ const getNodeRelatives = (
           return acc;
         }
 
-        invariant(
-          isBindableElement(relative),
-          "not an ExcalidrawBindableElement",
-        );
+        invariant(isBindableElement(relative), "not an ExcalidrawBindableElement");
 
         const edgePoint = (
           type === "predecessors" ? el.points[el.points.length - 1] : [0, 0]
         ) as Readonly<LocalPoint>;
 
-        const heading = headingForPointFromElement(
-          node,
-          aabbForElement(node, elementsMap),
-          [edgePoint[0] + el.x, edgePoint[1] + el.y] as Readonly<GlobalPoint>,
-        );
+        const heading = headingForPointFromElement(node, aabbForElement(node, elementsMap), [
+          edgePoint[0] + el.x,
+          edgePoint[1] + el.y,
+        ] as Readonly<GlobalPoint>);
 
         acc.push({
           relative,
@@ -164,8 +155,7 @@ const getOffsets = (
     // vertical space is available
     if (
       linkedNodes.every(
-        (linkedNode) =>
-          linkedNode.x + linkedNode.width < minX || linkedNode.x > maxX,
+        (linkedNode) => linkedNode.x + linkedNode.width < minX || linkedNode.x > maxX,
       )
     ) {
       return {
@@ -179,13 +169,11 @@ const getOffsets = (
 
     if (
       linkedNodes.every(
-        (linkedNode) =>
-          linkedNode.y + linkedNode.height < minY || linkedNode.y > maxY,
+        (linkedNode) => linkedNode.y + linkedNode.height < minY || linkedNode.y > maxY,
       )
     ) {
       return {
-        x:
-          (HORIZONTAL_OFFSET + element.width) * (direction === "left" ? -1 : 1),
+        x: (HORIZONTAL_OFFSET + element.width) * (direction === "left" ? -1 : 1),
         y: 0,
       };
     }
@@ -198,8 +186,8 @@ const getOffsets = (
       linkedNodes.length === 0
         ? 0
         : (linkedNodes.length + 1) % 2 === 0
-        ? ((linkedNodes.length + 1) / 2) * _HORIZONTAL_OFFSET
-        : (linkedNodes.length / 2) * _HORIZONTAL_OFFSET * -1;
+          ? ((linkedNodes.length + 1) / 2) * _HORIZONTAL_OFFSET
+          : (linkedNodes.length / 2) * _HORIZONTAL_OFFSET * -1;
 
     if (direction === "up") {
       return {
@@ -215,15 +203,13 @@ const getOffsets = (
   }
 
   const _VERTICAL_OFFSET = VERTICAL_OFFSET + element.height;
-  const x =
-    (linkedNodes.length === 0 ? HORIZONTAL_OFFSET : HORIZONTAL_OFFSET) +
-    element.width;
+  const x = (linkedNodes.length === 0 ? HORIZONTAL_OFFSET : HORIZONTAL_OFFSET) + element.width;
   const y =
     linkedNodes.length === 0
       ? 0
       : (linkedNodes.length + 1) % 2 === 0
-      ? ((linkedNodes.length + 1) / 2) * _VERTICAL_OFFSET
-      : (linkedNodes.length / 2) * _VERTICAL_OFFSET * -1;
+        ? ((linkedNodes.length + 1) / 2) * _VERTICAL_OFFSET
+        : (linkedNodes.length / 2) * _VERTICAL_OFFSET * -1;
 
   if (direction === "left") {
     return {
@@ -247,11 +233,7 @@ const addNewNode = (
   const successors = getSuccessors(element, elementsMap, direction);
   const predeccessors = getPredecessors(element, elementsMap, direction);
 
-  const offsets = getOffsets(
-    element,
-    [...successors, ...predeccessors],
-    direction,
-  );
+  const offsets = getOffsets(element, [...successors, ...predeccessors], direction);
 
   const nextNode = newElement({
     type: element.type,
@@ -270,18 +252,9 @@ const addNewNode = (
     strokeStyle: element.strokeStyle,
   });
 
-  invariant(
-    isFlowchartNodeElement(nextNode),
-    "not an ExcalidrawFlowchartNodeElement",
-  );
+  invariant(isFlowchartNodeElement(nextNode), "not an ExcalidrawFlowchartNodeElement");
 
-  const bindingArrow = createBindingArrow(
-    element,
-    nextNode,
-    direction,
-    appState,
-    scene,
-  );
+  const bindingArrow = createBindingArrow(element, nextNode, direction, appState, scene);
 
   return {
     nextNode,
@@ -303,9 +276,7 @@ export const addNewNodes = (
     let nextX: number;
     let nextY: number;
     if (direction === "left" || direction === "right") {
-      const totalHeight =
-        VERTICAL_OFFSET * (numberOfNodes - 1) +
-        numberOfNodes * startNode.height;
+      const totalHeight = VERTICAL_OFFSET * (numberOfNodes - 1) + numberOfNodes * startNode.height;
 
       const startY = startNode.y + startNode.height / 2 - totalHeight / 2;
 
@@ -317,9 +288,7 @@ export const addNewNodes = (
       const offsetY = (VERTICAL_OFFSET + startNode.height) * i;
       nextY = startY + offsetY;
     } else {
-      const totalWidth =
-        HORIZONTAL_OFFSET * (numberOfNodes - 1) +
-        numberOfNodes * startNode.width;
+      const totalWidth = HORIZONTAL_OFFSET * (numberOfNodes - 1) + numberOfNodes * startNode.width;
       const startX = startNode.x + startNode.width / 2 - totalWidth / 2;
       let offsetY = VERTICAL_OFFSET + startNode.height;
 
@@ -348,18 +317,9 @@ export const addNewNodes = (
       strokeStyle: startNode.strokeStyle,
     });
 
-    invariant(
-      isFlowchartNodeElement(nextNode),
-      "not an ExcalidrawFlowchartNodeElement",
-    );
+    invariant(isFlowchartNodeElement(nextNode), "not an ExcalidrawFlowchartNodeElement");
 
-    const bindingArrow = createBindingArrow(
-      startNode,
-      nextNode,
-      direction,
-      appState,
-      scene,
-    );
+    const bindingArrow = createBindingArrow(startNode, nextNode, direction, appState, scene);
 
     newNodes.push(nextNode);
     newNodes.push(bindingArrow);
@@ -446,28 +406,13 @@ const createBindingArrow = (
 
   const elementsMap = scene.getNonDeletedElementsMap();
 
-  bindBindingElement(
-    bindingArrow,
-    startBindingElement,
-    "orbit",
-    "start",
-    scene,
-  );
+  bindBindingElement(bindingArrow, startBindingElement, "orbit", "start", scene);
   bindBindingElement(bindingArrow, endBindingElement, "orbit", "end", scene);
 
   const changedElements = new Map<string, OrderedExcalidrawElement>();
-  changedElements.set(
-    startBindingElement.id,
-    startBindingElement as OrderedExcalidrawElement,
-  );
-  changedElements.set(
-    endBindingElement.id,
-    endBindingElement as OrderedExcalidrawElement,
-  );
-  changedElements.set(
-    bindingArrow.id,
-    bindingArrow as OrderedExcalidrawElement,
-  );
+  changedElements.set(startBindingElement.id, startBindingElement as OrderedExcalidrawElement);
+  changedElements.set(endBindingElement.id, endBindingElement as OrderedExcalidrawElement);
+  changedElements.set(bindingArrow.id, bindingArrow as OrderedExcalidrawElement);
 
   LinearElementEditor.movePoints(
     bindingArrow,
@@ -550,13 +495,8 @@ export class FlowChartNavigator {
      * WHY:
      * - provides user the capability to loop through nodes at the same level
      */
-    if (
-      this.isExploring &&
-      direction === this.direction &&
-      this.sameLevelNodes.length > 1
-    ) {
-      this.sameLevelIndex =
-        (this.sameLevelIndex + 1) % this.sameLevelNodes.length;
+    if (this.isExploring && direction === this.direction && this.sameLevelNodes.length > 1) {
+      this.sameLevelIndex = (this.sameLevelIndex + 1) % this.sameLevelNodes.length;
 
       return this.sameLevelNodes[this.sameLevelIndex].id;
     }
@@ -603,12 +543,9 @@ export class FlowChartNavigator {
         this.visitedNodes.add(element.id);
       }
 
-      const otherDirections: LinkDirection[] = [
-        "up",
-        "right",
-        "down",
-        "left",
-      ].filter((dir): dir is LinkDirection => dir !== direction);
+      const otherDirections: LinkDirection[] = ["up", "right", "down", "left"].filter(
+        (dir): dir is LinkDirection => dir !== direction,
+      );
 
       const otherLinkedNodes = otherDirections
         .map((dir) => [
@@ -646,12 +583,7 @@ export class FlowChartCreator {
   ) {
     const elementsMap = scene.getNonDeletedElementsMap();
     if (direction !== this.direction) {
-      const { nextNode, bindingArrow } = addNewNode(
-        startNode,
-        appState,
-        direction,
-        scene,
-      );
+      const { nextNode, bindingArrow } = addNewNode(startNode, appState, direction, scene);
 
       this.numberOfNodes = 1;
       this.isCreatingChart = true;
@@ -659,13 +591,7 @@ export class FlowChartCreator {
       this.pendingNodes = [nextNode, bindingArrow];
     } else {
       this.numberOfNodes += 1;
-      const newNodes = addNewNodes(
-        startNode,
-        appState,
-        direction,
-        scene,
-        this.numberOfNodes,
-      );
+      const newNodes = addNewNodes(startNode, appState, direction, scene, this.numberOfNodes);
 
       this.isCreatingChart = true;
       this.direction = direction;
@@ -677,10 +603,7 @@ export class FlowChartCreator {
     if (startNode.frameId) {
       const frame = elementsMap.get(startNode.frameId);
 
-      invariant(
-        frame && isFrameElement(frame),
-        "not an ExcalidrawFrameElement",
-      );
+      invariant(frame && isFrameElement(frame), "not an ExcalidrawFrameElement");
 
       if (
         frame &&
@@ -714,8 +637,7 @@ export const isNodeInFlowchart = (
   for (const [, el] of elementsMap) {
     if (
       el.type === "arrow" &&
-      (el.startBinding?.elementId === element.id ||
-        el.endBinding?.elementId === element.id)
+      (el.startBinding?.elementId === element.id || el.endBinding?.elementId === element.id)
     ) {
       return true;
     }

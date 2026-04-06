@@ -7,10 +7,7 @@ import { normalizeElementOrder } from "../src/sortElements";
 import type { ExcalidrawElement } from "../src/types";
 
 const { h } = window;
-const assertOrder = (
-  elements: readonly ExcalidrawElement[],
-  expectedOrder: string[],
-) => {
+const assertOrder = (elements: readonly ExcalidrawElement[], expectedOrder: string[]) => {
   const actualOrder = elements.map((element) => element.id);
   expect(actualOrder).toEqual(expectedOrder);
 };
@@ -41,58 +38,40 @@ describe("normalizeElementsOrder", () => {
       boundElements: [{ type: "text", id: boundText.id }],
     });
 
-    assertOrder(normalizeElementOrder([container, boundText]), [
+    assertOrder(normalizeElementOrder([container, boundText]), ["container", "boundText"]);
+    assertOrder(normalizeElementOrder([boundText, container]), ["container", "boundText"]);
+    assertOrder(normalizeElementOrder([boundText, container, otherElement, otherElement2]), [
       "container",
       "boundText",
+      "otherElement",
+      "otherElement2",
     ]);
-    assertOrder(normalizeElementOrder([boundText, container]), [
-      "container",
-      "boundText",
-    ]);
-    assertOrder(
-      normalizeElementOrder([
-        boundText,
-        container,
-        otherElement,
-        otherElement2,
-      ]),
-      ["container", "boundText", "otherElement", "otherElement2"],
-    );
     assertOrder(normalizeElementOrder([container, otherElement, boundText]), [
       "container",
       "boundText",
       "otherElement",
     ]);
-    assertOrder(
-      normalizeElementOrder([
-        container,
-        otherElement,
-        otherElement2,
-        boundText,
-      ]),
-      ["container", "boundText", "otherElement", "otherElement2"],
-    );
+    assertOrder(normalizeElementOrder([container, otherElement, otherElement2, boundText]), [
+      "container",
+      "boundText",
+      "otherElement",
+      "otherElement2",
+    ]);
 
-    assertOrder(
-      normalizeElementOrder([
-        boundText,
-        otherElement,
-        container,
-        otherElement2,
-      ]),
-      ["otherElement", "container", "boundText", "otherElement2"],
-    );
+    assertOrder(normalizeElementOrder([boundText, otherElement, container, otherElement2]), [
+      "otherElement",
+      "container",
+      "boundText",
+      "otherElement2",
+    ]);
 
     // noop
-    assertOrder(
-      normalizeElementOrder([
-        otherElement,
-        container,
-        boundText,
-        otherElement2,
-      ]),
-      ["otherElement", "container", "boundText", "otherElement2"],
-    );
+    assertOrder(normalizeElementOrder([otherElement, container, boundText, otherElement2]), [
+      "otherElement",
+      "container",
+      "boundText",
+      "otherElement2",
+    ]);
 
     // text has existing containerId, but container doesn't list is
     // as a boundElement

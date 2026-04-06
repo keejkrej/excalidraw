@@ -5,9 +5,7 @@ import { atom, useAtom } from "../editor-jotai";
 
 const scrollPositionAtom = atom<number>(0);
 
-export const useScrollPosition = <T extends HTMLElement>(
-  elementRef: React.RefObject<T | null>,
-) => {
+export const useScrollPosition = <T extends HTMLElement>(elementRef: React.RefObject<T | null>) => {
   const [scrollPosition, setScrollPosition] = useAtom(scrollPositionAtom);
 
   useEffect(() => {

@@ -20,11 +20,7 @@ import { CaptureUpdateAction } from "@excalidraw/element";
 
 import type { ExcalidrawElement } from "@excalidraw/element/types";
 
-import {
-  getDefaultAppState,
-  isEraserActive,
-  isHandToolActive,
-} from "../appState";
+import { getDefaultAppState, isEraserActive, isHandToolActive } from "../appState";
 import { ColorPicker } from "../components/ColorPicker/ColorPicker";
 import { ToolButton } from "../components/ToolButton";
 import { Tooltip } from "../components/Tooltip";
@@ -57,8 +53,7 @@ export const actionChangeViewBackgroundColor = register<Partial<AppState>>({
   trackEvent: false,
   predicate: (elements, appState, props, app) => {
     return (
-      !!app.props.UIOptions.canvasActions.changeViewBackgroundColor &&
-      !appState.viewModeEnabled
+      !!app.props.UIOptions.canvasActions.changeViewBackgroundColor && !appState.viewModeEnabled
     );
   },
   perform: (_, appState, value) => {
@@ -103,9 +98,7 @@ export const actionClearCanvas = register({
   perform: (elements, appState, _, app) => {
     app.imageCache.clear();
     return {
-      elements: elements.map((element) =>
-        newElementWith(element, { isDeleted: true }),
-      ),
+      elements: elements.map((element) => newElementWith(element, { isDeleted: true })),
       appState: {
         ...getDefaultAppState(),
         files: {},
@@ -268,8 +261,7 @@ const zoomValueToFitBoundsOnViewport = (
   const zoomValueForHeight = viewportDimensions.height / commonBoundsHeight;
   const smallestZoomValue = Math.min(zoomValueForWidth, zoomValueForHeight);
 
-  const adjustedZoomValue =
-    smallestZoomValue * clamp(viewportZoomFactor, 0.1, 1);
+  const adjustedZoomValue = smallestZoomValue * clamp(viewportZoomFactor, 0.1, 1);
 
   return Math.min(adjustedZoomValue, 1);
 };
@@ -304,10 +296,8 @@ export const zoomToFitBounds = ({
   const canvasOffsetRight = canvasOffsets?.right ?? 0;
   const canvasOffsetBottom = canvasOffsets?.bottom ?? 0;
 
-  const effectiveCanvasWidth =
-    appState.width - canvasOffsetLeft - canvasOffsetRight;
-  const effectiveCanvasHeight =
-    appState.height - canvasOffsetTop - canvasOffsetBottom;
+  const effectiveCanvasWidth = appState.width - canvasOffsetLeft - canvasOffsetRight;
+  const effectiveCanvasHeight = appState.height - canvasOffsetTop - canvasOffsetBottom;
 
   let adjustedZoomValue;
 
@@ -411,10 +401,7 @@ export const actionZoomToFitSelectionInViewport = register({
   // NOTE shift-2 should have been assigned actionZoomToFitSelection.
   // TBD on how proceed
   keyTest: (event) =>
-    event.code === CODES.TWO &&
-    event.shiftKey &&
-    !event.altKey &&
-    !event[KEYS.CTRL_OR_CMD],
+    event.code === CODES.TWO && event.shiftKey && !event.altKey && !event[KEYS.CTRL_OR_CMD],
 });
 
 export const actionZoomToFitSelection = register({
@@ -436,10 +423,7 @@ export const actionZoomToFitSelection = register({
   },
   // NOTE this action should use shift-2 per figma, alas
   keyTest: (event) =>
-    event.code === CODES.THREE &&
-    event.shiftKey &&
-    !event.altKey &&
-    !event[KEYS.CTRL_OR_CMD],
+    event.code === CODES.THREE && event.shiftKey && !event.altKey && !event[KEYS.CTRL_OR_CMD],
 });
 
 export const actionZoomToFit = register({
@@ -459,30 +443,23 @@ export const actionZoomToFit = register({
       canvasOffsets: app.getEditorUIOffsets(),
     }),
   keyTest: (event) =>
-    event.code === CODES.ONE &&
-    event.shiftKey &&
-    !event.altKey &&
-    !event[KEYS.CTRL_OR_CMD],
+    event.code === CODES.ONE && event.shiftKey && !event.altKey && !event[KEYS.CTRL_OR_CMD],
 });
 
 export const actionToggleTheme = register<AppState["theme"]>({
   name: "toggleTheme",
   label: (_, appState) => {
-    return appState.theme === THEME.DARK
-      ? "buttons.lightMode"
-      : "buttons.darkMode";
+    return appState.theme === THEME.DARK ? "buttons.lightMode" : "buttons.darkMode";
   },
   keywords: ["toggle", "dark", "light", "mode", "theme"],
-  icon: (appState, elements) =>
-    appState.theme === THEME.LIGHT ? MoonIcon : SunIcon,
+  icon: (appState, elements) => (appState.theme === THEME.LIGHT ? MoonIcon : SunIcon),
   viewMode: true,
   trackEvent: { category: "canvas" },
   perform: (_, appState, value) => {
     return {
       appState: {
         ...appState,
-        theme:
-          value || (appState.theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT),
+        theme: value || (appState.theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT),
       },
       captureUpdate: CaptureUpdateAction.EVENTUALLY,
     };
@@ -599,6 +576,5 @@ export const actionToggleHandTool = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  keyTest: (event) =>
-    !event.altKey && !event[KEYS.CTRL_OR_CMD] && event.key === KEYS.H,
+  keyTest: (event) => !event.altKey && !event[KEYS.CTRL_OR_CMD] && event.key === KEYS.H,
 });

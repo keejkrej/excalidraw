@@ -243,8 +243,7 @@ export const XiaolaiFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _0,
     descriptors: {
-      unicodeRange:
-        "U+f9b8-fa6d,U+fe32,U+fe45-fe4f,U+ff02-ff0b,U+ff0d-ff1e,U+ff20-ff2a",
+      unicodeRange: "U+f9b8-fa6d,U+fe32,U+fe45-fe4f,U+ff02-ff0b,U+ff0d-ff1e,U+ff20-ff2a",
     },
   },
   {
@@ -334,8 +333,7 @@ export const XiaolaiFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _55,
     descriptors: {
-      unicodeRange:
-        "U+923c-9273,U+9275-928d,U+928f-92ad,U+92af-92c7,U+92c9-92ee",
+      unicodeRange: "U+923c-9273,U+9275-928d,U+928f-92ad,U+92af-92c7,U+92c9-92ee",
     },
   },
   {
@@ -376,8 +374,7 @@ export const XiaolaiFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _61,
     descriptors: {
-      unicodeRange:
-        "U+8a64-8a78,U+8a7a-8a88,U+8a8b-8a92,U+8a94-8b06,U+8b08-8b1b",
+      unicodeRange: "U+8a64-8a78,U+8a7a-8a88,U+8a8b-8a92,U+8a94-8b06,U+8b08-8b1b",
     },
   },
   {
@@ -739,8 +736,7 @@ export const XiaolaiFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _116,
     descriptors: {
-      unicodeRange:
-        "U+4275-430d,U+298c6,U+29a72,U+29d98,U+29ddb,U+29e15,U+29e3d,U+29e49",
+      unicodeRange: "U+4275-430d,U+298c6,U+29a72,U+29d98,U+29ddb,U+29e15,U+29e3d,U+29e49",
     },
   },
   {
@@ -753,8 +749,7 @@ export const XiaolaiFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _118,
     descriptors: {
-      unicodeRange:
-        "U+41df-4274,U+292b1,U+29490,U+295cf,U+2967f,U+296f0,U+29719,U+29750",
+      unicodeRange: "U+41df-4274,U+292b1,U+29490,U+295cf,U+2967f,U+296f0,U+29719,U+29750",
     },
   },
   {
@@ -774,8 +769,7 @@ export const XiaolaiFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _121,
     descriptors: {
-      unicodeRange:
-        "U+3f30-3fdb,U+27985,U+27a84,U+27bb3,U+27bbe,U+27bc7,U+27cb8,U+27da0,U+27e10",
+      unicodeRange: "U+3f30-3fdb,U+27985,U+27a84,U+27bb3,U+27bbe,U+27bc7,U+27cb8,U+27da0,U+27e10",
     },
   },
   {
@@ -858,8 +852,7 @@ export const XiaolaiFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _133,
     descriptors: {
-      unicodeRange:
-        "U+3698-375f,U+22218,U+2231e,U+223ad,U+224dc,U+226f3,U+2285b,U+228ab,U+2298f",
+      unicodeRange: "U+3698-375f,U+22218,U+2231e,U+223ad,U+224dc,U+226f3,U+2285b,U+228ab,U+2298f",
     },
   },
   {
@@ -893,15 +886,13 @@ export const XiaolaiFontFaces: ExcalidrawFontFaceDescriptor[] = [
   {
     uri: _138,
     descriptors: {
-      unicodeRange:
-        "U+328b-336c,U+2000b,U+20089,U+200a2,U+200a4,U+20164,U+201a2,U+20213",
+      unicodeRange: "U+328b-336c,U+2000b,U+20089,U+200a2,U+200a4,U+20164,U+201a2,U+20213",
     },
   },
   {
     uri: _139,
     descriptors: {
-      unicodeRange:
-        "U+3192-31ba,U+31c0-31e3,U+31f0-321e,U+3220-328a,U+1f250-1f251",
+      unicodeRange: "U+3192-31ba,U+31c0-31e3,U+31f0-321e,U+3220-328a,U+1f250-1f251",
     },
   },
   {

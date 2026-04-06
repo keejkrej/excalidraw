@@ -9,10 +9,7 @@ import { t } from "../i18n";
 
 import Spinner from "./Spinner";
 
-export const LoadingMessage: React.FC<{ delay?: number; theme?: Theme }> = ({
-  delay,
-  theme,
-}) => {
+export const LoadingMessage: React.FC<{ delay?: number; theme?: Theme }> = ({ delay, theme }) => {
   const [isWaiting, setIsWaiting] = useState(!!delay);
 
   useEffect(() => {

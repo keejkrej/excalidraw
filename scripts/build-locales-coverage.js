@@ -12,17 +12,13 @@ const flatten = (object = {}, result = {}, extraKey = "") => {
   return result;
 };
 
-const locales = files.filter(
-  (file) => file !== "README.md" && file !== "percentages.json",
-);
+const locales = files.filter((file) => file !== "README.md" && file !== "percentages.json");
 
 const percentages = {};
 
 for (let index = 0; index < locales.length; index++) {
   const currentLocale = locales[index];
-  const data = flatten(
-    require(`${__dirname}/../packages/excalidraw/locales/${currentLocale}`),
-  );
+  const data = flatten(require(`${__dirname}/../packages/excalidraw/locales/${currentLocale}`));
 
   const allKeys = Object.keys(data);
   const translatedKeys = allKeys.filter((item) => data[item] !== "");

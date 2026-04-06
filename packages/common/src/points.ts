@@ -1,14 +1,8 @@
-import {
-  pointFromPair,
-  type GlobalPoint,
-  type LocalPoint,
-} from "@excalidraw/math";
+import { pointFromPair, type GlobalPoint, type LocalPoint } from "@excalidraw/math";
 
 import type { NullableGridSize } from "@excalidraw/excalidraw/types";
 
-export const getSizeFromPoints = (
-  points: readonly (GlobalPoint | LocalPoint)[],
-) => {
+export const getSizeFromPoints = (points: readonly (GlobalPoint | LocalPoint)[]) => {
   const xs = points.map((point) => point[0]);
   const ys = points.map((point) => point[1]);
   return {
@@ -71,10 +65,7 @@ export const getGridPoint = (
   gridSize: NullableGridSize,
 ): [number, number] => {
   if (gridSize) {
-    return [
-      Math.round(x / gridSize) * gridSize,
-      Math.round(y / gridSize) * gridSize,
-    ];
+    return [Math.round(x / gridSize) * gridSize, Math.round(y / gridSize) * gridSize];
   }
   return [x, y];
 };

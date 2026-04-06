@@ -66,14 +66,7 @@ const ColorPickerPopupContent = ({
   appState,
 }: Pick<
   ColorPickerProps,
-  | "type"
-  | "color"
-  | "onChange"
-  | "label"
-  | "elements"
-  | "palette"
-  | "updateData"
-  | "appState"
+  "type" | "color" | "onChange" | "label" | "elements" | "palette" | "updateData" | "appState"
 > & {
   getOpenPopup: () => AppState["openPopup"];
 }) => {
@@ -137,9 +130,7 @@ const ColorPickerPopupContent = ({
         // Refocus text editor when popover closes if we were editing text
         if (appState.editingTextElement) {
           setTimeout(() => {
-            const textEditor = document.querySelector(
-              ".excalidraw-wysiwyg",
-            ) as HTMLTextAreaElement;
+            const textEditor = document.querySelector(".excalidraw-wysiwyg") as HTMLTextAreaElement;
             if (textEditor) {
               textEditor.focus();
             }
@@ -154,9 +145,7 @@ const ColorPickerPopupContent = ({
           color={color}
           onChange={(changedColor) => {
             // Save caret position before color change if editing text
-            const savedSelection = appState.editingTextElement
-              ? saveCaretPosition()
-              : null;
+            const savedSelection = appState.editingTextElement ? saveCaretPosition() : null;
 
             onChange(changedColor);
 
@@ -245,18 +234,13 @@ const ColorPickerTrigger = ({
       type="button"
       className={clsx("color-picker__button active-color properties-trigger", {
         "is-transparent": !color || color === "transparent",
-        "has-outline":
-          !color || !isColorDark(color, COLOR_OUTLINE_CONTRAST_THRESHOLD),
+        "has-outline": !color || !isColorDark(color, COLOR_OUTLINE_CONTRAST_THRESHOLD),
         "compact-sizing": isCompactMode,
         "mobile-border": isMobileMode,
       })}
       aria-label={label}
       style={color ? { "--swatch-color": color } : undefined}
-      title={
-        type === "elementStroke"
-          ? t("labels.showStroke")
-          : t("labels.showBackground")
-      }
+      title={type === "elementStroke" ? t("labels.showStroke") : t("labels.showBackground")}
       data-openpopup={type}
       onClick={handleClick}
     >
@@ -266,9 +250,7 @@ const ColorPickerTrigger = ({
           <span
             style={{
               color:
-                color && isColorDark(color, COLOR_OUTLINE_CONTRAST_THRESHOLD)
-                  ? "#fff"
-                  : "#111",
+                color && isColorDark(color, COLOR_OUTLINE_CONTRAST_THRESHOLD) ? "#fff" : "#111",
             }}
           >
             {strokeIcon}
@@ -307,12 +289,7 @@ export const ColorPicker = ({
         })}
       >
         {!isCompactMode && (
-          <TopPicks
-            activeColor={color}
-            onChange={onChange}
-            type={type}
-            topPicks={topPicks}
-          />
+          <TopPicks activeColor={color} onChange={onChange} type={type} topPicks={topPicks} />
         )}
         {!isCompactMode && <ButtonSeparator />}
         <Popover.Root

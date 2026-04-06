@@ -164,9 +164,7 @@ const languages = {
   "th-TH": "ภาษาไทย",
 };
 
-const percentages = fs.readFileSync(
-  `${__dirname}/../packages/excalidraw/locales/percentages.json`,
-);
+const percentages = fs.readFileSync(`${__dirname}/../packages/excalidraw/locales/percentages.json`);
 const rowData = JSON.parse(percentages);
 
 const coverages = Object.entries(rowData)

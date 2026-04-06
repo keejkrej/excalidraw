@@ -35,10 +35,7 @@ export const useMermaidRenderer = ({
   const [showPreview, setShowPreview] = useAtom(showPreviewAtom);
   const isRenderingRef = useRef(false);
 
-  const lastAssistantMessage = useMemo(
-    () => getLastAssistantMessage(chatHistory),
-    [chatHistory],
-  );
+  const lastAssistantMessage = useMemo(() => getLastAssistantMessage(chatHistory), [chatHistory]);
 
   // Keeping lastAssistantMesssage in ref, so I can access it in useEffect hooks
   const lastAssistantMessageRef = useRef(lastAssistantMessage);
@@ -128,8 +125,7 @@ export const useMermaidRenderer = ({
       lastRenderTimeRef.current = Date.now();
 
       if (!success) {
-        lastRenderTimeRef.current =
-          lastRenderTimeRef.current - throttleDelay + PARSE_FAIL_DELAY;
+        lastRenderTimeRef.current = lastRenderTimeRef.current - throttleDelay + PARSE_FAIL_DELAY;
         hasErrorOffsetRef.current = true;
       }
     };
@@ -190,9 +186,7 @@ export const useMermaidRenderer = ({
   }, [chatHistory?.id, renderMermaid, showPreview]);
 
   useEffect(() => {
-    if (
-      !chatHistory.messages?.filter((msg) => msg.type === "assistant").length
-    ) {
+    if (!chatHistory.messages?.filter((msg) => msg.type === "assistant").length) {
       const canvasNode = canvasRef.current;
       if (canvasNode) {
         const parent = canvasNode.parentElement;

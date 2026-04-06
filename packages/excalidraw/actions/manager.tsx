@@ -2,10 +2,7 @@ import React from "react";
 
 import { isPromiseLike } from "@excalidraw/common";
 
-import type {
-  ExcalidrawElement,
-  OrderedExcalidrawElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawElement, OrderedExcalidrawElement } from "@excalidraw/element/types";
 
 import { trackEvent } from "../analytics";
 
@@ -37,9 +34,7 @@ const trackAction = (
           trackEvent(
             action.trackEvent.category,
             action.trackEvent.action || action.name,
-            `${source} (${
-              app.editorInterface.formFactor === "phone" ? "mobile" : "desktop"
-            })`,
+            `${source} (${app.editorInterface.formFactor === "phone" ? "mobile" : "desktop"})`,
           );
         }
       }
@@ -96,12 +91,7 @@ export class ActionManager {
             ? canvasActions[action.name as keyof typeof canvasActions]
             : true) &&
           action.keyTest &&
-          action.keyTest(
-            event,
-            this.getAppState(),
-            this.getElementsIncludingDeleted(),
-            this.app,
-          ),
+          action.keyTest(event, this.getAppState(), this.getElementsIncludingDeleted(), this.app),
       );
 
     if (data.length !== 1) {
@@ -151,9 +141,7 @@ export class ActionManager {
     if (
       this.actions[name] &&
       "PanelComponent" in this.actions[name] &&
-      (name in canvasActions
-        ? canvasActions[name as keyof typeof canvasActions]
-        : true)
+      (name in canvasActions ? canvasActions[name as keyof typeof canvasActions] : true)
     ) {
       const action = this.actions[name];
       const PanelComponent = action.PanelComponent!;
@@ -193,9 +181,6 @@ export class ActionManager {
     const elements = this.getElementsIncludingDeleted();
     const appState = this.getAppState();
 
-    return (
-      !action.predicate ||
-      action.predicate(elements, appState, this.app.props, this.app)
-    );
+    return !action.predicate || action.predicate(elements, appState, this.app.props, this.app);
   };
 }

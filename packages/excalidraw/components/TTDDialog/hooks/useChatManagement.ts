@@ -14,9 +14,7 @@ interface UseChatManagementProps {
   persistenceAdapter: TTDPersistenceAdapter;
 }
 
-export const useChatManagement = ({
-  persistenceAdapter,
-}: UseChatManagementProps) => {
+export const useChatManagement = ({ persistenceAdapter }: UseChatManagementProps) => {
   const setError = useSetAtom(errorAtom);
   const [chatHistory, setChatHistory] = useAtom(chatHistoryAtom);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,10 +27,7 @@ export const useChatManagement = ({
     (chat: SavedChat) => {
       const restoredMessages = chat.messages.map((msg) => ({
         ...msg,
-        timestamp:
-          msg.timestamp instanceof Date
-            ? msg.timestamp
-            : new Date(msg.timestamp),
+        timestamp: msg.timestamp instanceof Date ? msg.timestamp : new Date(msg.timestamp),
       }));
 
       const history = {
@@ -43,9 +38,7 @@ export const useChatManagement = ({
 
       const lastAssistantMsg = getLastAssistantMessage(history);
 
-      setError(
-        lastAssistantMsg?.error ? new Error(lastAssistantMsg?.error) : null,
-      );
+      setError(lastAssistantMsg?.error ? new Error(lastAssistantMsg?.error) : null);
       setChatHistory(history);
     },
     [setError, setChatHistory],

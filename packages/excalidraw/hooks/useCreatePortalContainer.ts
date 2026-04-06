@@ -20,10 +20,7 @@ export const useCreatePortalContainer = (opts?: {
     if (div) {
       div.className = "";
       div.classList.add("excalidraw", ...(opts?.className?.split(/\s+/) || []));
-      div.classList.toggle(
-        "excalidraw--mobile",
-        editorInterface.formFactor === "phone",
-      );
+      div.classList.toggle("excalidraw--mobile", editorInterface.formFactor === "phone");
       div.classList.toggle("theme--dark", theme === THEME.DARK);
     }
   }, [div, theme, editorInterface.formFactor, opts?.className]);

@@ -18,10 +18,7 @@ import {
   isUsingAdaptiveRadius,
 } from "@excalidraw/element";
 
-import {
-  getCommonBoundingBox,
-  getElementAbsoluteCoords,
-} from "@excalidraw/element";
+import { getCommonBoundingBox, getElementAbsoluteCoords } from "@excalidraw/element";
 
 import {
   getBoundTextElement,
@@ -48,11 +45,7 @@ import { measureText } from "@excalidraw/element";
 
 import { LinearElementEditor } from "@excalidraw/element";
 
-import {
-  newArrowElement,
-  newElement,
-  newLinearElement,
-} from "@excalidraw/element";
+import { newArrowElement, newElement, newLinearElement } from "@excalidraw/element";
 
 import { ShapeCache } from "@excalidraw/element";
 
@@ -106,31 +99,17 @@ type ExcalidrawConvertibleElement =
 // indicates order of switching
 const GENERIC_TYPES = ["rectangle", "diamond", "ellipse"] as const;
 // indicates order of switching
-const LINEAR_TYPES = [
-  "line",
-  "sharpArrow",
-  "curvedArrow",
-  "elbowArrow",
-] as const;
+const LINEAR_TYPES = ["line", "sharpArrow", "curvedArrow", "elbowArrow"] as const;
 
-const CONVERTIBLE_GENERIC_TYPES: ReadonlySet<ConvertibleGenericTypes> = new Set(
-  GENERIC_TYPES,
-);
+const CONVERTIBLE_GENERIC_TYPES: ReadonlySet<ConvertibleGenericTypes> = new Set(GENERIC_TYPES);
 
-const CONVERTIBLE_LINEAR_TYPES: ReadonlySet<ConvertibleLinearTypes> = new Set(
-  LINEAR_TYPES,
-);
+const CONVERTIBLE_LINEAR_TYPES: ReadonlySet<ConvertibleLinearTypes> = new Set(LINEAR_TYPES);
 
-const isConvertibleGenericType = (
-  elementType: string,
-): elementType is ConvertibleGenericTypes =>
+const isConvertibleGenericType = (elementType: string): elementType is ConvertibleGenericTypes =>
   CONVERTIBLE_GENERIC_TYPES.has(elementType as ConvertibleGenericTypes);
 
-const isConvertibleLinearType = (
-  elementType: string,
-): elementType is ConvertibleLinearTypes =>
-  elementType === "arrow" ||
-  CONVERTIBLE_LINEAR_TYPES.has(elementType as ConvertibleLinearTypes);
+const isConvertibleLinearType = (elementType: string): elementType is ConvertibleLinearTypes =>
+  elementType === "arrow" || CONVERTIBLE_LINEAR_TYPES.has(elementType as ConvertibleLinearTypes);
 
 export const convertElementTypePopupAtom = atom<{
   type: "panel";
@@ -145,10 +124,7 @@ const FONT_SIZE_CONVERSION_CACHE = new Map<
   }
 >();
 
-const LINEAR_ELEMENT_CONVERSION_CACHE = new Map<
-  CacheKey,
-  ExcalidrawLinearElement
->();
+const LINEAR_ELEMENT_CONVERSION_CACHE = new Map<CacheKey, ExcalidrawLinearElement>();
 
 const ConvertElementTypePopup = ({ app }: { app: App }) => {
   const selectedElements = app.scene.getSelectedElements(app.state);
@@ -167,8 +143,7 @@ const ConvertElementTypePopup = ({ app }: { app: App }) => {
       elementsCategoryRef.current = conversionType;
     } else if (
       (elementsCategoryRef.current && !conversionType) ||
-      (elementsCategoryRef.current &&
-        conversionType !== elementsCategoryRef.current)
+      (elementsCategoryRef.current && conversionType !== elementsCategoryRef.current)
     ) {
       app.updateEditorAtom(convertElementTypePopupAtom, null);
       elementsCategoryRef.current = null;
@@ -185,38 +160,25 @@ const ConvertElementTypePopup = ({ app }: { app: App }) => {
   return <Panel app={app} elements={selectedElements} />;
 };
 
-const Panel = ({
-  app,
-  elements,
-}: {
-  app: App;
-  elements: ExcalidrawElement[];
-}) => {
+const Panel = ({ app, elements }: { app: App; elements: ExcalidrawElement[] }) => {
   const conversionType = getConversionTypeFromElements(elements);
 
   const genericElements = useMemo(() => {
-    return conversionType === "generic"
-      ? filterGenericConvetibleElements(elements)
-      : [];
+    return conversionType === "generic" ? filterGenericConvetibleElements(elements) : [];
   }, [conversionType, elements]);
   const linearElements = useMemo(() => {
-    return conversionType === "linear"
-      ? filterLinearConvertibleElements(elements)
-      : [];
+    return conversionType === "linear" ? filterLinearConvertibleElements(elements) : [];
   }, [conversionType, elements]);
 
   const sameType =
     conversionType === "generic"
-      ? genericElements.every(
-          (element) => element.type === genericElements[0].type,
-        )
+      ? genericElements.every((element) => element.type === genericElements[0].type)
       : conversionType === "linear"
-      ? linearElements.every(
-          (element) =>
-            getLinearElementSubType(element) ===
-            getLinearElementSubType(linearElements[0]),
-        )
-      : false;
+        ? linearElements.every(
+            (element) =>
+              getLinearElementSubType(element) === getLinearElementSubType(linearElements[0]),
+          )
+        : false;
 
   const [panelPosition, setPanelPosition] = useState({ x: 0, y: 0 });
   const positionRef = useRef("");
@@ -228,8 +190,8 @@ const Panel = ({
     );
     const newPositionRef = `
       ${app.state.scrollX}${app.state.scrollY}${app.state.offsetTop}${
-      app.state.offsetLeft
-    }${app.state.zoom.value}${elements.map((el) => el.id).join(",")}`;
+        app.state.offsetLeft
+      }${app.state.zoom.value}${elements.map((el) => el.id).join(",")}`;
 
     if (newPositionRef === positionRef.current) {
       return;
@@ -244,11 +206,7 @@ const Panel = ({
         elements[0],
         app.scene.getNonDeletedElementsMap(),
       );
-      bottomLeft = pointRotateRads(
-        pointFrom(x1, y2),
-        pointFrom(cx, cy),
-        elements[0].angle,
-      );
+      bottomLeft = pointRotateRads(pointFrom(x1, y2), pointFrom(cx, cy), elements[0].angle);
     } else {
       const { minX, maxY } = getCommonBoundingBox(elements);
       bottomLeft = pointFrom(minX, maxY);
@@ -264,10 +222,7 @@ const Panel = ({
 
   useEffect(() => {
     for (const linearElement of linearElements) {
-      const cacheKey = toCacheKey(
-        linearElement.id,
-        getConvertibleType(linearElement),
-      );
+      const cacheKey = toCacheKey(linearElement.id, getConvertibleType(linearElement));
       if (!LINEAR_ELEMENT_CONVERSION_CACHE.has(cacheKey)) {
         LINEAR_ELEMENT_CONVERSION_CACHE.set(cacheKey, linearElement);
       }
@@ -277,10 +232,7 @@ const Panel = ({
   useEffect(() => {
     for (const element of genericElements) {
       if (!FONT_SIZE_CONVERSION_CACHE.has(element.id)) {
-        const boundText = getBoundTextElement(
-          element,
-          app.scene.getNonDeletedElementsMap(),
-        );
+        const boundText = getBoundTextElement(element, app.scene.getNonDeletedElementsMap());
         if (boundText) {
           FONT_SIZE_CONVERSION_CACHE.set(element.id, {
             fontSize: boundText.fontSize,
@@ -299,12 +251,12 @@ const Panel = ({
           ["elbowArrow", elbowArrowIcon],
         ]
       : conversionType === "generic"
-      ? [
-          ["rectangle", RectangleIcon],
-          ["diamond", DiamondIcon],
-          ["ellipse", EllipseIcon],
-        ]
-      : [];
+        ? [
+            ["rectangle", RectangleIcon],
+            ["diamond", DiamondIcon],
+            ["ellipse", EllipseIcon],
+          ]
+        : [];
 
   return (
     <div
@@ -313,9 +265,7 @@ const Panel = ({
       style={{
         position: "absolute",
         top: `${
-          panelPosition.y +
-          (GAP_VERTICAL + 8) * app.state.zoom.value -
-          app.state.offsetTop
+          panelPosition.y + (GAP_VERTICAL + 8) * app.state.zoom.value - app.state.offsetTop
         }px`,
         left: `${panelPosition.x - app.state.offsetLeft - GAP_HORIZONTAL}px`,
         zIndex: 2,
@@ -326,8 +276,7 @@ const Panel = ({
         const isSelected =
           sameType &&
           ((conversionType === "generic" && genericElements[0].type === type) ||
-            (conversionType === "linear" &&
-              getLinearElementSubType(linearElements[0]) === type));
+            (conversionType === "linear" && getLinearElementSubType(linearElements[0]) === type));
 
         return (
           <ToolButton
@@ -347,9 +296,7 @@ const Panel = ({
               }
               convertElementTypes(app, {
                 conversionType,
-                nextType: type as
-                  | ConvertibleGenericTypes
-                  | ConvertibleLinearTypes,
+                nextType: type as ConvertibleGenericTypes | ConvertibleLinearTypes,
               });
               panelRef.current?.focus();
             }}
@@ -368,33 +315,18 @@ export const adjustBoundTextSize = (
   const maxWidth = getBoundTextMaxWidth(container, boundText);
   const maxHeight = getBoundTextMaxHeight(container, boundText);
 
-  const wrappedText = wrapText(
-    boundText.text,
-    getFontString(boundText),
-    maxWidth,
-  );
+  const wrappedText = wrapText(boundText.text, getFontString(boundText), maxWidth);
 
-  let metrics = measureText(
-    wrappedText,
-    getFontString(boundText),
-    boundText.lineHeight,
-  );
+  let metrics = measureText(wrappedText, getFontString(boundText), boundText.lineHeight);
 
   let nextFontSize = boundText.fontSize;
-  while (
-    (metrics.width > maxWidth || metrics.height > maxHeight) &&
-    nextFontSize > 0
-  ) {
+  while ((metrics.width > maxWidth || metrics.height > maxHeight) && nextFontSize > 0) {
     nextFontSize -= 1;
     const _updatedTextElement = {
       ...boundText,
       fontSize: nextFontSize,
     };
-    metrics = measureText(
-      boundText.text,
-      getFontString(_updatedTextElement),
-      boundText.lineHeight,
-    );
+    metrics = measureText(boundText.text, getFontString(_updatedTextElement), boundText.lineHeight);
   }
 
   mutateElement(boundText, scene.getNonDeletedElementsMap(), {
@@ -434,22 +366,17 @@ export const convertElementTypes = (
   const advancement = direction === "right" ? 1 : -1;
 
   if (conversionType === "generic") {
-    const convertibleGenericElements =
-      filterGenericConvetibleElements(selectedElements);
+    const convertibleGenericElements = filterGenericConvetibleElements(selectedElements);
 
     const sameType = convertibleGenericElements.every(
       (element) => element.type === convertibleGenericElements[0].type,
     );
 
-    const index = sameType
-      ? GENERIC_TYPES.indexOf(convertibleGenericElements[0].type)
-      : -1;
+    const index = sameType ? GENERIC_TYPES.indexOf(convertibleGenericElements[0].type) : -1;
 
     nextType =
       nextType ??
-      GENERIC_TYPES[
-        (index + GENERIC_TYPES.length + advancement) % GENERIC_TYPES.length
-      ];
+      GENERIC_TYPES[(index + GENERIC_TYPES.length + advancement) % GENERIC_TYPES.length];
 
     if (nextType && isConvertibleGenericType(nextType)) {
       const convertedElements: Record<string, ExcalidrawElement> = {};
@@ -472,24 +399,15 @@ export const convertElementTypes = (
       app.scene.replaceAllElements(nextElements);
 
       for (const element of Object.values(convertedElements)) {
-        const boundText = getBoundTextElement(
-          element,
-          app.scene.getNonDeletedElementsMap(),
-        );
+        const boundText = getBoundTextElement(element, app.scene.getNonDeletedElementsMap());
         if (boundText) {
           if (FONT_SIZE_CONVERSION_CACHE.get(element.id)) {
             mutateElement(boundText, app.scene.getNonDeletedElementsMap(), {
-              fontSize:
-                FONT_SIZE_CONVERSION_CACHE.get(element.id)?.fontSize ??
-                boundText.fontSize,
+              fontSize: FONT_SIZE_CONVERSION_CACHE.get(element.id)?.fontSize ?? boundText.fontSize,
             });
           }
 
-          adjustBoundTextSize(
-            element as ExcalidrawTextContainer,
-            boundText,
-            app.scene,
-          );
+          adjustBoundTextSize(element as ExcalidrawTextContainer, boundText, app.scene);
         }
       }
 
@@ -510,16 +428,10 @@ export const convertElementTypes = (
     ) as ExcalidrawLinearElement[];
 
     if (!nextType) {
-      const commonSubType = reduceToCommonValue(
-        convertibleLinearElements,
-        getLinearElementSubType,
-      );
+      const commonSubType = reduceToCommonValue(convertibleLinearElements, getLinearElementSubType);
 
       const index = commonSubType ? LINEAR_TYPES.indexOf(commonSubType) : -1;
-      nextType =
-        LINEAR_TYPES[
-          (index + LINEAR_TYPES.length + advancement) % LINEAR_TYPES.length
-        ];
+      nextType = LINEAR_TYPES[(index + LINEAR_TYPES.length + advancement) % LINEAR_TYPES.length];
     }
 
     if (isConvertibleLinearType(nextType)) {
@@ -529,18 +441,13 @@ export const convertElementTypes = (
         app.scene.getElementsMapIncludingDeleted();
 
       for (const element of convertibleLinearElements) {
-        const cachedElement = LINEAR_ELEMENT_CONVERSION_CACHE.get(
-          toCacheKey(element.id, nextType),
-        );
+        const cachedElement = LINEAR_ELEMENT_CONVERSION_CACHE.get(toCacheKey(element.id, nextType));
 
         // if switching to the original subType or a subType we've already
         // converted to, reuse the cached element to get the original properties
         // (needed for simple->elbow->simple conversions or between line
         // and arrows)
-        if (
-          cachedElement &&
-          getLinearElementSubType(cachedElement) === nextType
-        ) {
+        if (cachedElement && getLinearElementSubType(cachedElement) === nextType) {
           nextElementsMap.set(cachedElement.id, cachedElement);
           convertedElements.push(cachedElement);
         } else {
@@ -569,14 +476,10 @@ export const convertElementTypes = (
                 index: i + 1,
               });
             }
-            const updates = updateElbowArrowPoints(
-              element,
-              app.scene.getNonDeletedElementsMap(),
-              {
-                points: nextPoints,
-                fixedSegments,
-              },
-            );
+            const updates = updateElbowArrowPoints(element, app.scene.getNonDeletedElementsMap(), {
+              points: nextPoints,
+              fixedSegments,
+            });
             mutateElement(element, app.scene.getNonDeletedElementsMap(), {
               ...updates,
               endArrowhead: "arrow",
@@ -588,10 +491,7 @@ export const convertElementTypes = (
 
             const similarCachedLinearElement = mapFind(
               ["line", "sharpArrow", "curvedArrow"] as const,
-              (type) =>
-                LINEAR_ELEMENT_CONVERSION_CACHE.get(
-                  toCacheKey(element.id, type),
-                ),
+              (type) => LINEAR_ELEMENT_CONVERSION_CACHE.get(toCacheKey(element.id, type)),
             );
 
             if (similarCachedLinearElement) {
@@ -627,9 +527,7 @@ export const convertElementTypes = (
   return true;
 };
 
-export const getConversionTypeFromElements = (
-  elements: ExcalidrawElement[],
-): ConversionType => {
+export const getConversionTypeFromElements = (elements: ExcalidrawElement[]): ConversionType => {
   if (elements.length === 0) {
     return null;
   }
@@ -655,29 +553,21 @@ export const getConversionTypeFromElements = (
 const isEligibleLinearElement = (element: ExcalidrawElement) => {
   return (
     isLinearElement(element) &&
-    (!isArrowElement(element) ||
-      (!isArrowBoundToElement(element) && !hasBoundTextElement(element)))
+    (!isArrowElement(element) || (!isArrowBoundToElement(element) && !hasBoundTextElement(element)))
   );
 };
 
-const toCacheKey = (
-  elementId: ExcalidrawElement["id"],
-  convertitleType: ConvertibleTypes,
-) => {
+const toCacheKey = (elementId: ExcalidrawElement["id"], convertitleType: ConvertibleTypes) => {
   return `${elementId}:${convertitleType}` as CacheKey;
 };
 
 const filterGenericConvetibleElements = (elements: ExcalidrawElement[]) =>
   elements.filter((element) => isConvertibleGenericType(element.type)) as Array<
-    | ExcalidrawRectangleElement
-    | ExcalidrawDiamondElement
-    | ExcalidrawEllipseElement
+    ExcalidrawRectangleElement | ExcalidrawDiamondElement | ExcalidrawEllipseElement
   >;
 
 const filterLinearConvertibleElements = (elements: ExcalidrawElement[]) =>
-  elements.filter((element) =>
-    isEligibleLinearElement(element),
-  ) as ExcalidrawLinearElement[];
+  elements.filter((element) => isEligibleLinearElement(element)) as ExcalidrawLinearElement[];
 
 const THRESHOLD = 20;
 const isVert = (a: LocalPoint, b: LocalPoint) => a[0] === b[0];
@@ -750,19 +640,11 @@ const convertLineToElbow = (line: ExcalidrawLinearElement): LocalPoint[] => {
           // … absorb leg 1 – slide the whole first leg onto *b-c* axis
           // eslint-disable-next-line no-lonely-if
           if (v2) {
-            for (
-              let k = clean.length - 1;
-              k >= 0 && clean[k][0] === a[0];
-              --k
-            ) {
+            for (let k = clean.length - 1; k >= 0 && clean[k][0] === a[0]; --k) {
               clean[k][0] = b[0];
             }
           } else {
-            for (
-              let k = clean.length - 1;
-              k >= 0 && clean[k][1] === a[1];
-              --k
-            ) {
+            for (let k = clean.length - 1; k >= 0 && clean[k][1] === a[1]; --k) {
               clean[k][1] = b[1];
             }
           }
@@ -906,17 +788,11 @@ const isValidConversion = (
   startType: string,
   targetType: ConvertibleTypes,
 ): startType is ConvertibleTypes => {
-  if (
-    isConvertibleGenericType(startType) &&
-    isConvertibleGenericType(targetType)
-  ) {
+  if (isConvertibleGenericType(startType) && isConvertibleGenericType(targetType)) {
     return true;
   }
 
-  if (
-    isConvertibleLinearType(startType) &&
-    isConvertibleLinearType(targetType)
-  ) {
+  if (isConvertibleLinearType(startType) && isConvertibleLinearType(targetType)) {
     return true;
   }
 
@@ -925,9 +801,7 @@ const isValidConversion = (
   return false;
 };
 
-const getConvertibleType = (
-  element: ExcalidrawConvertibleElement,
-): ConvertibleTypes => {
+const getConvertibleType = (element: ExcalidrawConvertibleElement): ConvertibleTypes => {
   if (isLinearElement(element)) {
     return getLinearElementSubType(element);
   }

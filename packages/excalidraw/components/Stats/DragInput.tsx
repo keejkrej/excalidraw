@@ -21,10 +21,7 @@ import "./DragInput.scss";
 import type { StatsInputProperty } from "./utils";
 import type { AppState } from "../../types";
 
-export type DragInputCallbackType<
-  P extends StatsInputProperty,
-  E = ExcalidrawElement,
-> = (props: {
+export type DragInputCallbackType<P extends StatsInputProperty, E = ExcalidrawElement> = (props: {
   accumulatedChange: number;
   instantChange: number;
   originalElements: readonly E[];
@@ -47,10 +44,7 @@ export type DragFinishedCallbackType<E = ExcalidrawElement> = (props: {
   originalAppState: AppState;
 }) => void;
 
-interface StatsDragInputProps<
-  T extends StatsInputProperty,
-  E = ExcalidrawElement,
-> {
+interface StatsDragInputProps<T extends StatsInputProperty, E = ExcalidrawElement> {
   label: string | React.ReactNode;
   icon?: React.ReactNode;
   value: number | "Mixed";
@@ -111,11 +105,7 @@ const StatsDragInput = <
     stateRef.current.lastUpdatedValue = inputValue;
   }, [value]);
 
-  const handleInputValue = (
-    updatedValue: string,
-    elements: readonly E[],
-    appState: AppState,
-  ) => {
+  const handleInputValue = (updatedValue: string, elements: readonly E[], appState: AppState) => {
     if (!stateRef.current.updatePending) {
       return false;
     }
@@ -185,16 +175,8 @@ const StatsDragInput = <
       // generally not needed, but in case `pointerup` doesn't fire and
       // we don't remove the listeners that way, we should at least remove
       // on unmount
-      window.removeEventListener(
-        EVENT.POINTER_MOVE,
-        callbacks.onPointerMove!,
-        false,
-      );
-      window.removeEventListener(
-        EVENT.POINTER_UP,
-        callbacks.onPointerUp!,
-        false,
-      );
+      window.removeEventListener(EVENT.POINTER_MOVE, callbacks.onPointerMove!, false);
+      window.removeEventListener(EVENT.POINTER_UP, callbacks.onPointerUp!, false);
     };
   }, [
     // we need to track change of `editable` state as mount/unmount
@@ -211,10 +193,7 @@ const StatsDragInput = <
   }
 
   return (
-    <div
-      className={clsx("drag-input-container", !editable && "disabled")}
-      data-testid={label}
-    >
+    <div className={clsx("drag-input-container", !editable && "disabled")} data-testid={label}>
       <div
         className="drag-input-label"
         ref={labelRef}
@@ -249,11 +228,7 @@ const StatsDragInput = <
             let stepChange = 0;
 
             const onPointerMove = (event: PointerEvent) => {
-              if (
-                lastPointer &&
-                originalElementsMap !== null &&
-                originalElements !== null
-              ) {
+              if (lastPointer && originalElementsMap !== null && originalElements !== null) {
                 const instantChange = event.clientX - lastPointer.x;
 
                 if (instantChange !== 0) {
@@ -261,8 +236,7 @@ const StatsDragInput = <
 
                   if (Math.abs(stepChange) >= sensitivity) {
                     stepChange =
-                      Math.sign(stepChange) *
-                      Math.floor(Math.abs(stepChange) / sensitivity);
+                      Math.sign(stepChange) * Math.floor(Math.abs(stepChange) / sensitivity);
 
                     accumulatedChange += stepChange;
 
@@ -293,11 +267,7 @@ const StatsDragInput = <
             };
 
             const onPointerUp = () => {
-              window.removeEventListener(
-                EVENT.POINTER_MOVE,
-                onPointerMove,
-                false,
-              );
+              window.removeEventListener(EVENT.POINTER_MOVE, onPointerMove, false);
 
               app.syncActionResult({
                 captureUpdate: CaptureUpdateAction.IMMEDIATELY,
@@ -344,10 +314,7 @@ const StatsDragInput = <
         onKeyDown={(event) => {
           if (editable) {
             const eventTarget = event.target;
-            if (
-              eventTarget instanceof HTMLInputElement &&
-              event.key === KEYS.ENTER
-            ) {
+            if (eventTarget instanceof HTMLInputElement && event.key === KEYS.ENTER) {
               handleInputValue(eventTarget.value, elements, appState);
               app.focusContainer();
             }

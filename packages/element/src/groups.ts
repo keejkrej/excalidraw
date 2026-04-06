@@ -28,21 +28,15 @@ export const selectGroup = (
   InteractiveCanvasAppState,
   "selectedGroupIds" | "selectedElementIds" | "editingGroupId"
 > => {
-  const elementsInGroup = elements.reduce(
-    (acc: Record<string, true>, element) => {
-      if (element.groupIds.includes(groupId)) {
-        acc[element.id] = true;
-      }
-      return acc;
-    },
-    {},
-  );
+  const elementsInGroup = elements.reduce((acc: Record<string, true>, element) => {
+    if (element.groupIds.includes(groupId)) {
+      acc[element.id] = true;
+    }
+    return acc;
+  }, {});
 
   if (Object.keys(elementsInGroup).length < 2) {
-    if (
-      appState.selectedGroupIds[groupId] ||
-      appState.editingGroupId === groupId
-    ) {
+    if (appState.selectedGroupIds[groupId] || appState.editingGroupId === groupId) {
       return {
         selectedElementIds: appState.selectedElementIds,
         selectedGroupIds: { ...appState.selectedGroupIds, [groupId]: false },
@@ -68,8 +62,7 @@ export const selectGroupsForSelectedElements = (function () {
     "selectedGroupIds" | "editingGroupId" | "selectedElementIds"
   >;
 
-  let lastSelectedElements: readonly NonDeleted<ExcalidrawElement>[] | null =
-    null;
+  let lastSelectedElements: readonly NonDeleted<ExcalidrawElement>[] | null = null;
   let lastElements: readonly NonDeleted<ExcalidrawElement>[] | null = null;
   let lastReturnValue: SelectGroupsReturnType | null = null;
 
@@ -107,28 +100,25 @@ export const selectGroupsForSelectedElements = (function () {
 
     // Gather all the elements within selected groups
     const groupElementsIndex: Record<GroupId, string[]> = {};
-    const selectedElementIdsInGroups = elements.reduce(
-      (acc: Record<string, true>, element) => {
-        if (element.isDeleted) {
-          return acc;
-        }
-
-        const groupId = element.groupIds.find((id) => selectedGroupIds[id]);
-
-        if (groupId) {
-          acc[element.id] = true;
-
-          // Populate the index
-          if (!Array.isArray(groupElementsIndex[groupId])) {
-            groupElementsIndex[groupId] = [element.id];
-          } else {
-            groupElementsIndex[groupId].push(element.id);
-          }
-        }
+    const selectedElementIdsInGroups = elements.reduce((acc: Record<string, true>, element) => {
+      if (element.isDeleted) {
         return acc;
-      },
-      {},
-    );
+      }
+
+      const groupId = element.groupIds.find((id) => selectedGroupIds[id]);
+
+      if (groupId) {
+        acc[element.id] = true;
+
+        // Populate the index
+        if (!Array.isArray(groupElementsIndex[groupId])) {
+          groupElementsIndex[groupId] = [element.id];
+        } else {
+          groupElementsIndex[groupId].push(element.id);
+        }
+      }
+      return acc;
+    }, {});
 
     for (const groupId of Object.keys(groupElementsIndex)) {
       // If there is one element in the group, and the group is selected or it's being edited, it's not a group
@@ -171,10 +161,7 @@ export const selectGroupsForSelectedElements = (function () {
      */
     app: AppClassProperties | null,
   ): Mutable<
-    Pick<
-      InteractiveCanvasAppState,
-      "selectedGroupIds" | "editingGroupId" | "selectedElementIds"
-    >
+    Pick<InteractiveCanvasAppState, "selectedGroupIds" | "editingGroupId" | "selectedElementIds">
   > => {
     const selectedElements = app
       ? app.scene.getSelectedElements({
@@ -188,10 +175,7 @@ export const selectGroupsForSelectedElements = (function () {
       return {
         selectedGroupIds: {},
         editingGroupId: null,
-        selectedElementIds: makeNextSelectedElementIds(
-          appState.selectedElementIds,
-          prevAppState,
-        ),
+        selectedElementIds: makeNextSelectedElementIds(appState.selectedElementIds, prevAppState),
       };
     }
 
@@ -217,19 +201,14 @@ export const isSelectedViaGroup = (
 ) => getSelectedGroupForElement(appState, element) != null;
 
 export const getSelectedGroupForElement = (
-  appState: Pick<
-    InteractiveCanvasAppState,
-    "editingGroupId" | "selectedGroupIds"
-  >,
+  appState: Pick<InteractiveCanvasAppState, "editingGroupId" | "selectedGroupIds">,
   element: ExcalidrawElement,
 ) =>
   element.groupIds
     .filter((groupId) => groupId !== appState.editingGroupId)
     .find((groupId) => appState.selectedGroupIds[groupId]);
 
-export const getSelectedGroupIds = (
-  appState: InteractiveCanvasAppState,
-): GroupId[] =>
+export const getSelectedGroupIds = (appState: InteractiveCanvasAppState): GroupId[] =>
   Object.entries(appState.selectedGroupIds)
     .filter(([groupId, isSelected]) => isSelected)
     .map(([groupId, isSelected]) => groupId);
@@ -282,10 +261,7 @@ export const editGroupForSelectedElement = (
 export const isElementInGroup = (element: ExcalidrawElement, groupId: string) =>
   element.groupIds.includes(groupId);
 
-export const getElementsInGroup = (
-  elements: ElementsMapOrArray,
-  groupId: string,
-) => {
+export const getElementsInGroup = (elements: ElementsMapOrArray, groupId: string) => {
   const elementsInGroup: ExcalidrawElement[] = [];
   for (const element of elements.values()) {
     if (isElementInGroup(element, groupId)) {
@@ -307,9 +283,7 @@ export const addToGroup = (
 ) => {
   // insert before the editingGroupId, or push to the end.
   const groupIds = [...prevGroupIds];
-  const positionOfEditingGroupId = editingGroupId
-    ? groupIds.indexOf(editingGroupId)
-    : -1;
+  const positionOfEditingGroupId = editingGroupId ? groupIds.indexOf(editingGroupId) : -1;
   const positionToInsert =
     positionOfEditingGroupId > -1 ? positionOfEditingGroupId : groupIds.length;
   groupIds.splice(positionToInsert, 0, newGroupId);
@@ -325,15 +299,10 @@ export const getMaximumGroups = (
   elements: ExcalidrawElement[],
   elementsMap: ElementsMap,
 ): ExcalidrawElement[][] => {
-  const groups: Map<String, ExcalidrawElement[]> = new Map<
-    String,
-    ExcalidrawElement[]
-  >();
+  const groups: Map<String, ExcalidrawElement[]> = new Map<String, ExcalidrawElement[]>();
   elements.forEach((element: ExcalidrawElement) => {
     const groupId =
-      element.groupIds.length === 0
-        ? element.id
-        : element.groupIds[element.groupIds.length - 1];
+      element.groupIds.length === 0 ? element.id : element.groupIds[element.groupIds.length - 1];
 
     const currentGroupMembers = groups.get(groupId) || [];
 
@@ -366,9 +335,7 @@ export const getNonDeletedGroupIds = (elements: ElementsMap) => {
   return nonDeletedGroupIds;
 };
 
-export const elementsAreInSameGroup = (
-  elements: readonly ExcalidrawElement[],
-) => {
+export const elementsAreInSameGroup = (elements: readonly ExcalidrawElement[]) => {
   const allGroups = elements.flatMap((element) => element.groupIds);
   const groupCount = new Map<string, number>();
   let maxGroup = 0;
@@ -393,11 +360,8 @@ export const getNewGroupIdsForDuplication = (
   mapper: (groupId: GroupId) => GroupId,
 ) => {
   const copy = [...groupIds];
-  const positionOfEditingGroupId = editingGroupId
-    ? groupIds.indexOf(editingGroupId)
-    : -1;
-  const endIndex =
-    positionOfEditingGroupId > -1 ? positionOfEditingGroupId : groupIds.length;
+  const positionOfEditingGroupId = editingGroupId ? groupIds.indexOf(editingGroupId) : -1;
+  const endIndex = positionOfEditingGroupId > -1 ? positionOfEditingGroupId : groupIds.length;
   for (let index = 0; index < endIndex; index++) {
     copy[index] = mapper(copy[index]);
   }
@@ -413,9 +377,7 @@ export const getSelectedElementsByGroup = (
   appState: Readonly<AppState>,
 ): ExcalidrawElement[][] => {
   const selectedGroupIds = getSelectedGroupIds(appState);
-  const unboundElements = selectedElements.filter(
-    (element) => !isBoundToContainer(element),
-  );
+  const unboundElements = selectedElements.filter((element) => !isBoundToContainer(element));
   const groups: Map<string, ExcalidrawElement[]> = new Map();
   const elements: Map<string, ExcalidrawElement[]> = new Map();
 
@@ -446,15 +408,9 @@ export const getSelectedElementsByGroup = (
   // helper function to handle the case where a single group is selected
   // and all elements selected are within the group, it will respect group hierarchy in accordance to
   // their nested grouping order
-  const handleSingleSelectedGroupCase = (
-    element: ExcalidrawElement,
-    selectedGroupId: GroupId,
-  ) => {
+  const handleSingleSelectedGroupCase = (element: ExcalidrawElement, selectedGroupId: GroupId) => {
     const indexOfSelectedGroupId = element.groupIds.indexOf(selectedGroupId, 0);
-    const nestedGroupCount = element.groupIds.slice(
-      0,
-      indexOfSelectedGroupId,
-    ).length;
+    const nestedGroupCount = element.groupIds.slice(0, indexOfSelectedGroupId).length;
     return nestedGroupCount > 0
       ? addToGroupsMap(element, element.groupIds[indexOfSelectedGroupId - 1])
       : addToElementsMap(element);
@@ -465,10 +421,7 @@ export const getSelectedElementsByGroup = (
   );
 
   unboundElements.forEach((element) => {
-    const selectedGroupId = getSelectedGroupIdForElement(
-      element,
-      appState.selectedGroupIds,
-    );
+    const selectedGroupId = getSelectedGroupIdForElement(element, appState.selectedGroupIds);
     if (!selectedGroupId) {
       addToElementsMap(element);
     } else if (selectedGroupIds.length === 1 && isAllInSameGroup) {

@@ -16,10 +16,7 @@ import type { Radians } from "@excalidraw/math";
 
 import type { MarkOptional, Merge } from "@excalidraw/common/utility-types";
 
-import {
-  getElementAbsoluteCoords,
-  getResizedElementAbsoluteCoords,
-} from "./bounds";
+import { getElementAbsoluteCoords, getResizedElementAbsoluteCoords } from "./bounds";
 import { newElementWith } from "./mutateElement";
 import { getBoundTextMaxWidth } from "./textElement";
 import { normalizeText, measureText } from "./textMeasurements";
@@ -230,8 +227,8 @@ const getTextElementPositionOffsets = (
       opts.textAlign === "center"
         ? metrics.width / 2
         : opts.textAlign === "right"
-        ? metrics.width
-        : 0,
+          ? metrics.width
+          : 0,
     y: opts.verticalAlign === "middle" ? metrics.height / 2 : 0,
   };
 };
@@ -253,17 +250,10 @@ export const newTextElement = (
   const fontSize = opts.fontSize || DEFAULT_FONT_SIZE;
   const lineHeight = opts.lineHeight || getLineHeight(fontFamily);
   const text = normalizeText(opts.text);
-  const metrics = measureText(
-    text,
-    getFontString({ fontFamily, fontSize }),
-    lineHeight,
-  );
+  const metrics = measureText(text, getFontString({ fontFamily, fontSize }), lineHeight);
   const textAlign = opts.textAlign || DEFAULT_TEXT_ALIGN;
   const verticalAlign = opts.verticalAlign || DEFAULT_VERTICAL_ALIGN;
-  const offsets = getTextElementPositionOffsets(
-    { textAlign, verticalAlign },
-    metrics,
-  );
+  const offsets = getTextElementPositionOffsets({ textAlign, verticalAlign }, metrics);
 
   const textElementProps: ExcalidrawTextElement = {
     ..._newElementBase<ExcalidrawTextElement>("text", opts),
@@ -282,10 +272,7 @@ export const newTextElement = (
     lineHeight,
   };
 
-  const textElement: ExcalidrawTextElement = newElementWith(
-    textElementProps,
-    {},
-  );
+  const textElement: ExcalidrawTextElement = newElementWith(textElementProps, {});
 
   return textElement;
 };
@@ -320,11 +307,7 @@ const getAdjustedDimensions = (
     !element.containerId &&
     element.autoResize
   ) {
-    const prevMetrics = measureText(
-      element.text,
-      getFontString(element),
-      element.lineHeight,
-    );
+    const prevMetrics = measureText(element.text, getFontString(element), element.lineHeight);
     const offsets = getTextElementPositionOffsets(element, {
       width: nextWidth - prevMetrics.width,
       height: nextHeight - prevMetrics.height,
@@ -430,9 +413,7 @@ export const refreshTextDimensions = (
     text = wrapText(
       text,
       getFontString(textElement),
-      container
-        ? getBoundTextMaxWidth(container, textElement)
-        : textElement.width,
+      container ? getBoundTextMaxWidth(container, textElement) : textElement.width,
     );
   }
   const dimensions = getAdjustedDimensions(textElement, elementsMap, text);

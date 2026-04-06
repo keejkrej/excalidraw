@@ -13,28 +13,17 @@ import MenuSeparator from "./DropdownMenuSeparator";
 import DropdownMenuSub from "./DropdownMenuSub";
 import DropdownMenuTrigger from "./DropdownMenuTrigger";
 import DropdownMenuItemCheckbox from "./DropdownMenuItemCheckbox";
-import {
-  getMenuContentComponent,
-  getMenuTriggerComponent,
-} from "./dropdownMenuUtils";
+import { getMenuContentComponent, getMenuTriggerComponent } from "./dropdownMenuUtils";
 
 import "./DropdownMenu.scss";
 
-const DropdownMenu = ({
-  children,
-  open,
-}: {
-  children?: React.ReactNode;
-  open: boolean;
-}) => {
+const DropdownMenu = ({ children, open }: { children?: React.ReactNode; open: boolean }) => {
   const MenuTriggerComp = getMenuTriggerComponent(children);
   const MenuContentComp = getMenuContentComponent(children);
   const MenuContentWithState =
     MenuContentComp && React.isValidElement(MenuContentComp)
       ? React.cloneElement(
-          MenuContentComp as React.ReactElement<
-            React.ComponentProps<typeof DropdownMenuContent>
-          >,
+          MenuContentComp as React.ReactElement<React.ComponentProps<typeof DropdownMenuContent>>,
           { open },
         )
       : MenuContentComp;

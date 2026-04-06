@@ -31,18 +31,12 @@ describe("range intersection", () => {
   it("should intersect irrespective of order", () => {
     expect(rangeIntersection(range1_4, rangeInclusive(2, 3))).toEqual([2, 3]);
     expect(rangeIntersection(rangeInclusive(2, 3), range1_4)).toEqual([2, 3]);
-    expect(rangeIntersection(range1_4, rangeInclusive(3, 5))).toEqual(
-      rangeInclusive(3, 4),
-    );
-    expect(rangeIntersection(rangeInclusive(3, 5), range1_4)).toEqual(
-      rangeInclusive(3, 4),
-    );
+    expect(rangeIntersection(range1_4, rangeInclusive(3, 5))).toEqual(rangeInclusive(3, 4));
+    expect(rangeIntersection(rangeInclusive(3, 5), range1_4)).toEqual(rangeInclusive(3, 4));
   });
 
   it("should intersect at the edge", () => {
-    expect(rangeIntersection(range1_4, rangeInclusive(4, 5))).toEqual(
-      rangeInclusive(4, 4),
-    );
+    expect(rangeIntersection(range1_4, rangeInclusive(4, 5))).toEqual(rangeInclusive(4, 4));
   });
 
   it("should not intersect", () => {

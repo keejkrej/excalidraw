@@ -13,8 +13,7 @@ const LibraryMenuBrowseButton = ({
   theme: UIAppState["theme"];
   id: string;
 }) => {
-  const referrer =
-    libraryReturnUrl || window.location.origin + window.location.pathname;
+  const referrer = libraryReturnUrl || window.location.origin + window.location.pathname;
   return (
     <a
       className="library-menu-browse-button"

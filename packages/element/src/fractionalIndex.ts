@@ -70,9 +70,7 @@ export const validateFractionalIndices = (
       errorMessages.push(
         `Fractional indices invariant has been compromised: "${stringifyElement(
           elements[i - 1],
-        )}", "${stringifyElement(elements[i])}", "${stringifyElement(
-          elements[i + 1],
-        )}"`,
+        )}", "${stringifyElement(elements[i])}", "${stringifyElement(elements[i + 1])}"`,
       );
     }
 
@@ -97,12 +95,8 @@ export const validateFractionalIndices = (
 
     if (reconciliationContext) {
       additionalContext.push("Additional reconciliation context:");
-      additionalContext.push(
-        reconciliationContext.localElements.map((x) => stringifyElement(x)),
-      );
-      additionalContext.push(
-        reconciliationContext.remoteElements.map((x) => stringifyElement(x)),
-      );
+      additionalContext.push(reconciliationContext.localElements.map((x) => stringifyElement(x)));
+      additionalContext.push(reconciliationContext.remoteElements.map((x) => stringifyElement(x)));
     }
 
     if (!ignoreLogs) {
@@ -127,9 +121,7 @@ export const validateFractionalIndices = (
  * - when fractional indices are identical, break the tie based on the element id
  * - when there is no fractional index in one of the elements, respect the order of the array
  */
-export const orderByFractionalIndex = (
-  elements: OrderedExcalidrawElement[],
-) => {
+export const orderByFractionalIndex = (elements: OrderedExcalidrawElement[]) => {
   return elements.sort((a, b) => {
     // in case the indices are not the defined at runtime
     if (isOrderedElement(a) && isOrderedElement(b)) {
@@ -283,12 +275,8 @@ const getInvalidIndicesGroups = (elements: readonly ExcalidrawElement[]) => {
   let upperBoundIndex: number = 0;
 
   /** @returns maybe valid lowerBound */
-  const getLowerBound = (
-    index: number,
-  ): [ExcalidrawElement["index"] | undefined, number] => {
-    const lowerBound = elements[lowerBoundIndex]
-      ? elements[lowerBoundIndex].index
-      : undefined;
+  const getLowerBound = (index: number): [ExcalidrawElement["index"] | undefined, number] => {
+    const lowerBound = elements[lowerBoundIndex] ? elements[lowerBoundIndex].index : undefined;
 
     // we are already iterating left to right, therefore there is no need for additional looping
     const candidate = elements[index - 1]?.index;
@@ -306,12 +294,8 @@ const getInvalidIndicesGroups = (elements: readonly ExcalidrawElement[]) => {
   };
 
   /** @returns always valid upperBound */
-  const getUpperBound = (
-    index: number,
-  ): [ExcalidrawElement["index"] | undefined, number] => {
-    const upperBound = elements[upperBoundIndex]
-      ? elements[upperBoundIndex].index
-      : undefined;
+  const getUpperBound = (index: number): [ExcalidrawElement["index"] | undefined, number] => {
+    const upperBound = elements[upperBoundIndex] ? elements[upperBoundIndex].index : undefined;
 
     // cache hit! don't let it find the upper bound again
     if (upperBound && index < upperBoundIndex) {
@@ -400,14 +384,8 @@ const isValidFractionalIndex = (
   return !!index;
 };
 
-const generateIndices = (
-  elements: readonly ExcalidrawElement[],
-  indicesGroups: number[][],
-) => {
-  const elementsUpdates = new Map<
-    ExcalidrawElement,
-    { index: FractionalIndex }
-  >();
+const generateIndices = (elements: readonly ExcalidrawElement[], indicesGroups: number[][]) => {
+  const elementsUpdates = new Map<ExcalidrawElement, { index: FractionalIndex }>();
 
   for (const indices of indicesGroups) {
     const lowerBoundIndex = indices.shift()!;
@@ -431,9 +409,7 @@ const generateIndices = (
   return elementsUpdates;
 };
 
-const isOrderedElement = (
-  element: ExcalidrawElement,
-): element is OrderedExcalidrawElement => {
+const isOrderedElement = (element: ExcalidrawElement): element is OrderedExcalidrawElement => {
   // for now it's sufficient whether the index is there
   // meaning, the element was already ordered in the past
   // meaning, it is not a newly inserted element, not an unrestored element, etc.

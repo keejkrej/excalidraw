@@ -4,8 +4,7 @@
 const rsComboMarksRange = "\\u0300-\\u036f";
 const reComboHalfMarksRange = "\\ufe20-\\ufe2f";
 const rsComboSymbolsRange = "\\u20d0-\\u20ff";
-const rsComboRange =
-  rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange;
+const rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange;
 const rsCombo = `[${rsComboRange}]`;
 
 const reComboMark = RegExp(rsCombo, "g");

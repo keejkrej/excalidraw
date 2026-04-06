@@ -14,9 +14,7 @@ describe("parseClipboard()", () => {
 
     text = "123";
     clipboardData = await parseClipboard(
-      await parseDataTransferEvent(
-        createPasteEvent({ types: { "text/plain": text } }),
-      ),
+      await parseDataTransferEvent(createPasteEvent({ types: { "text/plain": text } })),
     );
     expect(clipboardData.text).toBe(text);
 
@@ -24,9 +22,7 @@ describe("parseClipboard()", () => {
 
     text = "[123]";
     clipboardData = await parseClipboard(
-      await parseDataTransferEvent(
-        createPasteEvent({ types: { "text/plain": text } }),
-      ),
+      await parseDataTransferEvent(createPasteEvent({ types: { "text/plain": text } })),
     );
     expect(clipboardData.text).toBe(text);
 
@@ -34,9 +30,7 @@ describe("parseClipboard()", () => {
 
     text = JSON.stringify({ val: 42 });
     clipboardData = await parseClipboard(
-      await parseDataTransferEvent(
-        createPasteEvent({ types: { "text/plain": text } }),
-      ),
+      await parseDataTransferEvent(createPasteEvent({ types: { "text/plain": text } })),
     );
     expect(clipboardData.text).toBe(text);
   });

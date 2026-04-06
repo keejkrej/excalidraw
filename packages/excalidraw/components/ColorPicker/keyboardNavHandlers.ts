@@ -1,25 +1,14 @@
 import { COLORS_PER_ROW, COLOR_PALETTE, KEYS } from "@excalidraw/common";
 
-import type {
-  ColorPickerColor,
-  ColorPalette,
-  ColorPaletteCustom,
-} from "@excalidraw/common";
+import type { ColorPickerColor, ColorPalette, ColorPaletteCustom } from "@excalidraw/common";
 
 import type { ValueOf } from "@excalidraw/common/utility-types";
 
-import {
-  colorPickerHotkeyBindings,
-  getColorNameAndShadeFromColor,
-} from "./colorPickerUtils";
+import { colorPickerHotkeyBindings, getColorNameAndShadeFromColor } from "./colorPickerUtils";
 
 import type { ActiveColorPickerSectionAtomType } from "./colorPickerUtils";
 
-const arrowHandler = (
-  eventKey: string,
-  currentIndex: number | null,
-  length: number,
-) => {
+const arrowHandler = (eventKey: string, currentIndex: number | null, length: number) => {
   const rows = Math.ceil(length / COLORS_PER_ROW);
 
   currentIndex = currentIndex ?? -1;
@@ -38,8 +27,7 @@ const arrowHandler = (
     }
     case "ArrowUp": {
       const prevIndex = currentIndex - COLORS_PER_ROW;
-      const newIndex =
-        prevIndex < 0 ? COLORS_PER_ROW * rows + prevIndex : prevIndex;
+      const newIndex = prevIndex < 0 ? COLORS_PER_ROW * rows + prevIndex : prevIndex;
       return newIndex >= length ? undefined : newIndex;
     }
   }
@@ -71,10 +59,7 @@ const hotkeyHandler = ({
 }: HotkeyHandlerProps): boolean => {
   if (colorObj?.shade != null) {
     // shift + numpad is extremely messed up on windows apparently
-    if (
-      ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"].includes(e.code) &&
-      e.shiftKey
-    ) {
+    if (["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"].includes(e.code) && e.shiftKey) {
       const newShade = Number(e.code.slice(-1)) - 1;
       onChange(palette[colorObj.colorName][newShade]);
       setActiveColorPickerSection("shades");
@@ -95,9 +80,7 @@ const hotkeyHandler = ({
     const index = colorPickerHotkeyBindings.indexOf(e.key);
     const paletteKey = Object.keys(palette)[index] as keyof ColorPalette;
     const paletteValue = palette[paletteKey];
-    const r = Array.isArray(paletteValue)
-      ? paletteValue[activeShade]
-      : paletteValue;
+    const r = Array.isArray(paletteValue) ? paletteValue[activeShade] : paletteValue;
     onChange(r);
     setActiveColorPickerSection("baseColors");
     return true;
@@ -160,10 +143,7 @@ export const colorPickerKeyNavHandler = ({
   const colorObj = getColorNameAndShadeFromColor({ color, palette });
 
   if (event.key === KEYS.TAB) {
-    const sectionsMap: Record<
-      NonNullable<ActiveColorPickerSectionAtomType>,
-      boolean
-    > = {
+    const sectionsMap: Record<NonNullable<ActiveColorPickerSectionAtomType>, boolean> = {
       custom: !!customColors.length,
       baseColors: true,
       shades: colorObj?.shade != null,
@@ -183,8 +163,8 @@ export const colorPickerKeyNavHandler = ({
       activeSectionIndex + indexOffset > sections.length - 1
         ? 0
         : activeSectionIndex + indexOffset < 0
-        ? sections.length - 1
-        : activeSectionIndex + indexOffset;
+          ? sections.length - 1
+          : activeSectionIndex + indexOffset;
 
     const nextSection = sections[nextSectionIndex];
 
@@ -195,16 +175,16 @@ export const colorPickerKeyNavHandler = ({
     if (nextSection === "custom") {
       onChange(customColors[0]);
     } else if (nextSection === "baseColors") {
-      const baseColorName = (
-        Object.entries(palette) as [string, ValueOf<ColorPalette>][]
-      ).find(([name, shades]) => {
-        if (Array.isArray(shades)) {
-          return shades.includes(color);
-        } else if (shades === color) {
-          return name;
-        }
-        return null;
-      });
+      const baseColorName = (Object.entries(palette) as [string, ValueOf<ColorPalette>][]).find(
+        ([name, shades]) => {
+          if (Array.isArray(shades)) {
+            return shades.includes(color);
+          } else if (shades === color) {
+            return name;
+          }
+          return null;
+        },
+      );
 
       if (!baseColorName) {
         onChange(COLOR_PALETTE.black);
@@ -249,20 +229,14 @@ export const colorPickerKeyNavHandler = ({
       const colorNames = Object.keys(palette) as (keyof ColorPalette)[];
       const indexOfColorName = colorNames.indexOf(colorName);
 
-      const newColorIndex = arrowHandler(
-        event.key,
-        indexOfColorName,
-        colorNames.length,
-      );
+      const newColorIndex = arrowHandler(event.key, indexOfColorName, colorNames.length);
 
       if (newColorIndex !== undefined) {
         const newColorName = colorNames[newColorIndex];
         const newColorNameValue = palette[newColorName];
 
         onChange(
-          Array.isArray(newColorNameValue)
-            ? newColorNameValue[activeShade]
-            : newColorNameValue,
+          Array.isArray(newColorNameValue) ? newColorNameValue[activeShade] : newColorNameValue,
         );
         return true;
       }
@@ -272,11 +246,7 @@ export const colorPickerKeyNavHandler = ({
   if (activeColorPickerSection === "custom") {
     const indexOfColor = color != null ? customColors.indexOf(color) : 0;
 
-    const newColorIndex = arrowHandler(
-      event.key,
-      indexOfColor,
-      customColors.length,
-    );
+    const newColorIndex = arrowHandler(event.key, indexOfColor, customColors.length);
 
     if (newColorIndex !== undefined) {
       const newColor = customColors[newColorIndex];

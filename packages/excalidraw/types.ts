@@ -35,12 +35,7 @@ import type {
   ExcalidrawTextElement,
 } from "@excalidraw/element/types";
 
-import type {
-  Merge,
-  MaybePromise,
-  ValueOf,
-  MakeBrand,
-} from "@excalidraw/common/utility-types";
+import type { Merge, MaybePromise, ValueOf, MakeBrand } from "@excalidraw/common/utility-types";
 
 import type {
   CaptureUpdateActionType,
@@ -116,9 +111,7 @@ export type ExcalidrawNativeFileHandle = {
   name: string;
 };
 
-export type ExcalidrawFileHandle =
-  | FileSystemFileHandle
-  | ExcalidrawNativeFileHandle;
+export type ExcalidrawFileHandle = FileSystemFileHandle | ExcalidrawNativeFileHandle;
 
 export type BinaryFileData = {
   mimeType:
@@ -258,8 +251,7 @@ export type InteractiveCanvasAppState = Readonly<
   }
 >;
 
-export type ObservedAppState = ObservedStandaloneAppState &
-  ObservedElementsAppState;
+export type ObservedAppState = ObservedStandaloneAppState & ObservedElementsAppState;
 
 export type ObservedStandaloneAppState = {
   name: AppState["name"];
@@ -546,9 +538,7 @@ export type LibraryItems = readonly LibraryItem[];
 export type LibraryItems_anyVersion = LibraryItems | LibraryItems_v1;
 
 export type LibraryItemsSource =
-  | ((
-      currentLibraryItems: LibraryItems,
-    ) => MaybePromise<LibraryItems_anyVersion | Blob>)
+  | ((currentLibraryItems: LibraryItems) => MaybePromise<LibraryItems_anyVersion | Blob>)
   | MaybePromise<LibraryItems_anyVersion | Blob>;
 // -----------------------------------------------------------------------------
 
@@ -607,10 +597,7 @@ export interface ExcalidrawProps {
     button: "down" | "up";
     pointersMap: Gesture["pointers"];
   }) => void;
-  onPaste?: (
-    data: ClipboardData,
-    event: ClipboardEvent | null,
-  ) => Promise<boolean> | boolean;
+  onPaste?: (data: ClipboardData, event: ClipboardEvent | null) => Promise<boolean> | boolean;
   /**
    * Called when element(s) are duplicated so you can listen or modify as
    * needed.
@@ -627,14 +614,8 @@ export interface ExcalidrawProps {
     /** excludes the duplicated elements */
     prevElements: readonly ExcalidrawElement[],
   ) => ExcalidrawElement[] | void;
-  renderTopLeftUI?: (
-    isMobile: boolean,
-    appState: UIAppState,
-  ) => JSX.Element | null;
-  renderTopRightUI?: (
-    isMobile: boolean,
-    appState: UIAppState,
-  ) => JSX.Element | null;
+  renderTopLeftUI?: (isMobile: boolean, appState: UIAppState) => JSX.Element | null;
+  renderTopRightUI?: (isMobile: boolean, appState: UIAppState) => JSX.Element | null;
   langCode?: Language["code"];
   viewModeEnabled?: boolean;
   zenModeEnabled?: boolean;
@@ -661,14 +642,8 @@ export interface ExcalidrawProps {
       nativeEvent: MouseEvent | React.PointerEvent<HTMLCanvasElement>;
     }>,
   ) => void;
-  onPointerDown?: (
-    activeTool: AppState["activeTool"],
-    pointerDownState: PointerDownState,
-  ) => void;
-  onPointerUp?: (
-    activeTool: AppState["activeTool"],
-    pointerDownState: PointerDownState,
-  ) => void;
+  onPointerDown?: (activeTool: AppState["activeTool"], pointerDownState: PointerDownState) => void;
+  onPointerUp?: (activeTool: AppState["activeTool"], pointerDownState: PointerDownState) => void;
   onScrollChange?: (scrollX: number, scrollY: number, zoom: Zoom) => void;
   onUserFollow?: (payload: OnUserFollowedPayload) => void;
   children?: React.ReactNode;
@@ -759,10 +734,7 @@ export type UIOptions = Partial<{
    * Optionally control the editor form factor and desktop UI mode from the host app.
    * If not provided, we will take care of it internally.
    */
-  getFormFactor?: (
-    editorWidth: number,
-    editorHeight: number,
-  ) => EditorInterface["formFactor"];
+  getFormFactor?: (editorWidth: number, editorHeight: number) => EditorInterface["formFactor"];
   /** @deprecated does nothing. Will be removed in 0.15 */
   welcomeScreen?: boolean;
 }>;
@@ -936,9 +908,7 @@ export interface ExcalidrawImperativeAPI {
   mutateElement: InstanceType<typeof App>["mutateElement"];
   updateLibrary: InstanceType<typeof Library>["updateLibrary"];
   resetScene: InstanceType<typeof App>["resetScene"];
-  getSceneElementsIncludingDeleted: InstanceType<
-    typeof App
-  >["getSceneElementsIncludingDeleted"];
+  getSceneElementsIncludingDeleted: InstanceType<typeof App>["getSceneElementsIncludingDeleted"];
   getSceneElementsMapIncludingDeleted: InstanceType<
     typeof App
   >["getSceneElementsMapIncludingDeleted"];
@@ -993,9 +963,7 @@ export interface ExcalidrawImperativeAPI {
   onScrollChange: (
     callback: (scrollX: number, scrollY: number, zoom: Zoom) => void,
   ) => UnsubscribeCallback;
-  onUserFollow: (
-    callback: (payload: OnUserFollowedPayload) => void,
-  ) => UnsubscribeCallback;
+  onUserFollow: (callback: (payload: OnUserFollowedPayload) => void) => UnsubscribeCallback;
   onStateChange: InstanceType<typeof App>["onStateChange"];
   onEvent: InstanceType<typeof App>["onEvent"];
 }
@@ -1028,30 +996,18 @@ export type KeyboardModifiersObject = {
   metaKey: boolean;
 };
 
-export type Primitive =
-  | number
-  | string
-  | boolean
-  | bigint
-  | symbol
-  | null
-  | undefined;
+export type Primitive = number | string | boolean | bigint | symbol | null | undefined;
 
 export type JSONValue = string | number | boolean | null | object;
 
-export type EmbedsValidationStatus = Map<
-  ExcalidrawIframeLikeElement["id"],
-  boolean
->;
+export type EmbedsValidationStatus = Map<ExcalidrawIframeLikeElement["id"], boolean>;
 
 export type ElementsPendingErasure = Set<ExcalidrawElement["id"]>;
 
 export type PendingExcalidrawElements = ExcalidrawElement[];
 
 /** Runtime gridSize value. Null indicates disabled grid. */
-export type NullableGridSize =
-  | (AppState["gridSize"] & MakeBrand<"NullableGridSize">)
-  | null;
+export type NullableGridSize = (AppState["gridSize"] & MakeBrand<"NullableGridSize">) | null;
 
 export type GenerateDiagramToCode = (props: {
   frame: ExcalidrawMagicFrameElement;

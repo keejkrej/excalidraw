@@ -13,12 +13,7 @@ interface CustomColorListProps {
   label: string;
 }
 
-export const CustomColorList = ({
-  colors,
-  color,
-  onChange,
-  label,
-}: CustomColorListProps) => {
+export const CustomColorList = ({ colors, color, onChange, label }: CustomColorListProps) => {
   const [activeColorPickerSection, setActiveColorPickerSection] = useAtom(
     activeColorPickerSectionAtom,
   );
@@ -39,13 +34,10 @@ export const CustomColorList = ({
             ref={color === c ? btnRef : undefined}
             tabIndex={-1}
             type="button"
-            className={clsx(
-              "color-picker__button color-picker__button--large has-outline",
-              {
-                active: color === c,
-                "is-transparent": c === "transparent" || !c,
-              },
-            )}
+            className={clsx("color-picker__button color-picker__button--large has-outline", {
+              active: color === c,
+              "is-transparent": c === "transparent" || !c,
+            })}
             onClick={() => {
               onChange(c);
               setActiveColorPickerSection("custom");

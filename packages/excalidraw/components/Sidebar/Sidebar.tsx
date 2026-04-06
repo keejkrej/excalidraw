@@ -9,13 +9,7 @@ import React, {
   useCallback,
 } from "react";
 
-import {
-  CLASSES,
-  EVENT,
-  isDevEnv,
-  KEYS,
-  updateObject,
-} from "@excalidraw/common";
+import { CLASSES, EVENT, isDevEnv, KEYS, updateObject } from "@excalidraw/common";
 
 import { useUIAppState } from "../../context/ui-appState";
 import { atom, useSetAtom } from "../../editor-jotai";
@@ -74,9 +68,7 @@ export const SidebarInner = forwardRef(
       };
     }, [setIsSidebarDockedAtom, docked]);
 
-    const headerPropsRef = useRef<SidebarPropsContextValue>(
-      {} as SidebarPropsContextValue,
-    );
+    const headerPropsRef = useRef<SidebarPropsContextValue>({} as SidebarPropsContextValue);
     headerPropsRef.current.onCloseRequest = () => {
       setAppState({ openSidebar: null });
     };
@@ -127,10 +119,7 @@ export const SidebarInner = forwardRef(
 
     useEffect(() => {
       const handleKeyDown = (event: KeyboardEvent) => {
-        if (
-          event.key === KEYS.ESCAPE &&
-          (!docked || !editorInterface.canFitSidebar)
-        ) {
+        if (event.key === KEYS.ESCAPE && (!docked || !editorInterface.canFitSidebar)) {
           closeLibrary();
         }
       };
@@ -143,11 +132,7 @@ export const SidebarInner = forwardRef(
     return (
       <Island
         {...rest}
-        className={clsx(
-          CLASSES.SIDEBAR,
-          { "sidebar--docked": docked },
-          className,
-        )}
+        className={clsx(CLASSES.SIDEBAR, { "sidebar--docked": docked }, className)}
         ref={islandRef}
       >
         <SidebarPropsContext.Provider value={headerPropsRef.current}>
@@ -169,8 +154,7 @@ export const Sidebar = Object.assign(
     useEffect(() => {
       if (
         // closing sidebar
-        ((!appState.openSidebar &&
-          refPrevOpenSidebar?.current?.name === props.name) ||
+        ((!appState.openSidebar && refPrevOpenSidebar?.current?.name === props.name) ||
           // opening current sidebar
           (appState.openSidebar?.name === props.name &&
             refPrevOpenSidebar?.current?.name !== props.name) ||
@@ -178,11 +162,7 @@ export const Sidebar = Object.assign(
           refPrevOpenSidebar.current?.name === props.name) &&
         appState.openSidebar !== refPrevOpenSidebar.current
       ) {
-        onStateChange?.(
-          appState.openSidebar?.name !== props.name
-            ? null
-            : appState.openSidebar,
-        );
+        onStateChange?.(appState.openSidebar?.name !== props.name ? null : appState.openSidebar);
       }
       refPrevOpenSidebar.current = appState.openSidebar;
     }, [appState.openSidebar, onStateChange, props.name]);

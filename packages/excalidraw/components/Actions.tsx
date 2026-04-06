@@ -2,12 +2,7 @@ import clsx from "clsx";
 import { useRef, useState } from "react";
 import { Popover } from "radix-ui";
 
-import {
-  CLASSES,
-  KEYS,
-  capitalizeString,
-  isTransparent,
-} from "@excalidraw/common";
+import { CLASSES, KEYS, capitalizeString, isTransparent } from "@excalidraw/common";
 
 import {
   shouldAllowVerticalAlign,
@@ -55,11 +50,7 @@ import { getToolbarTools } from "./shapes";
 
 import "./Actions.scss";
 
-import {
-  useEditorInterface,
-  useStylesPanelMode,
-  useExcalidrawContainer,
-} from "./App";
+import { useEditorInterface, useStylesPanelMode, useExcalidrawContainer } from "./App";
 import Stack from "./Stack";
 import { ToolButton } from "./ToolButton";
 import { ToolPopover } from "./ToolPopover";
@@ -86,27 +77,14 @@ import {
 
 import { Island } from "./Island";
 
-import type {
-  AppClassProperties,
-  AppProps,
-  UIAppState,
-  Zoom,
-  AppState,
-} from "../types";
+import type { AppClassProperties, AppProps, UIAppState, Zoom, AppState } from "../types";
 import type { ActionManager } from "../actions/manager";
 
 // Common CSS class combinations
-const PROPERTIES_CLASSES = clsx([
-  CLASSES.SHAPE_ACTIONS_THEME_SCOPE,
-  "properties-content",
-]);
+const PROPERTIES_CLASSES = clsx([CLASSES.SHAPE_ACTIONS_THEME_SCOPE, "properties-content"]);
 
-export const canChangeStrokeColor = (
-  appState: UIAppState,
-  targetElements: ExcalidrawElement[],
-) => {
-  let commonSelectedType: ExcalidrawElementType | null =
-    targetElements[0]?.type || null;
+export const canChangeStrokeColor = (appState: UIAppState, targetElements: ExcalidrawElement[]) => {
+  let commonSelectedType: ExcalidrawElementType | null = targetElements[0]?.type || null;
 
   for (const element of targetElements) {
     if (element.type !== commonSelectedType) {
@@ -150,14 +128,11 @@ export const SelectedShapeActions = ({
   let isSingleElementBoundContainer = false;
   if (
     targetElements.length === 2 &&
-    (hasBoundTextElement(targetElements[0]) ||
-      hasBoundTextElement(targetElements[1]))
+    (hasBoundTextElement(targetElements[0]) || hasBoundTextElement(targetElements[1]))
   ) {
     isSingleElementBoundContainer = true;
   }
-  const isEditingTextOrNewElement = Boolean(
-    appState.editingTextElement || appState.newElement,
-  );
+  const isEditingTextOrNewElement = Boolean(appState.editingTextElement || appState.newElement);
   const editorInterface = useEditorInterface();
   const isRTL = document.documentElement.getAttribute("dir") === "rtl";
 
@@ -165,12 +140,10 @@ export const SelectedShapeActions = ({
     (hasBackground(appState.activeTool.type) &&
       !isTransparent(appState.currentItemBackgroundColor)) ||
     targetElements.some(
-      (element) =>
-        hasBackground(element.type) && !isTransparent(element.backgroundColor),
+      (element) => hasBackground(element.type) && !isTransparent(element.backgroundColor),
     );
 
-  const showLinkIcon =
-    targetElements.length === 1 || isSingleElementBoundContainer;
+  const showLinkIcon = targetElements.length === 1 || isSingleElementBoundContainer;
 
   const showLineEditorAction =
     !appState.selectedLinearElement?.isEditing &&
@@ -179,18 +152,14 @@ export const SelectedShapeActions = ({
     !isElbowArrow(targetElements[0]);
 
   const showCropEditorAction =
-    !appState.croppingElementId &&
-    targetElements.length === 1 &&
-    isImageElement(targetElements[0]);
+    !appState.croppingElementId && targetElements.length === 1 && isImageElement(targetElements[0]);
 
-  const showAlignActions =
-    !isSingleElementBoundContainer && alignActionsPredicate(appState, app);
+  const showAlignActions = !isSingleElementBoundContainer && alignActionsPredicate(appState, app);
 
   return (
     <div className="selected-shape-actions">
       <div>
-        {canChangeStrokeColor(appState, targetElements) &&
-          renderAction("changeStrokeColor")}
+        {canChangeStrokeColor(appState, targetElements) && renderAction("changeStrokeColor")}
       </div>
       {canChangeBackgroundColor(appState, targetElements) && (
         <div>{renderAction("changeBackgroundColor")}</div>
@@ -223,8 +192,7 @@ export const SelectedShapeActions = ({
         <>{renderAction("changeArrowType")}</>
       )}
 
-      {(appState.activeTool.type === "text" ||
-        targetElements.some(isTextElement)) && (
+      {(appState.activeTool.type === "text" || targetElements.some(isTextElement)) && (
         <>
           <fieldset>{renderAction("changeFontFamily")}</fieldset>
           {renderAction("changeFontSize")}
@@ -234,8 +202,7 @@ export const SelectedShapeActions = ({
         </>
       )}
 
-      {shouldAllowVerticalAlign(targetElements, elementsMap) &&
-        renderAction("changeVerticalAlign")}
+      {shouldAllowVerticalAlign(targetElements, elementsMap) && renderAction("changeVerticalAlign")}
       {(canHaveArrowheads(appState.activeTool.type) ||
         targetElements.some((element) => canHaveArrowheads(element.type))) && (
         <>{renderAction("changeArrowhead")}</>
@@ -274,8 +241,7 @@ export const SelectedShapeActions = ({
                 {renderAction("alignRight")}
               </>
             )}
-            {targetElements.length > 2 &&
-              renderAction("distributeHorizontally")}
+            {targetElements.length > 2 && renderAction("distributeHorizontally")}
             {/* breaks the row ˇˇ */}
             <div style={{ flexBasis: "100%", height: 0 }} />
             <div
@@ -289,8 +255,7 @@ export const SelectedShapeActions = ({
               {renderAction("alignTop")}
               {renderAction("alignVerticallyCentered")}
               {renderAction("alignBottom")}
-              {targetElements.length > 2 &&
-                renderAction("distributeVertically")}
+              {targetElements.length > 2 && renderAction("distributeVertically")}
             </div>
           </div>
         </fieldset>
@@ -299,10 +264,8 @@ export const SelectedShapeActions = ({
         <fieldset>
           <legend>{t("labels.actions")}</legend>
           <div className="buttonList">
-            {editorInterface.formFactor !== "phone" &&
-              renderAction("duplicateSelection")}
-            {editorInterface.formFactor !== "phone" &&
-              renderAction("deleteSelectedElements")}
+            {editorInterface.formFactor !== "phone" && renderAction("duplicateSelection")}
+            {editorInterface.formFactor !== "phone" && renderAction("deleteSelectedElements")}
             {renderAction("group")}
             {renderAction("ungroup")}
             {showLinkIcon && renderAction("hyperlink")}
@@ -332,8 +295,7 @@ const CombinedShapeProperties = ({
     (hasBackground(appState.activeTool.type) &&
       !isTransparent(appState.currentItemBackgroundColor)) ||
     targetElements.some(
-      (element) =>
-        hasBackground(element.type) && !isTransparent(element.backgroundColor),
+      (element) => hasBackground(element.type) && !isTransparent(element.backgroundColor),
     );
 
   const shouldShowCombinedProperties =
@@ -390,23 +352,17 @@ const CombinedShapeProperties = ({
             <div className="selected-shape-actions">
               {showFillIcons && renderAction("changeFillStyle")}
               {(hasStrokeWidth(appState.activeTool.type) ||
-                targetElements.some((element) =>
-                  hasStrokeWidth(element.type),
-                )) &&
+                targetElements.some((element) => hasStrokeWidth(element.type))) &&
                 renderAction("changeStrokeWidth")}
               {(hasStrokeStyle(appState.activeTool.type) ||
-                targetElements.some((element) =>
-                  hasStrokeStyle(element.type),
-                )) && (
+                targetElements.some((element) => hasStrokeStyle(element.type))) && (
                 <>
                   {renderAction("changeStrokeStyle")}
                   {renderAction("changeSloppiness")}
                 </>
               )}
               {(canChangeRoundness(appState.activeTool.type) ||
-                targetElements.some((element) =>
-                  canChangeRoundness(element.type),
-                )) &&
+                targetElements.some((element) => canChangeRoundness(element.type))) &&
                 renderAction("changeRoundness")}
               {renderAction("changeOpacity")}
             </div>
@@ -476,17 +432,12 @@ const CombinedArrowProperties = ({
                 app,
                 (element) => {
                   if (isArrowElement(element)) {
-                    return element.elbowed
-                      ? "elbow"
-                      : element.roundness
-                      ? "round"
-                      : "sharp";
+                    return element.elbowed ? "elbow" : element.roundness ? "round" : "sharp";
                   }
                   return null;
                 },
                 (element) => isArrowElement(element),
-                (hasSelection) =>
-                  hasSelection ? null : appState.currentItemArrowType,
+                (hasSelection) => (hasSelection ? null : appState.currentItemArrowType),
               );
 
               if (arrowType === "elbow") {
@@ -589,8 +540,7 @@ const CombinedTextProperties = ({
             }}
           >
             <div className="selected-shape-actions">
-              {(appState.activeTool.type === "text" ||
-                targetElements.some(isTextElement)) &&
+              {(appState.activeTool.type === "text" || targetElements.some(isTextElement)) &&
                 renderAction("changeFontSize")}
               {(appState.activeTool.type === "text" ||
                 suppportsHorizontalAlign(targetElements, elementsMap)) &&
@@ -624,20 +574,15 @@ const CombinedExtraActions = ({
   showDuplicate?: boolean;
   showDelete?: boolean;
 }) => {
-  const isEditingTextOrNewElement = Boolean(
-    appState.editingTextElement || appState.newElement,
-  );
+  const isEditingTextOrNewElement = Boolean(appState.editingTextElement || appState.newElement);
   const showCropEditorAction =
-    !appState.croppingElementId &&
-    targetElements.length === 1 &&
-    isImageElement(targetElements[0]);
+    !appState.croppingElementId && targetElements.length === 1 && isImageElement(targetElements[0]);
   const showLinkIcon = targetElements.length === 1;
   const showAlignActions = alignActionsPredicate(appState, app);
   let isSingleElementBoundContainer = false;
   if (
     targetElements.length === 2 &&
-    (hasBoundTextElement(targetElements[0]) ||
-      hasBoundTextElement(targetElements[1]))
+    (hasBoundTextElement(targetElements[0]) || hasBoundTextElement(targetElements[1]))
   ) {
     isSingleElementBoundContainer = true;
   }
@@ -718,8 +663,7 @@ const CombinedExtraActions = ({
                         {renderAction("alignRight")}
                       </>
                     )}
-                    {targetElements.length > 2 &&
-                      renderAction("distributeHorizontally")}
+                    {targetElements.length > 2 && renderAction("distributeHorizontally")}
                     {/* breaks the row ˇˇ */}
                     <div style={{ flexBasis: "100%", height: 0 }} />
                     <div
@@ -733,8 +677,7 @@ const CombinedExtraActions = ({
                       {renderAction("alignTop")}
                       {renderAction("alignVerticallyCentered")}
                       {renderAction("alignBottom")}
-                      {targetElements.length > 2 &&
-                        renderAction("distributeVertically")}
+                      {targetElements.length > 2 && renderAction("distributeVertically")}
                     </div>
                   </div>
                 </fieldset>
@@ -777,11 +720,7 @@ const LinearEditorAction = ({
     return null;
   }
 
-  return (
-    <div className="compact-action-item">
-      {renderAction("toggleLinearEditor")}
-    </div>
-  );
+  return <div className="compact-action-item">{renderAction("toggleLinearEditor")}</div>;
 };
 
 export const CompactShapeActions = ({
@@ -800,9 +739,7 @@ export const CompactShapeActions = ({
   const targetElements = getTargetElements(elementsMap, appState);
   const { container } = useExcalidrawContainer();
 
-  const isEditingTextOrNewElement = Boolean(
-    appState.editingTextElement || appState.newElement,
-  );
+  const isEditingTextOrNewElement = Boolean(appState.editingTextElement || appState.newElement);
 
   const showLineEditorAction =
     !appState.selectedLinearElement?.isEditing &&
@@ -814,16 +751,12 @@ export const CompactShapeActions = ({
     <div className="compact-shape-actions">
       {/* Stroke Color */}
       {canChangeStrokeColor(appState, targetElements) && (
-        <div className={clsx("compact-action-item")}>
-          {renderAction("changeStrokeColor")}
-        </div>
+        <div className={clsx("compact-action-item")}>{renderAction("changeStrokeColor")}</div>
       )}
 
       {/* Background Color */}
       {canChangeBackgroundColor(appState, targetElements) && (
-        <div className="compact-action-item">
-          {renderAction("changeBackgroundColor")}
-        </div>
+        <div className="compact-action-item">{renderAction("changeBackgroundColor")}</div>
       )}
 
       <CombinedShapeProperties
@@ -844,18 +777,13 @@ export const CompactShapeActions = ({
       />
       {/* Linear Editor */}
       {showLineEditorAction && (
-        <div className="compact-action-item">
-          {renderAction("toggleLinearEditor")}
-        </div>
+        <div className="compact-action-item">{renderAction("toggleLinearEditor")}</div>
       )}
 
       {/* Text Properties */}
-      {(appState.activeTool.type === "text" ||
-        targetElements.some(isTextElement)) && (
+      {(appState.activeTool.type === "text" || targetElements.some(isTextElement)) && (
         <>
-          <div className="compact-action-item">
-            {renderAction("changeFontFamily")}
-          </div>
+          <div className="compact-action-item">{renderAction("changeFontFamily")}</div>
           <CombinedTextProperties
             appState={appState}
             renderAction={renderAction}
@@ -869,16 +797,12 @@ export const CompactShapeActions = ({
 
       {/* Dedicated Copy Button */}
       {!isEditingTextOrNewElement && targetElements.length > 0 && (
-        <div className="compact-action-item">
-          {renderAction("duplicateSelection")}
-        </div>
+        <div className="compact-action-item">{renderAction("duplicateSelection")}</div>
       )}
 
       {/* Dedicated Delete Button */}
       {!isEditingTextOrNewElement && targetElements.length > 0 && (
-        <div className="compact-action-item">
-          {renderAction("deleteSelectedElements")}
-        </div>
+        <div className="compact-action-item">{renderAction("deleteSelectedElements")}</div>
       )}
 
       <CombinedExtraActions
@@ -910,8 +834,7 @@ export const MobileShapeActions = ({
   const { container } = useExcalidrawContainer();
   const mobileActionsRef = useRef<HTMLDivElement>(null);
 
-  const ACTIONS_WIDTH =
-    mobileActionsRef.current?.getBoundingClientRect()?.width ?? 0;
+  const ACTIONS_WIDTH = mobileActionsRef.current?.getBoundingClientRect()?.width ?? 0;
 
   // 7 actions + 2 for undo/redo
   const MIN_ACTIONS = 9;
@@ -924,8 +847,7 @@ export const MobileShapeActions = ({
   const ADDITIONAL_WIDTH = WIDTH + GAP;
 
   const showDeleteOutside = ACTIONS_WIDTH >= MIN_WIDTH + ADDITIONAL_WIDTH;
-  const showDuplicateOutside =
-    ACTIONS_WIDTH >= MIN_WIDTH + 2 * ADDITIONAL_WIDTH;
+  const showDuplicateOutside = ACTIONS_WIDTH >= MIN_WIDTH + 2 * ADDITIONAL_WIDTH;
 
   return (
     <Island
@@ -953,14 +875,10 @@ export const MobileShapeActions = ({
         }}
       >
         {canChangeStrokeColor(appState, targetElements) && (
-          <div className={clsx("compact-action-item")}>
-            {renderAction("changeStrokeColor")}
-          </div>
+          <div className={clsx("compact-action-item")}>{renderAction("changeStrokeColor")}</div>
         )}
         {canChangeBackgroundColor(appState, targetElements) && (
-          <div className="compact-action-item">
-            {renderAction("changeBackgroundColor")}
-          </div>
+          <div className="compact-action-item">{renderAction("changeBackgroundColor")}</div>
         )}
         <CombinedShapeProperties
           appState={appState}
@@ -985,12 +903,9 @@ export const MobileShapeActions = ({
           targetElements={targetElements}
         />
         {/* Text Properties */}
-        {(appState.activeTool.type === "text" ||
-          targetElements.some(isTextElement)) && (
+        {(appState.activeTool.type === "text" || targetElements.some(isTextElement)) && (
           <>
-            <div className="compact-action-item">
-              {renderAction("changeFontFamily")}
-            </div>
+            <div className="compact-action-item">{renderAction("changeFontFamily")}</div>
             <CombinedTextProperties
               appState={appState}
               renderAction={renderAction}
@@ -1024,14 +939,10 @@ export const MobileShapeActions = ({
         <div className="compact-action-item">{renderAction("undo")}</div>
         <div className="compact-action-item">{renderAction("redo")}</div>
         {showDuplicateOutside && (
-          <div className="compact-action-item">
-            {renderAction("duplicateSelection")}
-          </div>
+          <div className="compact-action-item">{renderAction("duplicateSelection")}</div>
         )}
         {showDeleteOutside && (
-          <div className="compact-action-item">
-            {renderAction("deleteSelectedElements")}
-          </div>
+          <div className="compact-action-item">{renderAction("deleteSelectedElements")}</div>
         )}
       </div>
     </Island>
@@ -1080,106 +991,93 @@ export const ShapesSwitcher = ({
 
   return (
     <>
-      {getToolbarTools(app).map(
-        ({ value, icon, key, numericKey, fillable, toolbar }) => {
-          if (
-            toolbar === false ||
-            UIOptions.tools?.[
-              value as Extract<
-                typeof value,
-                keyof AppProps["UIOptions"]["tools"]
-              >
-            ] === false
-          ) {
-            return null;
-          }
+      {getToolbarTools(app).map(({ value, icon, key, numericKey, fillable, toolbar }) => {
+        if (
+          toolbar === false ||
+          UIOptions.tools?.[
+            value as Extract<typeof value, keyof AppProps["UIOptions"]["tools"]>
+          ] === false
+        ) {
+          return null;
+        }
 
-          const label = t(`toolBar.${value}`);
-          const letter =
-            key && capitalizeString(typeof key === "string" ? key : key[0]);
-          const shortcut = letter
-            ? `${letter} ${t("helpDialog.or")} ${numericKey}`
-            : `${numericKey}`;
-          const keybindingLabel =
-            value === "hand" ? undefined : numericKey || letter;
+        const label = t(`toolBar.${value}`);
+        const letter = key && capitalizeString(typeof key === "string" ? key : key[0]);
+        const shortcut = letter ? `${letter} ${t("helpDialog.or")} ${numericKey}` : `${numericKey}`;
+        const keybindingLabel = value === "hand" ? undefined : numericKey || letter;
 
-          // when in compact styles panel mode (tablet)
-          // use a ToolPopover for selection/lasso toggle as well
-          if (
-            (value === "selection" || value === "lasso") &&
-            isCompactStylesPanel
-          ) {
-            return (
-              <ToolPopover
-                key={"selection-popover"}
-                app={app}
-                options={SELECTION_TOOLS}
-                activeTool={activeTool}
-                defaultOption={app.state.preferredSelectionTool.type}
-                namePrefix="selectionType"
-                title={capitalizeString(t("toolBar.selection"))}
-                data-testid="toolbar-selection"
-                onToolChange={(type: string) => {
-                  if (type === "selection" || type === "lasso") {
-                    app.setActiveTool({ type });
-                    setAppState({
-                      preferredSelectionTool: { type, initialized: true },
-                    });
-                  }
-                }}
-                displayedOption={
-                  SELECTION_TOOLS.find(
-                    (tool) =>
-                      tool.type === app.state.preferredSelectionTool.type,
-                  ) || SELECTION_TOOLS[0]
-                }
-                fillable={activeTool.type === "selection"}
-              />
-            );
-          }
-
+        // when in compact styles panel mode (tablet)
+        // use a ToolPopover for selection/lasso toggle as well
+        if ((value === "selection" || value === "lasso") && isCompactStylesPanel) {
           return (
-            <ToolButton
-              className={clsx("Shape", { fillable })}
-              key={value}
-              type="radio"
-              icon={icon}
-              checked={activeTool.type === value}
-              name="editor-current-shape"
-              title={`${capitalizeString(label)} — ${shortcut}`}
-              keyBindingLabel={keybindingLabel}
-              aria-label={capitalizeString(label)}
-              aria-keyshortcuts={shortcut}
-              data-testid={`toolbar-${value}`}
-              onPointerDown={({ pointerType }) => {
-                if (!app.state.penDetected && pointerType === "pen") {
-                  app.togglePenMode(true);
-                }
-
-                if (value === "selection") {
-                  if (app.state.activeTool.type === "selection") {
-                    app.setActiveTool({ type: "lasso" });
-                  } else {
-                    app.setActiveTool({ type: "selection" });
-                  }
-                }
-              }}
-              onChange={({ pointerType }) => {
-                if (app.state.activeTool.type !== value) {
-                  trackEvent("toolbar", value, "ui");
-                }
-                if (value === "image") {
-                  app.setActiveTool({
-                    type: value,
+            <ToolPopover
+              key={"selection-popover"}
+              app={app}
+              options={SELECTION_TOOLS}
+              activeTool={activeTool}
+              defaultOption={app.state.preferredSelectionTool.type}
+              namePrefix="selectionType"
+              title={capitalizeString(t("toolBar.selection"))}
+              data-testid="toolbar-selection"
+              onToolChange={(type: string) => {
+                if (type === "selection" || type === "lasso") {
+                  app.setActiveTool({ type });
+                  setAppState({
+                    preferredSelectionTool: { type, initialized: true },
                   });
-                } else {
-                  app.setActiveTool({ type: value });
                 }
               }}
+              displayedOption={
+                SELECTION_TOOLS.find(
+                  (tool) => tool.type === app.state.preferredSelectionTool.type,
+                ) || SELECTION_TOOLS[0]
+              }
+              fillable={activeTool.type === "selection"}
             />
           );
-        },
-      )}
+        }
+
+        return (
+          <ToolButton
+            className={clsx("Shape", { fillable })}
+            key={value}
+            type="radio"
+            icon={icon}
+            checked={activeTool.type === value}
+            name="editor-current-shape"
+            title={`${capitalizeString(label)} — ${shortcut}`}
+            keyBindingLabel={keybindingLabel}
+            aria-label={capitalizeString(label)}
+            aria-keyshortcuts={shortcut}
+            data-testid={`toolbar-${value}`}
+            onPointerDown={({ pointerType }) => {
+              if (!app.state.penDetected && pointerType === "pen") {
+                app.togglePenMode(true);
+              }
+
+              if (value === "selection") {
+                if (app.state.activeTool.type === "selection") {
+                  app.setActiveTool({ type: "lasso" });
+                } else {
+                  app.setActiveTool({ type: "selection" });
+                }
+              }
+            }}
+            onChange={({ pointerType }) => {
+              if (app.state.activeTool.type !== value) {
+                trackEvent("toolbar", value, "ui");
+              }
+              if (value === "image") {
+                app.setActiveTool({
+                  type: value,
+                });
+              } else {
+                app.setActiveTool({ type: value });
+              }
+            }}
+          />
+        );
+      })}
       <div className="App-toolbar__divider" />
 
       <DropdownMenu open={isExtraToolsMenuOpen}>
@@ -1203,12 +1101,12 @@ export const ShapesSwitcher = ({
           {frameToolSelected
             ? frameToolIcon
             : embeddableToolSelected
-            ? EmbedIcon
-            : laserToolSelected && !app.props.isCollaborating
-            ? laserPointerToolIcon
-            : lassoToolSelected
-            ? LassoIcon
-            : extraToolsIcon}
+              ? EmbedIcon
+              : laserToolSelected && !app.props.isCollaborating
+                ? laserPointerToolIcon
+                : lassoToolSelected
+                  ? LassoIcon
+                  : extraToolsIcon}
         </DropdownMenu.Trigger>
         <DropdownMenu.Content
           onClickOutside={() => setIsExtraToolsMenuOpen(false)}
@@ -1251,9 +1149,7 @@ export const ShapesSwitcher = ({
               {t("toolBar.lasso")}
             </DropdownMenu.Item>
           )}
-          <div style={{ margin: "6px 0", fontSize: 14, fontWeight: 600 }}>
-            Generate
-          </div>
+          <div style={{ margin: "6px 0", fontSize: 14, fontWeight: 600 }}>Generate</div>
           {app.props.aiEnabled !== false && <TTDDialogTriggerTunnel.Out />}
           <DropdownMenu.Item
             onSelect={() => app.setOpenDialog({ name: "ttd", tab: "mermaid" })}
@@ -1329,11 +1225,7 @@ export const ExitZenModeButton = ({
   </button>
 );
 
-export const ExitViewModeButton = ({
-  actionManager,
-}: {
-  actionManager: ActionManager;
-}) => (
+export const ExitViewModeButton = ({ actionManager }: { actionManager: ActionManager }) => (
   <button
     type="button"
     className="disable-view-mode"

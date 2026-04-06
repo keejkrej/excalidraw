@@ -1,7 +1,5 @@
 export namespace OpenAIInput {
-  type ChatCompletionContentPart =
-    | ChatCompletionContentPartText
-    | ChatCompletionContentPartImage;
+  type ChatCompletionContentPart = ChatCompletionContentPartText | ChatCompletionContentPartImage;
 
   interface ChatCompletionContentPartImage {
     image_url: ChatCompletionContentPartImage.ImageURL;
@@ -67,9 +65,7 @@ export namespace OpenAIInput {
      * A list of messages comprising the conversation so far.
      * [Example Python code](https://cookbook.openai.com/examples/how_to_format_inputs_to_chatgpt_models).
      */
-    messages: Array<
-      ChatCompletionUserMessageParam | ChatCompletionSystemMessageParam
-    >;
+    messages: Array<ChatCompletionUserMessageParam | ChatCompletionSystemMessageParam>;
 
     /**
      * ID of the model to use. See the
@@ -238,12 +234,7 @@ export namespace OpenAIOutput {
      * model called a tool, or `function_call` (deprecated) if the model called a
      * function.
      */
-    finish_reason:
-      | "stop"
-      | "length"
-      | "tool_calls"
-      | "content_filter"
-      | "function_call";
+    finish_reason: "stop" | "length" | "tool_calls" | "content_filter" | "function_call";
 
     /**
      * The index of the choice in the list of choices.

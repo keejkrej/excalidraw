@@ -3,15 +3,8 @@ import { vi } from "vitest";
 
 import { KEYS, cloneJSON } from "@excalidraw/common";
 
-import {
-  Excalidraw,
-  exportToCanvas,
-  exportToSvg,
-} from "@excalidraw/excalidraw";
-import {
-  actionFlipHorizontal,
-  actionFlipVertical,
-} from "@excalidraw/excalidraw/actions";
+import { Excalidraw, exportToCanvas, exportToSvg } from "@excalidraw/excalidraw";
+import { actionFlipHorizontal, actionFlipVertical } from "@excalidraw/excalidraw/actions";
 
 import { API } from "@excalidraw/excalidraw/tests/helpers/api";
 import { Keyboard, Pointer, UI } from "@excalidraw/excalidraw/tests/helpers/ui";
@@ -122,8 +115,7 @@ describe("Crop an image", () => {
     const initialWidth = image.width;
     const initialHeight = image.height;
 
-    const { naturalWidth, naturalHeight } =
-      generateRandomNaturalWidthAndHeight(image);
+    const { naturalWidth, naturalHeight } = generateRandomNaturalWidthAndHeight(image);
 
     UI.crop(image, "w", naturalWidth, naturalHeight, [initialWidth / 2, 0]);
 
@@ -137,8 +129,7 @@ describe("Crop an image", () => {
     const initialWidth = image.width;
     const initialHeight = image.height;
 
-    const { naturalWidth, naturalHeight } =
-      generateRandomNaturalWidthAndHeight(image);
+    const { naturalWidth, naturalHeight } = generateRandomNaturalWidthAndHeight(image);
 
     UI.crop(image, "w", naturalWidth, naturalHeight, [initialWidth, 0]);
     expect(image.width).toBeLessThan(initialWidth);
@@ -154,8 +145,7 @@ describe("Crop an image", () => {
     const initialWidth = image.width;
     const initialHeight = image.height;
 
-    const { naturalWidth, naturalHeight } =
-      generateRandomNaturalWidthAndHeight(image);
+    const { naturalWidth, naturalHeight } = generateRandomNaturalWidthAndHeight(image);
 
     UI.crop(image, "w", naturalWidth, naturalHeight, [initialWidth / 3, 0]);
 
@@ -163,14 +153,7 @@ describe("Crop an image", () => {
     let resizedHeight = image.height;
 
     // max height, cropping should not change anything
-    UI.crop(
-      image,
-      "w",
-      naturalWidth,
-      naturalHeight,
-      [-initialWidth / 3, 0],
-      true,
-    );
+    UI.crop(image, "w", naturalWidth, naturalHeight, [-initialWidth / 3, 0], true);
     expect(image.width).toBeCloseTo(resizedWidth, 10);
     expect(image.height).toBeCloseTo(resizedHeight, 10);
 
@@ -219,13 +202,9 @@ describe("Cropping and other features", async () => {
     const initialWidth = image.width;
     const initialHeight = image.height;
 
-    const { naturalWidth, naturalHeight } =
-      generateRandomNaturalWidthAndHeight(image);
+    const { naturalWidth, naturalHeight } = generateRandomNaturalWidthAndHeight(image);
 
-    UI.crop(image, "nw", naturalWidth, naturalHeight, [
-      initialWidth / 2,
-      initialHeight / 2,
-    ]);
+    UI.crop(image, "nw", naturalWidth, naturalHeight, [initialWidth / 2, initialHeight / 2]);
     Keyboard.keyDown(KEYS.ESCAPE);
     const duplicatedImage = duplicateElement(null, new Map(), image);
     act(() => {
@@ -261,13 +240,9 @@ describe("Cropping and other features", async () => {
     const initialWidth = image.width;
     const initialHeight = image.height;
 
-    const { naturalWidth, naturalHeight } =
-      generateRandomNaturalWidthAndHeight(image);
+    const { naturalWidth, naturalHeight } = generateRandomNaturalWidthAndHeight(image);
 
-    UI.crop(image, "nw", naturalWidth, naturalHeight, [
-      initialWidth / 2,
-      initialHeight / 2,
-    ]);
+    UI.crop(image, "nw", naturalWidth, naturalHeight, [initialWidth / 2, initialHeight / 2]);
     const cropBeforeResizing = image.crop;
     const cropBeforeResizingCloned = cloneJSON(image.crop) as ImageCrop;
     expect(cropBeforeResizing).not.toBe(null);
@@ -290,15 +265,11 @@ describe("Cropping and other features", async () => {
     const initialWidth = image.width;
     const initialHeight = image.height;
 
-    const { naturalWidth, naturalHeight } =
-      generateRandomNaturalWidthAndHeight(image);
+    const { naturalWidth, naturalHeight } = generateRandomNaturalWidthAndHeight(image);
 
     mouse.doubleClickOn(image);
     expect(h.state.croppingElementId).not.toBe(null);
-    UI.crop(image, "nw", naturalWidth, naturalHeight, [
-      initialWidth / 2,
-      initialHeight / 2,
-    ]);
+    UI.crop(image, "nw", naturalWidth, naturalHeight, [initialWidth / 2, initialHeight / 2]);
     Keyboard.keyDown(KEYS.ESCAPE);
     const cropBeforeResizing = image.crop;
     const cropBeforeResizingCloned = cloneJSON(image.crop) as ImageCrop;
@@ -317,15 +288,11 @@ describe("Cropping and other features", async () => {
     const initialWidth = image.width;
     const initialHeight = image.height;
 
-    const { naturalWidth, naturalHeight } =
-      generateRandomNaturalWidthAndHeight(image);
+    const { naturalWidth, naturalHeight } = generateRandomNaturalWidthAndHeight(image);
 
     mouse.doubleClickOn(image);
     expect(h.state.croppingElementId).not.toBe(null);
-    UI.crop(image, "nw", naturalWidth, naturalHeight, [
-      initialWidth / 2,
-      initialHeight / 4,
-    ]);
+    UI.crop(image, "nw", naturalWidth, naturalHeight, [initialWidth / 2, initialHeight / 4]);
     Keyboard.keyDown(KEYS.ESCAPE);
     const widthToHeightRatio = image.width / image.height;
 

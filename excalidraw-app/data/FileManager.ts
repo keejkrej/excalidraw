@@ -22,21 +22,12 @@ type FileVersion = Required<BinaryFileData>["version"];
 export class FileManager {
   /** files being fetched */
   private fetchingFiles = new Map<ExcalidrawImageElement["fileId"], true>();
-  private erroredFiles_fetch = new Map<
-    ExcalidrawImageElement["fileId"],
-    true
-  >();
+  private erroredFiles_fetch = new Map<ExcalidrawImageElement["fileId"], true>();
   /** files being saved */
-  private savingFiles = new Map<
-    ExcalidrawImageElement["fileId"],
-    FileVersion
-  >();
+  private savingFiles = new Map<ExcalidrawImageElement["fileId"], FileVersion>();
   /* files already saved to persistent storage */
   private savedFiles = new Map<ExcalidrawImageElement["fileId"], FileVersion>();
-  private erroredFiles_save = new Map<
-    ExcalidrawImageElement["fileId"],
-    FileVersion
-  >();
+  private erroredFiles_save = new Map<ExcalidrawImageElement["fileId"], FileVersion>();
 
   private _getFiles;
   private _saveFiles;
@@ -55,9 +46,7 @@ export class FileManager {
       savedFiles: Map<FileId, BinaryFileData>;
       erroredFiles: Map<FileId, BinaryFileData>;
     }>;
-    onFileStatusChange?: (
-      updates: Array<[FileId, "loading" | "loaded" | "error"]>,
-    ) => void;
+    onFileStatusChange?: (updates: Array<[FileId, "loading" | "loaded" | "error"]>) => void;
   }) {
     this._getFiles = getFiles;
     this._saveFiles = saveFiles;
@@ -80,8 +69,7 @@ export class FileManager {
   isFileSavedOrBeingSaved = (file: BinaryFileData) => {
     const fileVersion = this.getFileVersion(file);
     return (
-      this.savedFiles.get(file.id) === fileVersion ||
-      this.savingFiles.get(file.id) === fileVersion
+      this.savedFiles.get(file.id) === fileVersion || this.savingFiles.get(file.id) === fileVersion
     );
   };
 
@@ -99,8 +87,7 @@ export class FileManager {
     const addedFiles: Map<FileId, BinaryFileData> = new Map();
 
     for (const element of elements) {
-      const fileData =
-        isInitializedImageElement(element) && files[element.fileId];
+      const fileData = isInitializedImageElement(element) && files[element.fileId];
 
       if (
         fileData &&
@@ -166,9 +153,7 @@ export class FileManager {
 
       this._onFileStatusChange?.([
         ...loadedFiles.map((f) => [f.id, "loaded"] as [FileId, "loaded"]),
-        ...[...erroredFiles.keys()].map(
-          (id) => [id, "error"] as [FileId, "error"],
-        ),
+        ...[...erroredFiles.keys()].map((id) => [id, "error"] as [FileId, "error"]),
       ]);
 
       return { loadedFiles, erroredFiles };
@@ -212,9 +197,7 @@ export class FileManager {
   reset() {
     if (this._onFileStatusChange && this.fetchingFiles.size) {
       this._onFileStatusChange(
-        [...this.fetchingFiles.keys()].map(
-          (id) => [id, "error"] as [FileId, "error"],
-        ),
+        [...this.fetchingFiles.keys()].map((id) => [id, "error"] as [FileId, "error"]),
       );
     }
     this.fetchingFiles.clear();
@@ -278,19 +261,14 @@ export const updateStaleImageStatuses = (params: {
     return;
   }
   params.excalidrawAPI.updateScene({
-    elements: params.excalidrawAPI
-      .getSceneElementsIncludingDeleted()
-      .map((element) => {
-        if (
-          isInitializedImageElement(element) &&
-          params.erroredFiles.has(element.fileId)
-        ) {
-          return newElementWith(element, {
-            status: "error",
-          });
-        }
-        return element;
-      }),
+    elements: params.excalidrawAPI.getSceneElementsIncludingDeleted().map((element) => {
+      if (isInitializedImageElement(element) && params.erroredFiles.has(element.fileId)) {
+        return newElementWith(element, {
+          status: "error",
+        });
+      }
+      return element;
+    }),
     captureUpdate: CaptureUpdateAction.NEVER,
   });
 };

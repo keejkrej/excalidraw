@@ -1,10 +1,7 @@
 import { clamp, round } from "@excalidraw/math";
 
 import { MIN_WIDTH_OR_HEIGHT } from "@excalidraw/common";
-import {
-  MINIMAL_CROP_SIZE,
-  getUncroppedWidthAndHeight,
-} from "@excalidraw/element";
+import { MINIMAL_CROP_SIZE, getUncroppedWidthAndHeight } from "@excalidraw/element";
 import { resizeSingleElement } from "@excalidraw/element";
 import { isImageElement } from "@excalidraw/element";
 import { isFrameLikeElement } from "@excalidraw/element";
@@ -18,10 +15,7 @@ import type { Scene } from "@excalidraw/element";
 import DragInput from "./DragInput";
 import { getStepSizedValue, isPropertyEditable } from "./utils";
 
-import type {
-  DragFinishedCallbackType,
-  DragInputCallbackType,
-} from "./DragInput";
+import type { DragFinishedCallbackType, DragInputCallbackType } from "./DragInput";
 import type { AppState } from "../../types";
 
 interface DimensionDragInputProps {
@@ -36,9 +30,7 @@ const _shouldKeepAspectRatio = (element: ExcalidrawElement) => {
   return element.type === "image";
 };
 
-const handleDimensionChange: DragInputCallbackType<
-  DimensionDragInputProps["property"]
-> = ({
+const handleDimensionChange: DragInputCallbackType<DimensionDragInputProps["property"]> = ({
   accumulatedChange,
   originalElements,
   originalElementsMap,
@@ -56,8 +48,7 @@ const handleDimensionChange: DragInputCallbackType<
   const origElement = originalElements[0];
   const latestElement = elementsMap.get(origElement.id);
   if (origElement && latestElement) {
-    const keepAspectRatio =
-      shouldKeepAspectRatio || _shouldKeepAspectRatio(origElement);
+    const keepAspectRatio = shouldKeepAspectRatio || _shouldKeepAspectRatio(origElement);
     const aspectRatio = origElement.width / origElement.height;
 
     if (originalAppState.croppingElementId === origElement.id) {
@@ -77,16 +68,11 @@ const handleDimensionChange: DragInputCallbackType<
         getUncroppedWidthAndHeight(element);
 
       const naturalToUncroppedWidthRatio = crop.naturalWidth / uncroppedWidth;
-      const naturalToUncroppedHeightRatio =
-        crop.naturalHeight / uncroppedHeight;
+      const naturalToUncroppedHeightRatio = crop.naturalHeight / uncroppedHeight;
 
-      const MAX_POSSIBLE_WIDTH = isFlippedByX
-        ? crop.width + crop.x
-        : crop.naturalWidth - crop.x;
+      const MAX_POSSIBLE_WIDTH = isFlippedByX ? crop.width + crop.x : crop.naturalWidth - crop.x;
 
-      const MAX_POSSIBLE_HEIGHT = isFlippedByY
-        ? crop.height + crop.y
-        : crop.naturalHeight - crop.y;
+      const MAX_POSSIBLE_HEIGHT = isFlippedByY ? crop.height + crop.y : crop.naturalHeight - crop.y;
 
       const MIN_WIDTH = MINIMAL_CROP_SIZE * naturalToUncroppedWidthRatio;
       const MIN_HEIGHT = MINIMAL_CROP_SIZE * naturalToUncroppedHeightRatio;
@@ -95,11 +81,7 @@ const handleDimensionChange: DragInputCallbackType<
         if (property === "width") {
           const nextValueInNatural = nextValue * naturalToUncroppedWidthRatio;
 
-          const nextCropWidth = clamp(
-            nextValueInNatural,
-            MIN_WIDTH,
-            MAX_POSSIBLE_WIDTH,
-          );
+          const nextCropWidth = clamp(nextValueInNatural, MIN_WIDTH, MAX_POSSIBLE_WIDTH);
 
           nextCrop = {
             ...nextCrop,
@@ -108,11 +90,7 @@ const handleDimensionChange: DragInputCallbackType<
           };
         } else if (property === "height") {
           const nextValueInNatural = nextValue * naturalToUncroppedHeightRatio;
-          const nextCropHeight = clamp(
-            nextValueInNatural,
-            MIN_HEIGHT,
-            MAX_POSSIBLE_HEIGHT,
-          );
+          const nextCropHeight = clamp(nextValueInNatural, MIN_HEIGHT, MAX_POSSIBLE_HEIGHT);
 
           nextCrop = {
             ...nextCrop,
@@ -132,17 +110,9 @@ const handleDimensionChange: DragInputCallbackType<
       const changeInWidth = property === "width" ? instantChange : 0;
       const changeInHeight = property === "height" ? instantChange : 0;
 
-      const nextCropWidth = clamp(
-        crop.width + changeInWidth,
-        MIN_WIDTH,
-        MAX_POSSIBLE_WIDTH,
-      );
+      const nextCropWidth = clamp(crop.width + changeInWidth, MIN_WIDTH, MAX_POSSIBLE_WIDTH);
 
-      const nextCropHeight = clamp(
-        crop.height + changeInHeight,
-        MIN_WIDTH,
-        MAX_POSSIBLE_HEIGHT,
-      );
+      const nextCropHeight = clamp(crop.height + changeInHeight, MIN_WIDTH, MAX_POSSIBLE_HEIGHT);
 
       nextCrop = {
         ...crop,
@@ -167,16 +137,16 @@ const handleDimensionChange: DragInputCallbackType<
         property === "width"
           ? nextValue
           : keepAspectRatio
-          ? nextValue * aspectRatio
-          : origElement.width,
+            ? nextValue * aspectRatio
+            : origElement.width,
         MIN_WIDTH_OR_HEIGHT,
       );
       const nextHeight = Math.max(
         property === "height"
           ? nextValue
           : keepAspectRatio
-          ? nextValue / aspectRatio
-          : origElement.height,
+            ? nextValue / aspectRatio
+            : origElement.height,
         MIN_WIDTH_OR_HEIGHT,
       );
 
@@ -313,12 +283,7 @@ const handleDragFinished: DragFinishedCallbackType = ({
   }
 };
 
-const DimensionDragInput = ({
-  property,
-  element,
-  scene,
-  appState,
-}: DimensionDragInputProps) => {
+const DimensionDragInput = ({ property, element, scene, appState }: DimensionDragInputProps) => {
   let value = round(property === "width" ? element.width : element.height, 2);
 
   if (
@@ -327,8 +292,7 @@ const DimensionDragInput = ({
     isImageElement(element) &&
     element.crop
   ) {
-    const { width: uncroppedWidth, height: uncroppedHeight } =
-      getUncroppedWidthAndHeight(element);
+    const { width: uncroppedWidth, height: uncroppedHeight } = getUncroppedWidthAndHeight(element);
     if (property === "width") {
       const ratio = uncroppedWidth / element.crop.naturalWidth;
       value = round(element.crop.width * ratio, 2);

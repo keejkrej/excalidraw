@@ -8,11 +8,7 @@ import { useApp, useExcalidrawSetAppState } from "../App";
 
 import { useChatAgent } from "./Chat";
 
-import {
-  convertMermaidToExcalidraw,
-  insertToEditor,
-  saveMermaidDataToStorage,
-} from "./common";
+import { convertMermaidToExcalidraw, insertToEditor, saveMermaidDataToStorage } from "./common";
 import { errorAtom, chatHistoryAtom, showPreviewAtom } from "./TTDContext";
 
 import { useTTDChatStorage } from "./useTTDChatStorage";
@@ -40,9 +36,7 @@ const TextToDiagramContent = ({
   persistenceAdapter,
 }: {
   mermaidToExcalidrawLib: MermaidToExcalidrawLibProps;
-  onTextSubmit: (
-    props: TTTDDialog.OnTextSubmitProps,
-  ) => Promise<TTTDDialog.OnTextSubmitRetValue>;
+  onTextSubmit: (props: TTTDDialog.OnTextSubmitProps) => Promise<TTTDDialog.OnTextSubmitRetValue>;
   renderWelcomeScreen?: TTTDDialog.renderWelcomeScreen;
   renderWarning?: TTTDDialog.renderWarning;
   persistenceAdapter: TTDPersistenceAdapter;
@@ -144,16 +138,11 @@ const TextToDiagramContent = ({
   };
 
   const handleRetry = async (message: TChat.ChatMessage) => {
-    const messageIndex = chatHistory.messages.findIndex(
-      (msg) => msg.id === message.id,
-    );
+    const messageIndex = chatHistory.messages.findIndex((msg) => msg.id === message.id);
 
     if (messageIndex > 0) {
       const previousMessage = chatHistory.messages[messageIndex - 1];
-      if (
-        previousMessage.type === "user" &&
-        typeof previousMessage.content === "string"
-      ) {
+      if (previousMessage.type === "user" && typeof previousMessage.content === "string") {
         setLastRetryAttempt();
         await onGenerate({
           prompt: previousMessage.content,
@@ -172,10 +161,7 @@ const TextToDiagramContent = ({
       (msg) => msg.id === messageId && msg.type === "assistant",
     );
 
-    const remainingMessages = chatHistory.messages.slice(
-      0,
-      assistantMessageIndex - 1,
-    );
+    const remainingMessages = chatHistory.messages.slice(0, assistantMessageIndex - 1);
 
     setChatHistory({
       ...chatHistory,
@@ -193,9 +179,7 @@ const TextToDiagramContent = ({
   return (
     <div
       className={`ttd-dialog-layout ${
-        showPreview
-          ? "ttd-dialog-layout--split"
-          : "ttd-dialog-layout--chat-only"
+        showPreview ? "ttd-dialog-layout--split" : "ttd-dialog-layout--chat-only"
       }`}
     >
       <TTDChatPanel
@@ -245,9 +229,7 @@ export const TextToDiagram = ({
   persistenceAdapter,
 }: {
   mermaidToExcalidrawLib: MermaidToExcalidrawLibProps;
-  onTextSubmit(
-    props: TTTDDialog.OnTextSubmitProps,
-  ): Promise<TTTDDialog.OnTextSubmitRetValue>;
+  onTextSubmit(props: TTTDDialog.OnTextSubmitProps): Promise<TTTDDialog.OnTextSubmitRetValue>;
   renderWelcomeScreen?: TTTDDialog.renderWelcomeScreen;
   renderWarning?: TTTDDialog.renderWarning;
   persistenceAdapter: TTDPersistenceAdapter;

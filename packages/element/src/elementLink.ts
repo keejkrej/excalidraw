@@ -35,10 +35,7 @@ export const getLinkIdAndTypeFromSelection = (
   id: string;
   type: "element" | "group";
 } | null => {
-  if (
-    selectedElements.length > 0 &&
-    canCreateLinkFromElements(selectedElements)
-  ) {
+  if (selectedElements.length > 0 && canCreateLinkFromElements(selectedElements)) {
     if (selectedElements.length === 1) {
       return {
         id: selectedElements[0].id,
@@ -65,9 +62,7 @@ export const getLinkIdAndTypeFromSelection = (
   return null;
 };
 
-export const canCreateLinkFromElements = (
-  selectedElements: ExcalidrawElement[],
-) => {
+export const canCreateLinkFromElements = (selectedElements: ExcalidrawElement[]) => {
   if (selectedElements.length === 1) {
     return true;
   }
@@ -82,10 +77,7 @@ export const canCreateLinkFromElements = (
 export const isElementLink = (url: string) => {
   try {
     const _url = new URL(url);
-    return (
-      _url.searchParams.has(ELEMENT_LINK_KEY) &&
-      _url.host === window.location.host
-    );
+    return _url.searchParams.has(ELEMENT_LINK_KEY) && _url.host === window.location.host;
   } catch (error) {
     return false;
   }

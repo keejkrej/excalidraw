@@ -17,13 +17,9 @@ const MenuTrigger = ({
   title?: string;
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onSelect">) => {
   const editorInterface = useEditorInterface();
-  const classNames = clsx(
-    `dropdown-menu-button ${className}`,
-    "zen-mode-transition",
-    {
-      "dropdown-menu-button--mobile": editorInterface.formFactor === "phone",
-    },
-  ).trim();
+  const classNames = clsx(`dropdown-menu-button ${className}`, "zen-mode-transition", {
+    "dropdown-menu-button--mobile": editorInterface.formFactor === "phone",
+  }).trim();
   return (
     <DropdownMenuPrimitive.Trigger
       className={classNames}

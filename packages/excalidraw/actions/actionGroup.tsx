@@ -53,12 +53,7 @@ const allElementsInSameGroup = (elements: readonly ExcalidrawElement[]) => {
   if (elements.length >= 2) {
     const groupIds = elements[0].groupIds;
     for (const groupId of groupIds) {
-      if (
-        elements.reduce(
-          (acc, element) => acc && isElementInGroup(element, groupId),
-          true,
-        )
-      ) {
+      if (elements.reduce((acc, element) => acc && isElementInGroup(element, groupId), true)) {
         return true;
       }
     }
@@ -108,13 +103,9 @@ export const actionGroup = register({
     if (selectedGroupIds.length === 1) {
       const selectedGroupId = selectedGroupIds[0];
       const elementIdsInGroup = new Set(
-        getElementsInGroup(elements, selectedGroupId).map(
-          (element) => element.id,
-        ),
+        getElementsInGroup(elements, selectedGroupId).map((element) => element.id),
       );
-      const selectedElementIds = new Set(
-        selectedElements.map((element) => element.id),
-      );
+      const selectedElementIds = new Set(selectedElements.map((element) => element.id));
       const combinedSet = new Set([
         ...Array.from(elementIdsInGroup),
         ...Array.from(selectedElementIds),
@@ -141,10 +132,7 @@ export const actionGroup = register({
       const frameElementsMap = groupByFrameLikes(selectedElements);
 
       frameElementsMap.forEach((elementsInFrame, frameId) => {
-        removeElementsFromFrame(
-          elementsInFrame,
-          app.scene.getNonDeletedElementsMap(),
-        );
+        removeElementsFromFrame(elementsInFrame, app.scene.getNonDeletedElementsMap());
       });
     }
 
@@ -156,11 +144,7 @@ export const actionGroup = register({
         return element;
       }
       return newElementWith(element, {
-        groupIds: addToGroup(
-          element.groupIds,
-          newGroupId,
-          appState.editingGroupId,
-        ),
+        groupIds: addToGroup(element.groupIds, newGroupId, appState.editingGroupId),
       });
     });
     // keep the z order within the group the same, but move them
@@ -173,9 +157,7 @@ export const actionGroup = register({
     const elementsAfterGroup = nextElements.slice(lastGroupElementIndex + 1);
     const elementsBeforeGroup = nextElements
       .slice(0, lastGroupElementIndex)
-      .filter(
-        (updatedElement) => !isElementInGroup(updatedElement, newGroupId),
-      );
+      .filter((updatedElement) => !isElementInGroup(updatedElement, newGroupId));
     const reorderedElements = syncMovedIndices(
       [...elementsBeforeGroup, ...elementsInGroup, ...elementsAfterGroup],
       arrayToMap(elementsInGroup),
@@ -194,10 +176,8 @@ export const actionGroup = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  predicate: (elements, appState, _, app) =>
-    enableActionGroup(elements, appState, app),
-  keyTest: (event) =>
-    !event.shiftKey && event[KEYS.CTRL_OR_CMD] && event.key === KEYS.G,
+  predicate: (elements, appState, _, app) => enableActionGroup(elements, appState, app),
+  keyTest: (event) => !event.shiftKey && event[KEYS.CTRL_OR_CMD] && event.key === KEYS.G,
   PanelComponent: ({ elements, appState, updateData, app }) => (
     <ToolButton
       hidden={!enableActionGroup(elements, appState, app)}
@@ -235,10 +215,7 @@ export const actionUngroup = register({
       if (isBoundToContainer(element)) {
         boundTextElementIds.push(element.id);
       }
-      const nextGroupIds = removeFromSelectedGroups(
-        element.groupIds,
-        appState.selectedGroupIds,
-      );
+      const nextGroupIds = removeFromSelectedGroups(element.groupIds, appState.selectedGroupIds);
       if (nextGroupIds.length === element.groupIds.length) {
         return element;
       }
@@ -257,9 +234,7 @@ export const actionUngroup = register({
     const selectedElements = app.scene.getSelectedElements(appState);
 
     const selectedElementFrameIds = new Set(
-      selectedElements
-        .filter((element) => element.frameId)
-        .map((element) => element.frameId!),
+      selectedElements.filter((element) => element.frameId).map((element) => element.frameId!),
     );
 
     const targetFrames = getFrameLikeElements(elements).filter((frame) =>
@@ -270,12 +245,7 @@ export const actionUngroup = register({
       if (frame) {
         nextElements = replaceAllElementsInFrame(
           nextElements,
-          getElementsInResizingFrame(
-            nextElements,
-            frame,
-            appState,
-            elementsMap,
-          ),
+          getElementsInResizingFrame(nextElements, frame, appState, elementsMap),
           frame,
           app,
         );
@@ -283,9 +253,7 @@ export const actionUngroup = register({
     });
 
     // remove binded text elements from selection
-    updateAppState.selectedElementIds = Object.entries(
-      updateAppState.selectedElementIds,
-    ).reduce(
+    updateAppState.selectedElementIds = Object.entries(updateAppState.selectedElementIds).reduce(
       (acc: { [key: ExcalidrawElement["id"]]: true }, [id, selected]) => {
         if (selected && !boundTextElementIds.includes(id)) {
           acc[id] = true;
@@ -302,9 +270,7 @@ export const actionUngroup = register({
     };
   },
   keyTest: (event) =>
-    event.shiftKey &&
-    event[KEYS.CTRL_OR_CMD] &&
-    event.key === KEYS.G.toUpperCase(),
+    event.shiftKey && event[KEYS.CTRL_OR_CMD] && event.key === KEYS.G.toUpperCase(),
   predicate: (elements, appState) => getSelectedGroupIds(appState).length > 0,
 
   PanelComponent: ({ elements, appState, updateData }) => (

@@ -1,0 +1,43 @@
+{
+  "categories": {},
+  "rules": {
+    "no-debugger": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "jotai",
+            "message": "Do not import from \"jotai\" directly. Use our app-specific modules (\"editor-jotai\" or \"app-jotai\")."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["packages/excalidraw/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": ["@excalidraw/excalidraw"],
+                "message": "Do not import from the barrel 'index.tsx' files. Use direct relative imports to the specific module instead.",
+                "allowTypeImports": true
+              }
+            ],
+            "paths": [".", "..", "../..", "../../..", "../../../..", "../../../../..", "../index", "../../index", "../../../index", "../../../../index"]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["packages/excalidraw/**/*.test.{ts,tsx}", "packages/excalidraw/**/*.test.helpers.{ts,tsx}", "packages/excalidraw/tests/**/*.{ts,tsx}"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ]
+}

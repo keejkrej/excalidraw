@@ -1,9 +1,6 @@
 import type { AppState, UnsubscribeCallback } from "../types";
 
-type StateChangeSelector =
-  | keyof AppState
-  | (keyof AppState)[]
-  | ((appState: AppState) => unknown);
+type StateChangeSelector = keyof AppState | (keyof AppState)[] | ((appState: AppState) => unknown);
 
 type StateChangePredicateOptions = {
   predicate: (appState: AppState) => boolean;
@@ -53,10 +50,7 @@ export type OnStateChange = {
     once?: boolean;
   }): UnsubscribeCallback;
   (opts: { predicate: (appState: AppState) => boolean }): Promise<AppState>;
-  (
-    selector: StateChangeSelector,
-    callback: (value: any, appState: AppState) => void,
-  ): any;
+  (selector: StateChangeSelector, callback: (value: any, appState: AppState) => void): any;
 };
 
 export class AppStateObserver {
@@ -68,18 +62,14 @@ export class AppStateObserver {
     propOrOpts: StateChangeArg,
   ): propOrOpts is StateChangePredicateOptions {
     return (
-      typeof propOrOpts === "object" &&
-      !Array.isArray(propOrOpts) &&
-      "predicate" in propOrOpts
+      typeof propOrOpts === "object" && !Array.isArray(propOrOpts) && "predicate" in propOrOpts
     );
   }
 
   private subscribe(listener: StateChangeListener): UnsubscribeCallback {
     this.listeners.push(listener);
     return () => {
-      this.listeners = this.listeners.filter(
-        (existingListener) => existingListener !== listener,
-      );
+      this.listeners = this.listeners.filter((existingListener) => existingListener !== listener);
     };
   }
 
@@ -95,11 +85,7 @@ export class AppStateObserver {
     let matchesImmediately = false;
 
     if (this.isStateChangePredicateOptions(propOrOpts)) {
-      const {
-        predicate: predicateFn,
-        callback: callbackFromOpts,
-        once: onceFromOpts,
-      } = propOrOpts;
+      const { predicate: predicateFn, callback: callbackFromOpts, once: onceFromOpts } = propOrOpts;
 
       predicate = predicateFn;
       getValue = (appState: AppState) => appState;
@@ -120,8 +106,7 @@ export class AppStateObserver {
       getValue = (appState: AppState) => appState;
     } else {
       const key = propOrOpts;
-      predicate = (appState: AppState, prevState: AppState) =>
-        appState[key] !== prevState[key];
+      predicate = (appState: AppState, prevState: AppState) => appState[key] !== prevState[key];
       getValue = (appState: AppState) => appState[key];
     }
 

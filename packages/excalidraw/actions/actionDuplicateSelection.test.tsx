@@ -2,12 +2,7 @@ import { ORIG_ID } from "@excalidraw/common";
 
 import { Excalidraw } from "../index";
 import { API } from "../tests/helpers/api";
-import {
-  act,
-  assertElements,
-  getCloneByOrigId,
-  render,
-} from "../tests/test-utils";
+import { act, assertElements, getCloneByOrigId, render } from "../tests/test-utils";
 
 import { actionDuplicateSelection } from "./actionDuplicateSelection";
 

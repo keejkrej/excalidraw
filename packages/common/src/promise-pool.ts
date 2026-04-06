@@ -17,10 +17,7 @@ export class PromisePool<T> {
   private readonly pool: TPromisePool<T>;
   private readonly entries: Record<number, T> = {};
 
-  constructor(
-    source: IterableIterator<Promise<void | readonly [number, T]>>,
-    concurrency: number,
-  ) {
+  constructor(source: IterableIterator<Promise<void | readonly [number, T]>>, concurrency: number) {
     this.pool = new Pool(
       source as unknown as () => void | PromiseLike<[number, T][]>,
       concurrency,

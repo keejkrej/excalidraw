@@ -68,7 +68,8 @@
       max-height: calc(100svh - var(--editor-container-padding) * 2 - 2.25rem);
 
       @at-root .excalidraw.theme--dark#{&} {
-        box-shadow: var(--box-shadow, var(--shadow-island)),
+        box-shadow:
+          var(--box-shadow, var(--shadow-island)),
           0 0 0 1px rgba(0, 0, 0, 0.15);
       }
     }
@@ -109,9 +110,7 @@
       max-height: calc(7 * (2rem + 2px) + 2 * (0.5rem + 1.3 * 0.75rem) + 1rem);
 
       @media screen and (min-width: 1921px) {
-        max-height: calc(
-          7 * (2.25rem + 2px) + 2 * (0.5rem + 1.3 * 0.75rem) + 1rem
-        );
+        max-height: calc(7 * (2.25rem + 2px) + 2 * (0.5rem + 1.3 * 0.75rem) + 1rem);
       }
 
       .dropdown-menu-item-base {

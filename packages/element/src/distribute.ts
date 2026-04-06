@@ -27,11 +27,7 @@ export const distributeElements = (
       : (["minY", "midY", "maxY", "height"] as const);
 
   const bounds = getCommonBoundingBox(selectedElements);
-  const groups = getSelectedElementsByGroup(
-    selectedElements,
-    elementsMap,
-    appState,
-  )
+  const groups = getSelectedElementsByGroup(selectedElements, elementsMap, appState)
     .map((group) => [group, getCommonBoundingBox(group)] as const)
     .sort((a, b) => a[1][mid] - b[1][mid]);
 
@@ -52,8 +48,7 @@ export const distributeElements = (
 
     // Get our step, based on the distance between the center points of our
     // start and end boxes
-    const step =
-      (groups[index1][1][mid] - groups[index0][1][mid]) / (groups.length - 1);
+    const step = (groups[index1][1][mid] - groups[index0][1][mid]) / (groups.length - 1);
 
     let pos = groups[index0][1][mid];
 

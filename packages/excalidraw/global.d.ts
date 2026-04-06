@@ -55,10 +55,7 @@ interface Clipboard extends EventTarget {
 type TEXtChunk = { name: "tEXt"; data: Uint8Array };
 
 declare module "png-chunk-text" {
-  function encode(
-    name: string,
-    value: string,
-  ): { name: "tEXt"; data: Uint8Array };
+  function encode(name: string, value: string): { name: "tEXt"; data: Uint8Array };
   function decode(data: Uint8Array): { keyword: string; text: string };
 }
 declare module "png-chunks-encode" {
@@ -121,10 +118,7 @@ declare module "image-blob-reduce" {
 
 interface CustomMatchers {
   toBeNonNaNNumber(): void;
-  toCloselyEqualPoints(
-    points: readonly [number, number][],
-    precision?: number,
-  ): void;
+  toCloselyEqualPoints(points: readonly [number, number][], precision?: number): void;
 }
 
 declare namespace jest {

@@ -1,19 +1,9 @@
-import {
-  isElbowArrow,
-  isLinearElement,
-  isLineElement,
-} from "@excalidraw/element";
+import { isElbowArrow, isLinearElement, isLineElement } from "@excalidraw/element";
 import { arrayToMap, invariant } from "@excalidraw/common";
 
-import {
-  toggleLinePolygonState,
-  CaptureUpdateAction,
-} from "@excalidraw/element";
+import { toggleLinePolygonState, CaptureUpdateAction } from "@excalidraw/element";
 
-import type {
-  ExcalidrawLinearElement,
-  ExcalidrawLineElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawLinearElement, ExcalidrawLineElement } from "@excalidraw/element/types";
 
 import { DEFAULT_CATEGORIES } from "../components/CommandPalette/CommandPalette";
 import { ToolButton } from "../components/ToolButton";
@@ -61,10 +51,7 @@ export const actionToggleLinearEditor = register({
     })[0] as ExcalidrawLinearElement;
 
     invariant(selectedElement, "No selected element found");
-    invariant(
-      appState.selectedLinearElement,
-      "No selected linear element found",
-    );
+    invariant(appState.selectedLinearElement, "No selected linear element found");
     invariant(
       selectedElement.id === appState.selectedLinearElement.elementId,
       "Selected element ID and linear editor elementId does not match",
@@ -93,9 +80,7 @@ export const actionToggleLinearEditor = register({
     }
 
     const label = t(
-      selectedElement.type === "arrow"
-        ? "labels.lineEditor.editArrow"
-        : "labels.lineEditor.edit",
+      selectedElement.type === "arrow" ? "labels.lineEditor.editArrow" : "labels.lineEditor.edit",
     );
     return (
       <ToolButton
@@ -123,9 +108,7 @@ export const actionTogglePolygon = register({
       (element) => !isLineElement(element) || !element.polygon,
     );
 
-    return allPolygons
-      ? "labels.polygon.breakPolygon"
-      : "labels.polygon.convertToPolygon";
+    return allPolygons ? "labels.polygon.breakPolygon" : "labels.polygon.convertToPolygon";
   },
   trackEvent: {
     category: "element",
@@ -137,9 +120,7 @@ export const actionTogglePolygon = register({
 
     return (
       selectedElements.length > 0 &&
-      selectedElements.every(
-        (element) => isLineElement(element) && element.points.length >= 4,
-      )
+      selectedElements.every((element) => isLineElement(element) && element.points.length >= 4)
     );
   },
   perform(elements, appState, _, app) {
@@ -163,9 +144,7 @@ export const actionTogglePolygon = register({
         }
 
         return newElementWith(element, {
-          backgroundColor: nextPolygonState
-            ? element.backgroundColor
-            : "transparent",
+          backgroundColor: nextPolygonState ? element.backgroundColor : "transparent",
           ...toggleLinePolygonState(element, nextPolygonState),
         });
       }),
@@ -197,11 +176,7 @@ export const actionTogglePolygon = register({
       (element) => isLineElement(element) && element.polygon,
     );
 
-    const label = t(
-      allPolygon
-        ? "labels.polygon.breakPolygon"
-        : "labels.polygon.convertToPolygon",
-    );
+    const label = t(allPolygon ? "labels.polygon.breakPolygon" : "labels.polygon.convertToPolygon");
 
     return (
       <ButtonIcon

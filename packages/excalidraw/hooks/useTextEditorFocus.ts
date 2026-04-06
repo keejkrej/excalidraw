@@ -48,8 +48,7 @@ export const withCaretPositionPreservation = (
   }
 
   // Save caret position if editing text
-  const savedPosition =
-    isCompactMode && isEditingText ? saveCaretPosition() : null;
+  const savedPosition = isCompactMode && isEditingText ? saveCaretPosition() : null;
 
   // Execute the callback
   callback();
@@ -62,8 +61,7 @@ export const withCaretPositionPreservation = (
 
 // Hook for managing text editor caret position with state
 export const useTextEditorFocus = () => {
-  const [savedCaretPosition, setSavedCaretPosition] =
-    useState<CaretPosition | null>(null);
+  const [savedCaretPosition, setSavedCaretPosition] = useState<CaretPosition | null>(null);
 
   const saveCaretPositionToState = useCallback(() => {
     const position = saveCaretPosition();
@@ -97,9 +95,7 @@ export const useTextEditorFocus = () => {
 };
 
 // Utility function to temporarily disable text editor blur
-export const temporarilyDisableTextEditorBlur = (
-  duration: number = 100,
-): void => {
+export const temporarilyDisableTextEditorBlur = (duration: number = 100): void => {
   const textEditor = getTextEditor();
   if (textEditor) {
     const originalOnBlur = textEditor.onblur;

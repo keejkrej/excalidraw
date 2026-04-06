@@ -22,10 +22,7 @@ import {
   wrapText,
 } from "@excalidraw/element";
 
-import type {
-  ChartType,
-  ExcalidrawTextElement,
-} from "@excalidraw/element/types";
+import type { ChartType, ExcalidrawTextElement } from "@excalidraw/element/types";
 import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
 
 import {
@@ -60,11 +57,7 @@ import {
   type CartesianChartType,
 } from "./charts.constants";
 
-import type {
-  ChartElements,
-  Spreadsheet,
-  SpreadsheetSeries,
-} from "./charts.types";
+import type { ChartElements, Spreadsheet, SpreadsheetSeries } from "./charts.types";
 
 const bgColors = getAllColorsSpecificShade(DEFAULT_CHART_COLOR_INDEX);
 
@@ -91,10 +84,7 @@ export const isSpreadsheetValidForChartType = (
   return true;
 };
 
-const getSeriesAwareSlotWidth = (
-  baseSlotWidth: number,
-  seriesCount: number,
-) => {
+const getSeriesAwareSlotWidth = (baseSlotWidth: number, seriesCount: number) => {
   const extraSlotWidth =
     seriesCount <= 1
       ? 0
@@ -110,39 +100,27 @@ export const getCartesianChartLayout = (
   seriesCount: number,
 ): CartesianChartLayout => {
   if (chartType === "line") {
-    const slotWidth = getSeriesAwareSlotWidth(
-      CARTESIAN_LINE_SLOT_WIDTH,
-      seriesCount,
-    );
+    const slotWidth = getSeriesAwareSlotWidth(CARTESIAN_LINE_SLOT_WIDTH, seriesCount);
     return {
       slotWidth,
       gap: CARTESIAN_GAP,
       chartHeight: CARTESIAN_LINE_HEIGHT,
-      xLabelMaxWidth:
-        slotWidth + CARTESIAN_GAP * 3 + CARTESIAN_LABEL_MAX_WIDTH_BUFFER,
+      xLabelMaxWidth: slotWidth + CARTESIAN_GAP * 3 + CARTESIAN_LABEL_MAX_WIDTH_BUFFER,
     };
   }
 
-  const slotWidth = getSeriesAwareSlotWidth(
-    CARTESIAN_BASE_SLOT_WIDTH,
-    seriesCount,
-  );
+  const slotWidth = getSeriesAwareSlotWidth(CARTESIAN_BASE_SLOT_WIDTH, seriesCount);
   return {
     slotWidth,
     gap: CARTESIAN_GAP,
     chartHeight: CARTESIAN_BAR_HEIGHT,
-    xLabelMaxWidth:
-      slotWidth + CARTESIAN_GAP * 3 + CARTESIAN_LABEL_MAX_WIDTH_BUFFER,
+    xLabelMaxWidth: slotWidth + CARTESIAN_GAP * 3 + CARTESIAN_LABEL_MAX_WIDTH_BUFFER,
   };
 };
 
-export const getChartDimensions = (
-  spreadsheet: Spreadsheet,
-  layout: CartesianChartLayout,
-) => {
+export const getChartDimensions = (spreadsheet: Spreadsheet, layout: CartesianChartLayout) => {
   const chartWidth =
-    (layout.slotWidth + layout.gap) * spreadsheet.series[0].values.length +
-    layout.gap;
+    (layout.slotWidth + layout.gap) * spreadsheet.series[0].values.length + layout.gap;
   const chartHeight = layout.chartHeight + layout.gap * 2;
   return { chartWidth, chartHeight };
 };
@@ -153,19 +131,12 @@ export const getRadarDimensions = () => {
   return { chartWidth, chartHeight };
 };
 
-const getCircularDistance = (
-  firstIndex: number,
-  secondIndex: number,
-  paletteSize: number,
-) => {
+const getCircularDistance = (firstIndex: number, secondIndex: number, paletteSize: number) => {
   const absoluteDistance = Math.abs(firstIndex - secondIndex);
   return Math.min(absoluteDistance, paletteSize - absoluteDistance);
 };
 
-export const getSeriesColors = (
-  seriesCount: number,
-  colorOffset: number,
-): readonly string[] => {
+export const getSeriesColors = (seriesCount: number, colorOffset: number): readonly string[] => {
   if (seriesCount <= 0 || bgColors.length === 0) {
     return [];
   }
@@ -191,13 +162,11 @@ export const getSeriesColors = (
       );
       const minDistance = Math.min(...distances);
       const averageDistance =
-        distances.reduce((total, distance) => total + distance, 0) /
-        distances.length;
+        distances.reduce((total, distance) => total + distance, 0) / distances.length;
 
       if (
         minDistance > bestMinDistance ||
-        (minDistance === bestMinDistance &&
-          averageDistance > bestAverageDistance)
+        (minDistance === bestMinDistance && averageDistance > bestAverageDistance)
       ) {
         bestIndex = candidateIndex;
         bestMinDistance = minDistance;
@@ -232,20 +201,13 @@ export const getColorOffset = (colorSeed?: number) => {
   return Math.abs(hash) % bgColors.length;
 };
 
-export const getBackgroundColor = (colorOffset: number) =>
-  bgColors[colorOffset];
+export const getBackgroundColor = (colorOffset: number) => bgColors[colorOffset];
 
-export const getRadarValueScale = (
-  series: SpreadsheetSeries[],
-  _labelsLength: number,
-) => {
-  const allValues = series.flatMap((s) =>
-    s.values.map((value) => Math.max(0, value)),
-  );
+export const getRadarValueScale = (series: SpreadsheetSeries[], _labelsLength: number) => {
+  const allValues = series.flatMap((s) => s.values.map((value) => Math.max(0, value)));
   const positiveValues = allValues.filter((value) => value > 0);
   const max = Math.max(1, ...allValues);
-  const minPositive =
-    positiveValues.length > 0 ? Math.min(...positiveValues) : 1;
+  const minPositive = positiveValues.length > 0 ? Math.min(...positiveValues) : 1;
   const useLogScale =
     series.length === 1 &&
     minPositive > 0 &&
@@ -255,9 +217,7 @@ export const getRadarValueScale = (
     renderSteps: false,
     normalize: (value: number, _axisIndex: number) => {
       const safeValue = Math.max(0, value);
-      return useLogScale
-        ? Math.log10(safeValue + 1) / Math.log10(max + 1)
-        : safeValue / max;
+      return useLogScale ? Math.log10(safeValue + 1) / Math.log10(max + 1) : safeValue / max;
     },
   };
 };
@@ -269,9 +229,7 @@ export const getRadarDisplayText = (
   fontString: ReturnType<typeof getFontString>,
   maxWidth: number,
 ) => {
-  return shouldWrapRadarText(text)
-    ? wrapText(text, fontString, maxWidth)
-    : text;
+  return shouldWrapRadarText(text) ? wrapText(text, fontString, maxWidth) : text;
 };
 
 export const createRadarAxisLabels = (
@@ -306,11 +264,7 @@ export const createRadarAxisLabels = (
         .filter(Boolean)
         .map((word) => measureText(word, fontString, lineHeight).width),
     );
-    const maxLabelWidth = Math.max(
-      minLabelWidth,
-      baseLabelWidth,
-      longestWordWidth,
-    );
+    const maxLabelWidth = Math.max(minLabelWidth, baseLabelWidth, longestWordWidth);
     const displayLabel = getRadarDisplayText(label, fontString, maxLabelWidth);
     const metrics = measureText(displayLabel, fontString, lineHeight);
     const cos = Math.cos(angle);
@@ -320,17 +274,15 @@ export const createRadarAxisLabels = (
       cos > RADAR_AXIS_LABEL_ALIGNMENT_THRESHOLD
         ? "left"
         : cos < -RADAR_AXIS_LABEL_ALIGNMENT_THRESHOLD
-        ? "right"
-        : "center";
+          ? "right"
+          : "center";
 
     // Keep labels outside the radar ring by projecting text extents
     // onto the axis direction.
     const centerAlignedXExtent = textAlign === "center" ? metrics.width / 2 : 0;
     const projectedExtent =
-      Math.abs(cos) * centerAlignedXExtent +
-      Math.abs(sin) * (metrics.height / 2);
-    const radialOffset =
-      RADAR_LABEL_OFFSET + projectedExtent + RADAR_AXIS_LABEL_CLEARANCE;
+      Math.abs(cos) * centerAlignedXExtent + Math.abs(sin) * (metrics.height / 2);
+    const radialOffset = RADAR_LABEL_OFFSET + projectedExtent + RADAR_AXIS_LABEL_CLEARANCE;
     const anchorX = centerX + cos * (radius + radialOffset);
     const anchorY = centerY + sin * (radius + radialOffset);
 
@@ -338,8 +290,8 @@ export const createRadarAxisLabels = (
       sin > RADAR_AXIS_LABEL_ALIGNMENT_THRESHOLD
         ? BAR_GAP / 3
         : sin < -RADAR_AXIS_LABEL_ALIGNMENT_THRESHOLD
-        ? -BAR_GAP / 3
-        : 0;
+          ? -BAR_GAP / 3
+          : 0;
 
     return newTextElement({
       backgroundColor,
@@ -383,8 +335,7 @@ export const createSeriesLegend = (
     const label = seriesItem.title?.trim() || `Series ${index + 1}`;
     const displayLabel = getRadarDisplayText(label, fontString, BAR_HEIGHT);
     const metrics = measureText(displayLabel, fontString, lineHeight);
-    const itemWidth =
-      RADAR_LEGEND_SWATCH_SIZE + RADAR_LEGEND_TEXT_GAP + metrics.width;
+    const itemWidth = RADAR_LEGEND_SWATCH_SIZE + RADAR_LEGEND_TEXT_GAP + metrics.width;
     return {
       label,
       displayLabel,
@@ -509,10 +460,7 @@ const wrapOrEllipsifyTextToWidth = (
     const hasLongWord = words.some((word) => {
       return measureText(word, fontString, lineHeight).width > maxWidth;
     });
-    if (
-      !hasLongWord &&
-      maxWidth >= getApproxMinLineWidth(fontString, lineHeight)
-    ) {
+    if (!hasLongWord && maxWidth >= getApproxMinLineWidth(fontString, lineHeight)) {
       return { wrapped: true, text: wrapText(text, fontString, maxWidth) };
     }
   }
@@ -523,11 +471,7 @@ const wrapOrEllipsifyTextToWidth = (
   };
 };
 
-const getRotatedBoundingBox = (
-  width: number,
-  height: number,
-  angle: number,
-) => {
+const getRotatedBoundingBox = (width: number, height: number, angle: number) => {
   const cos = Math.abs(Math.cos(angle));
   const sin = Math.abs(Math.sin(angle));
   return {
@@ -569,9 +513,7 @@ const getCartesianAxisLabelSpec = (
 
   const getRank = (spec: CartesianAxisLabelSpec) => {
     const ellipsified = isEllipsifiedLabel(spec.text);
-    const visibleChars = spec.text
-      .replace(/\.\.\./g, "")
-      .replace(/\n/g, "").length;
+    const visibleChars = spec.text.replace(/\.\.\./g, "").replace(/\n/g, "").length;
     const lineCount = spec.text.split("\n").length;
     return {
       ellipsified,
@@ -580,10 +522,7 @@ const getCartesianAxisLabelSpec = (
     };
   };
 
-  const shouldPrefer = (
-    candidate: CartesianAxisLabelSpec,
-    current: CartesianAxisLabelSpec,
-  ) => {
+  const shouldPrefer = (candidate: CartesianAxisLabelSpec, current: CartesianAxisLabelSpec) => {
     const candidateRank = getRank(candidate);
     const currentRank = getRank(current);
     if (candidateRank.ellipsified !== currentRank.ellipsified) {
@@ -609,18 +548,9 @@ const getCartesianAxisLabelSpec = (
   } | null = null;
 
   for (const width of candidateWidths) {
-    const { wrapped, text } = wrapOrEllipsifyTextToWidth(
-      label,
-      width,
-      fontString,
-      lineHeight,
-    );
+    const { wrapped, text } = wrapOrEllipsifyTextToWidth(label, width, fontString, lineHeight);
     const metrics = measureText(text, fontString, lineHeight);
-    const rotated = getRotatedBoundingBox(
-      metrics.width,
-      metrics.height,
-      CARTESIAN_LABEL_ROTATION,
-    );
+    const rotated = getRotatedBoundingBox(metrics.width, metrics.height, CARTESIAN_LABEL_ROTATION);
     const spec = {
       originalText: label,
       text,
@@ -639,8 +569,7 @@ const getCartesianAxisLabelSpec = (
     if (
       !bestOverflowAny ||
       overflow < bestOverflowAny.overflow ||
-      (overflow === bestOverflowAny.overflow &&
-        shouldPrefer(spec, bestOverflowAny.spec))
+      (overflow === bestOverflowAny.overflow && shouldPrefer(spec, bestOverflowAny.spec))
     ) {
       bestOverflowAny = { overflow, spec };
     }
@@ -671,17 +600,11 @@ const getCartesianAxisLabelSpec = (
   return bestOverflowAny!.spec;
 };
 
-export const getRotatedTextElementBottom = (
-  element: NonDeletedExcalidrawElement,
-) => {
+export const getRotatedTextElementBottom = (element: NonDeletedExcalidrawElement) => {
   if (element.type !== "text") {
     return element.y + element.height;
   }
-  const rotated = getRotatedBoundingBox(
-    element.width,
-    element.height,
-    element.angle,
-  );
+  const rotated = getRotatedBoundingBox(element.width, element.height, element.angle);
   return element.y + element.height / 2 + rotated.height / 2;
 };
 
@@ -715,10 +638,7 @@ export const chartXLabels = (
         lineHeight,
       );
       const centerX =
-        x +
-        index * (layout.slotWidth + layout.gap) +
-        layout.gap +
-        layout.slotWidth / 2;
+        x + index * (layout.slotWidth + layout.gap) + layout.gap + layout.slotWidth / 2;
       const labelY =
         axisY +
         CARTESIAN_LABEL_AXIS_CLEARANCE +

@@ -4,10 +4,7 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 
 import { API } from "@excalidraw/excalidraw/tests/helpers/api";
 import { UI, Keyboard, Pointer } from "@excalidraw/excalidraw/tests/helpers/ui";
-import {
-  render,
-  unmountComponent,
-} from "@excalidraw/excalidraw/tests/test-utils";
+import { render, unmountComponent } from "@excalidraw/excalidraw/tests/test-utils";
 
 unmountComponent();
 
@@ -121,10 +118,7 @@ describe("flow chart creation", () => {
     expect(h.elements.filter((el) => el.type === "arrow").length).toBe(2);
 
     const secondChildNode = h.elements.filter(
-      (el) =>
-        el.type === "rectangle" &&
-        el.id !== initialNode.id &&
-        el.id !== firstChildNode.id,
+      (el) => el.type === "rectangle" && el.id !== initialNode.id && el.id !== firstChildNode.id,
     )[0];
     expect(secondChildNode).not.toBe(null);
     expect(secondChildNode.id).toBe(Object.keys(h.state.selectedElementIds)[0]);
@@ -382,26 +376,20 @@ describe("flow chart navigation", () => {
     });
     Keyboard.keyUp(KEYS.ALT);
     expect(h.state.selectedElementIds[rightMostNode.id]).not.toBe(true);
-    expect(h.state.selectedElementIds[predecessorToRightMostNode.id]).toBe(
-      true,
-    );
+    expect(h.state.selectedElementIds[predecessorToRightMostNode.id]).toBe(true);
     API.setSelectedElements([rightMostNode]);
     Keyboard.withModifierKeys({ alt: true }, () => {
       Keyboard.keyPress(KEYS.ARROW_UP);
     });
     Keyboard.keyUp(KEYS.ALT);
     expect(h.state.selectedElementIds[rightMostNode.id]).not.toBe(true);
-    expect(h.state.selectedElementIds[predecessorToRightMostNode.id]).toBe(
-      true,
-    );
+    expect(h.state.selectedElementIds[predecessorToRightMostNode.id]).toBe(true);
     API.setSelectedElements([rightMostNode]);
     Keyboard.withModifierKeys({ alt: true }, () => {
       Keyboard.keyPress(KEYS.ARROW_DOWN);
     });
     Keyboard.keyUp(KEYS.ALT);
     expect(h.state.selectedElementIds[rightMostNode.id]).not.toBe(true);
-    expect(h.state.selectedElementIds[predecessorToRightMostNode.id]).toBe(
-      true,
-    );
+    expect(h.state.selectedElementIds[predecessorToRightMostNode.id]).toBe(true);
   });
 });

@@ -1,12 +1,6 @@
 import "pepjs";
 import { act } from "@testing-library/react";
-import {
-  render,
-  queries,
-  waitFor,
-  fireEvent,
-  cleanup,
-} from "@testing-library/react";
+import { render, queries, waitFor, fireEvent, cleanup } from "@testing-library/react";
 import ansi from "ansicolor";
 
 import { ORIG_ID, arrayToMap } from "@excalidraw/common";
@@ -37,10 +31,7 @@ const customQueries = {
 
 type TestRenderFn = (
   ui: React.ReactElement,
-  options?: Omit<
-    RenderOptions & { localStorageData?: ImportedDataState },
-    "queries"
-  >,
+  options?: Omit<RenderOptions & { localStorageData?: ImportedDataState }, "queries">,
 ) => Promise<RenderResult<typeof customQueries>>;
 
 const renderApp: TestRenderFn = async (ui, options) => {
@@ -84,8 +75,7 @@ const renderApp: TestRenderFn = async (ui, options) => {
       throw new Error("not initialized yet");
     }
 
-    const interactiveCanvas =
-      renderResult.container.querySelector("canvas.interactive");
+    const interactiveCanvas = renderResult.container.querySelector("canvas.interactive");
     if (!interactiveCanvas) {
       throw new Error("not initialized yet");
     }
@@ -133,21 +123,14 @@ export class GlobalTestState {
 
 const initLocalStorage = (data: ImportedDataState) => {
   if (data.elements) {
-    localStorage.setItem(
-      STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS,
-      JSON.stringify(data.elements),
-    );
+    localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_ELEMENTS, JSON.stringify(data.elements));
   }
   if (data.appState) {
-    localStorage.setItem(
-      STORAGE_KEYS.LOCAL_STORAGE_APP_STATE,
-      JSON.stringify(data.appState),
-    );
+    localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_APP_STATE, JSON.stringify(data.appState));
   }
 };
 
-const originalGetBoundingClientRect =
-  global.window.HTMLDivElement.prototype.getBoundingClientRect;
+const originalGetBoundingClientRect = global.window.HTMLDivElement.prototype.getBoundingClientRect;
 
 export const mockBoundingClientRect = (
   {
@@ -207,8 +190,7 @@ export const withExcalidrawDimensions = async (
 };
 
 export const restoreOriginalGetBoundingClientRect = () => {
-  global.window.HTMLDivElement.prototype.getBoundingClientRect =
-    originalGetBoundingClientRect;
+  global.window.HTMLDivElement.prototype.getBoundingClientRect = originalGetBoundingClientRect;
 };
 
 export const assertSelectedElements = (
@@ -219,13 +201,10 @@ export const assertSelectedElements = (
   )[]
 ) => {
   const { h } = window;
-  const selectedElementIds = getSelectedElements(
-    h.app.getSceneElements(),
-    h.state,
-  ).map((el) => el.id);
-  const ids = elements
-    .flat()
-    .map((item) => (typeof item === "string" ? item : item.id));
+  const selectedElementIds = getSelectedElements(h.app.getSceneElements(), h.state).map(
+    (el) => el.id,
+  );
+  const ids = elements.flat().map((item) => (typeof item === "string" ? item : item.id));
   expect(selectedElementIds.length).toBe(ids.length);
   expect(selectedElementIds).toEqual(expect.arrayContaining(ids));
 };
@@ -288,9 +267,7 @@ export const getCloneByOrigId = <T extends boolean = false>(
   origId: ExcalidrawElement["id"],
   returnNullIfNotExists: T = false as T,
 ): T extends true ? ExcalidrawElement | null : ExcalidrawElement => {
-  const clonedElement = window.h.elements?.find(
-    (el) => (el as any)[ORIG_ID] === origId,
-  );
+  const clonedElement = window.h.elements?.find((el) => (el as any)[ORIG_ID] === origId);
   if (clonedElement) {
     return clonedElement;
   }
@@ -326,15 +303,13 @@ export const assertElements = <T extends AllPossibleKeys<ExcalidrawElement>>(
 ) => {
   const h = window.h;
 
-  const expectedElementsWithIds: (typeof expectedElements[number] & {
+  const expectedElementsWithIds: ((typeof expectedElements)[number] & {
     id: ExcalidrawElement["id"];
   })[] = expectedElements.map((el) => {
     if ("id" in el) {
       return el;
     }
-    const actualElement = actualElements.find(
-      (act) => (act as any)[ORIG_ID] === el[ORIG_ID],
-    );
+    const actualElement = actualElements.find((act) => (act as any)[ORIG_ID] === el[ORIG_ID]);
     if (actualElement) {
       return { ...el, id: actualElement.id };
     }
@@ -381,9 +356,7 @@ export const assertElements = <T extends AllPossibleKeys<ExcalidrawElement>>(
 
   try {
     // testing order separately for even easier diffs
-    expect(actualElements.map((x) => x.id)).toEqual(
-      expectedElementsWithIds.map((x) => x.id),
-    );
+    expect(actualElements.map((x) => x.id)).toEqual(expectedElementsWithIds.map((x) => x.id));
   } catch (err: any) {
     let errStr = "\n\nmismatched element order\n\n";
 
@@ -394,23 +367,17 @@ export const assertElements = <T extends AllPossibleKeys<ExcalidrawElement>>(
 
           return `${
             id === err.expected[index] ? ansi.green(id) : ansi.red(id)
-          } (${act.type.slice(0, 4)}${
-            ORIG_ID in act ? ` ↳ ${(act as any)[ORIG_ID]}` : ""
-          })`;
+          } (${act.type.slice(0, 4)}${ORIG_ID in act ? ` ↳ ${(act as any)[ORIG_ID]}` : ""})`;
         })
         .join(", ")}]`,
     )}\n${ansi.lightGray(
       `expected: [${err.expected
         .map((exp: string, index: number) => {
           const expEl = actualElements.find((el) => el.id === exp);
-          const origEl =
-            expEl &&
-            actualElements.find((el) => el.id === (expEl as any)[ORIG_ID]);
+          const origEl = expEl && actualElements.find((el) => el.id === (expEl as any)[ORIG_ID]);
           return expEl
             ? `${
-                exp === err.actual[index]
-                  ? ansi.green(expEl.id)
-                  : ansi.red(expEl.id)
+                exp === err.actual[index] ? ansi.green(expEl.id) : ansi.red(expEl.id)
               } (${expEl.type.slice(0, 4)}${origEl ? ` ↳ ${origEl.id}` : ""})`
             : exp;
         })
@@ -420,33 +387,31 @@ export const assertElements = <T extends AllPossibleKeys<ExcalidrawElement>>(
     throw trimErrorStack(new Error(errStr), 1);
   }
 
-  expect(mappedActualElements).toEqual(
-    expect.arrayContaining(expectedElementsWithIds),
-  );
+  expect(mappedActualElements).toEqual(expect.arrayContaining(expectedElementsWithIds));
 
   expect(h.state.selectedElementIds).toEqual(selectedElementIds);
 };
 
-const stripProps = (
-  deltas: Record<string, { deleted: any; inserted: any }>,
-  props: string[],
-) =>
-  Object.entries(deltas).reduce((acc, curr) => {
-    const { inserted, deleted, ...rest } = curr[1];
+const stripProps = (deltas: Record<string, { deleted: any; inserted: any }>, props: string[]) =>
+  Object.entries(deltas).reduce(
+    (acc, curr) => {
+      const { inserted, deleted, ...rest } = curr[1];
 
-    for (const prop of props) {
-      delete inserted[prop];
-      delete deleted[prop];
-    }
+      for (const prop of props) {
+        delete inserted[prop];
+        delete deleted[prop];
+      }
 
-    acc[curr[0]] = {
-      inserted,
-      deleted,
-      ...rest,
-    };
+      acc[curr[0]] = {
+        inserted,
+        deleted,
+        ...rest,
+      };
 
-    return acc;
-  }, {} as Record<string, any>);
+      return acc;
+    },
+    {} as Record<string, any>,
+  );
 
 export const checkpointHistory = (history: History, name: string) => {
   expect(

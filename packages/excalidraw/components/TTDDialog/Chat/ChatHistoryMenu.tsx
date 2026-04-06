@@ -64,9 +64,7 @@ export const ChatHistoryMenu = ({
                       onRestoreChat(chat);
                     }}
                   >
-                    <span className="ttd-chat-menu-item__title">
-                      {chat.title}
-                    </span>
+                    <span className="ttd-chat-menu-item__title">{chat.title}</span>
                     <button
                       className="ttd-chat-menu-item__delete"
                       onClick={(e) => onDeleteChat(chat.id, e)}

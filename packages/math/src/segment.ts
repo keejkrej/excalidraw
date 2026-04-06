@@ -1,18 +1,7 @@
 import { line, linesIntersectAt } from "./line";
-import {
-  isPoint,
-  pointCenter,
-  pointFromVector,
-  pointRotateRads,
-} from "./point";
+import { isPoint, pointCenter, pointFromVector, pointRotateRads } from "./point";
 import { PRECISION } from "./utils";
-import {
-  vectorAdd,
-  vectorCross,
-  vectorFromPoint,
-  vectorScale,
-  vectorSubtract,
-} from "./vector";
+import { vectorAdd, vectorCross, vectorFromPoint, vectorScale, vectorSubtract } from "./vector";
 
 import type { GlobalPoint, LineSegment, LocalPoint, Radians } from "./types";
 
@@ -22,10 +11,7 @@ import type { GlobalPoint, LineSegment, LocalPoint, Radians } from "./types";
  * @param points The two points delimiting the line segment on each end
  * @returns The line segment delineated by the points
  */
-export function lineSegment<P extends GlobalPoint | LocalPoint>(
-  a: P,
-  b: P,
-): LineSegment<P> {
+export function lineSegment<P extends GlobalPoint | LocalPoint>(a: P, b: P): LineSegment<P> {
   return [a, b] as LineSegment<P>;
 }
 
@@ -37,10 +23,7 @@ export function lineSegment<P extends GlobalPoint | LocalPoint>(
 export const isLineSegment = <Point extends GlobalPoint | LocalPoint>(
   segment: unknown,
 ): segment is LineSegment<Point> =>
-  Array.isArray(segment) &&
-  segment.length === 2 &&
-  isPoint(segment[0]) &&
-  isPoint(segment[1]);
+  Array.isArray(segment) && segment.length === 2 && isPoint(segment[0]) && isPoint(segment[1]);
 
 /**
  * Return the coordinates resulting from rotating the given line about an origin by an angle in radians
@@ -158,9 +141,7 @@ export const distanceToLineSegment = <Point extends LocalPoint | GlobalPoint>(
  * @param s
  * @returns
  */
-export function lineSegmentIntersectionPoints<
-  Point extends GlobalPoint | LocalPoint,
->(
+export function lineSegmentIntersectionPoints<Point extends GlobalPoint | LocalPoint>(
   l: LineSegment<Point>,
   s: LineSegment<Point>,
   threshold?: number,

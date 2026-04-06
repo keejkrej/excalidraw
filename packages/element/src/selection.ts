@@ -1,10 +1,5 @@
 import { arrayToMap, isShallowEqual, type Bounds } from "@excalidraw/common";
-import {
-  lineSegment,
-  pointFrom,
-  pointRotateRads,
-  type GlobalPoint,
-} from "@excalidraw/math";
+import { lineSegment, pointFrom, pointRotateRads, type GlobalPoint } from "@excalidraw/math";
 
 import type {
   AppState,
@@ -50,9 +45,8 @@ import type {
   NonDeletedExcalidrawElement,
 } from "./types";
 
-const shouldIgnoreElementFromSelection = (
-  element: NonDeletedExcalidrawElement,
-) => element.locked || isBoundToContainer(element);
+const shouldIgnoreElementFromSelection = (element: NonDeletedExcalidrawElement) =>
+  element.locked || isBoundToContainer(element);
 
 const excludeElementsFromFrames = <T extends ExcalidrawElement>(
   selectedElements: readonly T[],
@@ -72,9 +66,7 @@ const excludeElementsFromFrames = <T extends ExcalidrawElement>(
  * we only keep the frames.
  * @param selectedElements
  */
-export const excludeElementsInFramesFromSelection = <
-  T extends ExcalidrawElement,
->(
+export const excludeElementsInFramesFromSelection = <T extends ExcalidrawElement>(
   selectedElements: readonly T[],
 ) => {
   const framesInSelection = new Set<T["id"]>();
@@ -96,18 +88,15 @@ export const getElementsWithinSelection = (
   excludeElementsInFrames: boolean = true,
   boxSelectionMode: BoxSelectionMode = "contain",
 ): NonDeletedExcalidrawElement[] => {
-  const [selectionStartX, selectionStartY, selectionEndX, selectionEndY] =
-    getElementAbsoluteCoords(selection, elementsMap);
+  const [selectionStartX, selectionStartY, selectionEndX, selectionEndY] = getElementAbsoluteCoords(
+    selection,
+    elementsMap,
+  );
   const selectionX1 = Math.min(selectionStartX, selectionEndX);
   const selectionY1 = Math.min(selectionStartY, selectionEndY);
   const selectionX2 = Math.max(selectionStartX, selectionEndX);
   const selectionY2 = Math.max(selectionStartY, selectionEndY);
-  const selectionBounds = [
-    selectionX1,
-    selectionY1,
-    selectionX2,
-    selectionY2,
-  ] as Bounds;
+  const selectionBounds = [selectionX1, selectionY1, selectionX2, selectionY2] as Bounds;
   const selectionEdges = [
     lineSegment<GlobalPoint>(
       pointFrom(selectionX1, selectionY1),
@@ -149,29 +138,20 @@ export const getElementsWithinSelection = (
     ] as Bounds;
 
     // Whether the element bounds should include the bound text element bounds
-    const boundTextElement =
-      isArrowElement(element) && getBoundTextElement(element, elementsMap);
+    const boundTextElement = isArrowElement(element) && getBoundTextElement(element, elementsMap);
     if (boundTextElement) {
       const { x, y } = LinearElementEditor.getBoundTextElementPosition(
         element,
         boundTextElement,
         elementsMap,
       );
-      labelAABB = [
-        x,
-        y,
-        x + boundTextElement.width,
-        y + boundTextElement.height,
-      ] as Bounds;
+      labelAABB = [x, y, x + boundTextElement.width, y + boundTextElement.height] as Bounds;
     }
 
     // Clip element bounds by its containing frame (if any), since only the
     // visible (frame-clipped) portion of the element is relevant for selection.
     const associatedFrame = getContainingFrame(element, elementsMap);
-    if (
-      associatedFrame &&
-      isElementIntersectingFrame(element, associatedFrame, elementsMap)
-    ) {
+    if (associatedFrame && isElementIntersectingFrame(element, associatedFrame, elementsMap)) {
       const frameAABB = getElementBounds(associatedFrame, elementsMap);
       elementAABB = [
         Math.max(elementAABB[0], frameAABB[0]),
@@ -227,10 +207,7 @@ export const getElementsWithinSelection = (
 
     // 3. Handle the case where the selection is not wrapping the element, but
     //    it does intersect the element's outline (non-AABB).
-    if (
-      boxSelectionMode === "overlap" &&
-      doBoundsIntersect(selectionBounds, elementAABB)
-    ) {
+    if (boxSelectionMode === "overlap" && doBoundsIntersect(selectionBounds, elementAABB)) {
       let hasIntersection = false;
 
       // Preliminary check potential intersection imprecision
@@ -246,11 +223,7 @@ export const getElementsWithinSelection = (
           return pointInsideBounds(rotatedPoint, selectionBounds);
         });
       } else {
-        const nonRotatedElementBounds = getElementBounds(
-          element,
-          elementsMap,
-          true,
-        );
+        const nonRotatedElementBounds = getElementBounds(element, elementsMap, true);
         const center = elementCenterPoint(element, elementsMap);
         hasIntersection = [
           pointRotateRads(
@@ -286,10 +259,7 @@ export const getElementsWithinSelection = (
             element.angle,
           ),
         ].some((point) => {
-          return pointInsideBounds(
-            pointRotateRads(point, center, element.angle),
-            selectionBounds,
-          );
+          return pointInsideBounds(pointRotateRads(point, center, element.angle), selectionBounds);
         });
       }
 
@@ -343,9 +313,7 @@ export const getVisibleAndNonSelectedElements = (
   appState: AppState,
   elementsMap: ElementsMap,
 ) => {
-  const selectedElementsSet = new Set(
-    selectedElements.map((element) => element.id),
-  );
+  const selectedElementsSet = new Set(selectedElements.map((element) => element.id));
   return elements.filter((element) => {
     const isVisible = isElementInViewport(
       element,
@@ -377,9 +345,7 @@ export const isSomeElementSelected = (function () {
       return isSelected;
     }
 
-    isSelected = elements.some(
-      (element) => appState.selectedElementIds[element.id],
-    );
+    isSelected = elements.some((element) => appState.selectedElementIds[element.id]);
     lastElements = elements;
     lastSelectedElementIds = appState.selectedElementIds;
 
@@ -441,18 +407,15 @@ export const getSelectedElements = (
 
 export const getTargetElements = (
   elements: ElementsMapOrArray,
-  appState: Pick<
-    AppState,
-    "selectedElementIds" | "editingTextElement" | "newElement"
-  >,
+  appState: Pick<AppState, "selectedElementIds" | "editingTextElement" | "newElement">,
 ) =>
   appState.editingTextElement
     ? [appState.editingTextElement]
     : appState.newElement
-    ? [appState.newElement]
-    : getSelectedElements(elements, appState, {
-        includeBoundTextElement: true,
-      });
+      ? [appState.newElement]
+      : getSelectedElements(elements, appState, {
+          includeBoundTextElement: true,
+        });
 
 /**
  * returns prevState's selectedElementids if no change from previous, so as to
@@ -499,14 +462,15 @@ export const getSelectionStateForElements = (
     ...selectGroupsForSelectedElements(
       {
         editingGroupId: appState.editingGroupId,
-        selectedElementIds: excludeElementsInFramesFromSelection(
-          targetElements,
-        ).reduce((acc: Record<ExcalidrawElement["id"], true>, element) => {
-          if (!isBoundToContainer(element)) {
-            acc[element.id] = true;
-          }
-          return acc;
-        }, {}),
+        selectedElementIds: excludeElementsInFramesFromSelection(targetElements).reduce(
+          (acc: Record<ExcalidrawElement["id"], true>, element) => {
+            if (!isBoundToContainer(element)) {
+              acc[element.id] = true;
+            }
+            return acc;
+          },
+          {},
+        ),
       },
       allElements,
       appState,
@@ -524,9 +488,7 @@ export const getActiveTextElement = (
 ) => {
   const activeTextElement =
     appState.editingTextElement ||
-    (selectedElements.length === 1 &&
-      isTextElement(selectedElements[0]) &&
-      selectedElements[0]);
+    (selectedElements.length === 1 && isTextElement(selectedElements[0]) && selectedElements[0]);
 
   return activeTextElement || null;
 };

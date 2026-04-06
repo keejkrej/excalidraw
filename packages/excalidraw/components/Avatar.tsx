@@ -13,13 +13,7 @@ type AvatarProps = {
   className?: string;
 };
 
-export const Avatar = ({
-  color,
-  onClick,
-  name,
-  src,
-  className,
-}: AvatarProps) => {
+export const Avatar = ({ color, onClick, name, src, className }: AvatarProps) => {
   const shortName = getNameInitial(name);
   const [error, setError] = useState(false);
   const loadImg = !error && src;

@@ -47,19 +47,14 @@ export const TTDDialogPanel = ({
     if (panelAction?.variant === "link") {
       return (
         <button
-          className={clsx(
-            "ttd-dialog-panel-action-link",
-            panelAction.className,
-          )}
+          className={clsx("ttd-dialog-panel-action-link", panelAction.className)}
           onClick={panelAction.action}
           disabled={panelAction?.disabled || onTextSubmitInProgess}
           type="button"
         >
           {panelAction.label}
           {panelAction.icon && (
-            <span className="ttd-dialog-panel-action-link__icon">
-              {panelAction.icon}
-            </span>
+            <span className="ttd-dialog-panel-action-link__icon">{panelAction.icon}</span>
           )}
         </button>
       );
@@ -83,12 +78,7 @@ export const TTDDialogPanel = ({
 
     if (panelAction?.variant === "rateLimit") {
       return (
-        <div
-          className={clsx(
-            "ttd-dialog-panel__rate-limit",
-            panelAction.className,
-          )}
-        >
+        <div className={clsx("ttd-dialog-panel__rate-limit", panelAction.className)}>
           {panelAction.label}
         </div>
       );
@@ -113,9 +103,7 @@ export const TTDDialogPanel = ({
         }}
       >
         {panelActions.filter(Boolean).map((panelAction) => (
-          <Fragment key={panelAction.label}>
-            {renderPanelAction(panelAction)}
-          </Fragment>
+          <Fragment key={panelAction.label}>{renderPanelAction(panelAction)}</Fragment>
         ))}
         {!onTextSubmitInProgess && renderSubmitShortcut?.()}
       </div>

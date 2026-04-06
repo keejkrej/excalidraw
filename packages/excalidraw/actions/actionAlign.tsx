@@ -36,10 +36,7 @@ import { register } from "./register";
 
 import type { AppClassProperties, AppState, UIAppState } from "../types";
 
-export const alignActionsPredicate = (
-  appState: UIAppState,
-  app: AppClassProperties,
-) => {
+export const alignActionsPredicate = (appState: UIAppState, app: AppClassProperties) => {
   const selectedElements = app.scene.getSelectedElements(appState);
   return (
     getSelectedElementsByGroup(
@@ -60,12 +57,7 @@ const alignSelectedElements = (
 ) => {
   const selectedElements = app.scene.getSelectedElements(appState);
 
-  const updatedElements = alignElements(
-    selectedElements,
-    alignment,
-    app.scene,
-    appState,
-  );
+  const updatedElements = alignElements(selectedElements, alignment, app.scene, appState);
 
   const updatedElementsMap = arrayToMap(updatedElements);
 
@@ -81,8 +73,7 @@ export const actionAlignTop = register({
   label: "labels.alignTop",
   icon: AlignTopIcon,
   trackEvent: { category: "element" },
-  predicate: (elements, appState, appProps, app) =>
-    alignActionsPredicate(appState, app),
+  predicate: (elements, appState, appProps, app) => alignActionsPredicate(appState, app),
   perform: (elements, appState, _, app) => {
     return {
       appState,
@@ -93,17 +84,14 @@ export const actionAlignTop = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  keyTest: (event) =>
-    event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === KEYS.ARROW_UP,
+  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === KEYS.ARROW_UP,
   PanelComponent: ({ elements, appState, updateData, app }) => (
     <ToolButton
       hidden={!alignActionsPredicate(appState, app)}
       type="button"
       icon={AlignTopIcon}
       onClick={() => updateData(null)}
-      title={`${t("labels.alignTop")} — ${getShortcutKey(
-        "CtrlOrCmd+Shift+Up",
-      )}`}
+      title={`${t("labels.alignTop")} — ${getShortcutKey("CtrlOrCmd+Shift+Up")}`}
       aria-label={t("labels.alignTop")}
       visible={isSomeElementSelected(getNonDeletedElements(elements), appState)}
     />
@@ -115,8 +103,7 @@ export const actionAlignBottom = register({
   label: "labels.alignBottom",
   icon: AlignBottomIcon,
   trackEvent: { category: "element" },
-  predicate: (elements, appState, appProps, app) =>
-    alignActionsPredicate(appState, app),
+  predicate: (elements, appState, appProps, app) => alignActionsPredicate(appState, app),
   perform: (elements, appState, _, app) => {
     return {
       appState,
@@ -127,17 +114,14 @@ export const actionAlignBottom = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  keyTest: (event) =>
-    event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === KEYS.ARROW_DOWN,
+  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === KEYS.ARROW_DOWN,
   PanelComponent: ({ elements, appState, updateData, app }) => (
     <ToolButton
       hidden={!alignActionsPredicate(appState, app)}
       type="button"
       icon={AlignBottomIcon}
       onClick={() => updateData(null)}
-      title={`${t("labels.alignBottom")} — ${getShortcutKey(
-        "CtrlOrCmd+Shift+Down",
-      )}`}
+      title={`${t("labels.alignBottom")} — ${getShortcutKey("CtrlOrCmd+Shift+Down")}`}
       aria-label={t("labels.alignBottom")}
       visible={isSomeElementSelected(getNonDeletedElements(elements), appState)}
     />
@@ -149,8 +133,7 @@ export const actionAlignLeft = register({
   label: "labels.alignLeft",
   icon: AlignLeftIcon,
   trackEvent: { category: "element" },
-  predicate: (elements, appState, appProps, app) =>
-    alignActionsPredicate(appState, app),
+  predicate: (elements, appState, appProps, app) => alignActionsPredicate(appState, app),
   perform: (elements, appState, _, app) => {
     return {
       appState,
@@ -161,17 +144,14 @@ export const actionAlignLeft = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  keyTest: (event) =>
-    event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === KEYS.ARROW_LEFT,
+  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === KEYS.ARROW_LEFT,
   PanelComponent: ({ elements, appState, updateData, app }) => (
     <ToolButton
       hidden={!alignActionsPredicate(appState, app)}
       type="button"
       icon={AlignLeftIcon}
       onClick={() => updateData(null)}
-      title={`${t("labels.alignLeft")} — ${getShortcutKey(
-        "CtrlOrCmd+Shift+Left",
-      )}`}
+      title={`${t("labels.alignLeft")} — ${getShortcutKey("CtrlOrCmd+Shift+Left")}`}
       aria-label={t("labels.alignLeft")}
       visible={isSomeElementSelected(getNonDeletedElements(elements), appState)}
     />
@@ -183,8 +163,7 @@ export const actionAlignRight = register({
   label: "labels.alignRight",
   icon: AlignRightIcon,
   trackEvent: { category: "element" },
-  predicate: (elements, appState, appProps, app) =>
-    alignActionsPredicate(appState, app),
+  predicate: (elements, appState, appProps, app) => alignActionsPredicate(appState, app),
   perform: (elements, appState, _, app) => {
     return {
       appState,
@@ -195,17 +174,14 @@ export const actionAlignRight = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  keyTest: (event) =>
-    event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === KEYS.ARROW_RIGHT,
+  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.shiftKey && event.key === KEYS.ARROW_RIGHT,
   PanelComponent: ({ elements, appState, updateData, app }) => (
     <ToolButton
       hidden={!alignActionsPredicate(appState, app)}
       type="button"
       icon={AlignRightIcon}
       onClick={() => updateData(null)}
-      title={`${t("labels.alignRight")} — ${getShortcutKey(
-        "CtrlOrCmd+Shift+Right",
-      )}`}
+      title={`${t("labels.alignRight")} — ${getShortcutKey("CtrlOrCmd+Shift+Right")}`}
       aria-label={t("labels.alignRight")}
       visible={isSomeElementSelected(getNonDeletedElements(elements), appState)}
     />
@@ -217,8 +193,7 @@ export const actionAlignVerticallyCentered = register({
   label: "labels.centerVertically",
   icon: CenterVerticallyIcon,
   trackEvent: { category: "element" },
-  predicate: (elements, appState, appProps, app) =>
-    alignActionsPredicate(appState, app),
+  predicate: (elements, appState, appProps, app) => alignActionsPredicate(appState, app),
   perform: (elements, appState, _, app) => {
     return {
       appState,
@@ -247,8 +222,7 @@ export const actionAlignHorizontallyCentered = register({
   label: "labels.centerHorizontally",
   icon: CenterHorizontallyIcon,
   trackEvent: { category: "element" },
-  predicate: (elements, appState, appProps, app) =>
-    alignActionsPredicate(appState, app),
+  predicate: (elements, appState, appProps, app) => alignActionsPredicate(appState, app),
   perform: (elements, appState, _, app) => {
     return {
       appState,

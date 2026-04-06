@@ -55,24 +55,18 @@ describe("normalizeInputColor", () => {
     });
 
     it("returns rgba colors as-is", () => {
-      expect(normalizeInputColor("rgba(255, 0, 0, 0.5)")).toBe(
-        "rgba(255, 0, 0, 0.5)",
-      );
+      expect(normalizeInputColor("rgba(255, 0, 0, 0.5)")).toBe("rgba(255, 0, 0, 0.5)");
       expect(normalizeInputColor("rgba(0,0,0,1)")).toBe("rgba(0,0,0,1)");
     });
   });
 
   describe("hsl/hsla colors", () => {
     it("returns hsl colors as-is", () => {
-      expect(normalizeInputColor("hsl(0, 100%, 50%)")).toBe(
-        "hsl(0, 100%, 50%)",
-      );
+      expect(normalizeInputColor("hsl(0, 100%, 50%)")).toBe("hsl(0, 100%, 50%)");
     });
 
     it("returns hsla colors as-is", () => {
-      expect(normalizeInputColor("hsla(0, 100%, 50%, 0.5)")).toBe(
-        "hsla(0, 100%, 50%, 0.5)",
-      );
+      expect(normalizeInputColor("hsla(0, 100%, 50%, 0.5)")).toBe("hsla(0, 100%, 50%, 0.5)");
     });
   });
 

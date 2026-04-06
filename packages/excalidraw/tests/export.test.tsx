@@ -9,11 +9,7 @@ import { getDataURL } from "../data/blob";
 import { encodePngMetadata } from "../data/image";
 import { serializeAsJSON } from "../data/json";
 import { Excalidraw } from "../index";
-import {
-  decodeSvgBase64Payload,
-  encodeSvgBase64Payload,
-  exportToSvg,
-} from "../scene/export";
+import { decodeSvgBase64Payload, encodeSvgBase64Payload, exportToSvg } from "../scene/export";
 
 import { API } from "./helpers/api";
 import { render, waitFor } from "./test-utils";
@@ -38,10 +34,7 @@ const testElements = [
 Object.defineProperty(window, "TextDecoder", {
   value: class TextDecoder {
     decode(ab: ArrayBuffer) {
-      return new Uint8Array(ab).reduce(
-        (acc, c) => acc + String.fromCharCode(c),
-        "",
-      );
+      return new Uint8Array(ab).reduce((acc, c) => acc + String.fromCharCode(c), "");
     }
   },
 });
@@ -60,9 +53,7 @@ describe("export", () => {
     await API.drop([{ kind: "file", file: pngBlobEmbedded }]);
 
     await waitFor(() => {
-      expect(h.elements).toEqual([
-        expect.objectContaining({ type: "text", text: "😀" }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ type: "text", text: "😀" })]);
     });
   });
 
@@ -74,12 +65,8 @@ describe("export", () => {
       payload: serializeAsJSON(testElements, h.state, {}, "local"),
     });
 
-    const decoded = JSON.parse(
-      decodeSvgBase64Payload({ svg: metadataElement.innerHTML }),
-    );
-    expect(decoded.elements).toEqual([
-      expect.objectContaining({ type: "text", text: "😀" }),
-    ]);
+    const decoded = JSON.parse(decodeSvgBase64Payload({ svg: metadataElement.innerHTML }));
+    expect(decoded.elements).toEqual([expect.objectContaining({ type: "text", text: "😀" })]);
   });
 
   it("export svg-embedded scene", async () => {
@@ -101,9 +88,7 @@ describe("export", () => {
       },
     ]);
     await waitFor(() => {
-      expect(h.elements).toEqual([
-        expect.objectContaining({ type: "text", text: "test" }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ type: "text", text: "test" })]);
     });
   });
 
@@ -115,9 +100,7 @@ describe("export", () => {
       },
     ]);
     await waitFor(() => {
-      expect(h.elements).toEqual([
-        expect.objectContaining({ type: "text", text: "😀" }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ type: "text", text: "😀" })]);
     });
   });
 
@@ -129,9 +112,7 @@ describe("export", () => {
       },
     ]);
     await waitFor(() => {
-      expect(h.elements).toEqual([
-        expect.objectContaining({ type: "text", text: "test" }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ type: "text", text: "test" })]);
     });
   });
 
@@ -143,9 +124,7 @@ describe("export", () => {
       },
     ]);
     await waitFor(() => {
-      expect(h.elements).toEqual([
-        expect.objectContaining({ type: "text", text: "😀" }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ type: "text", text: "😀" })]);
     });
   });
 

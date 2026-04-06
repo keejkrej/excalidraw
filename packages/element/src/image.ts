@@ -4,19 +4,11 @@
 
 import { MIME_TYPES, SVG_NS } from "@excalidraw/common";
 
-import type {
-  AppClassProperties,
-  DataURL,
-  BinaryFiles,
-} from "@excalidraw/excalidraw/types";
+import type { AppClassProperties, DataURL, BinaryFiles } from "@excalidraw/excalidraw/types";
 
 import { isInitializedImageElement } from "./typeChecks";
 
-import type {
-  ExcalidrawElement,
-  FileId,
-  InitializedExcalidrawImageElement,
-} from "./types";
+import type { ExcalidrawElement, FileId, InitializedExcalidrawImageElement } from "./types";
 
 export const loadHTMLImageElement = (dataURL: DataURL) => {
   return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -88,9 +80,7 @@ export const updateImageCache = async ({
   };
 };
 
-export const getInitializedImageElements = (
-  elements: readonly ExcalidrawElement[],
-) =>
+export const getInitializedImageElements = (elements: readonly ExcalidrawElement[]) =>
   elements.filter((element) =>
     isInitializedImageElement(element),
   ) as InitializedExcalidrawImageElement[];
@@ -131,9 +121,7 @@ export const normalizeSVG = (SVGString: string) => {
       height = height || "50";
 
       if (viewBox) {
-        const match = viewBox.match(
-          /\d+ +\d+ +(\d+(?:\.\d+)?) +(\d+(?:\.\d+)?)/,
-        );
+        const match = viewBox.match(/\d+ +\d+ +(\d+(?:\.\d+)?) +(\d+(?:\.\d+)?)/);
         if (match) {
           [, width, height] = match;
         }

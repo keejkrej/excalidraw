@@ -22,8 +22,7 @@ const LiveCollaborationTrigger = ({
   const appState = useUIAppState();
 
   const showIconOnly =
-    editorInterface?.formFactor !== "desktop" ||
-    appState.width < MQ_MIN_WIDTH_DESKTOP;
+    editorInterface?.formFactor !== "desktop" || appState.width < MQ_MIN_WIDTH_DESKTOP;
 
   return (
     <Button
@@ -36,9 +35,7 @@ const LiveCollaborationTrigger = ({
     >
       {showIconOnly ? share : t("labels.share")}
       {appState.collaborators.size > 0 && (
-        <div className="CollabButton-collaborators">
-          {appState.collaborators.size}
-        </div>
+        <div className="CollabButton-collaborators">{appState.collaborators.size}</div>
       )}
     </Button>
   );

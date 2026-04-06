@@ -28,9 +28,7 @@ interface MultiAngleProps {
 
 const STEP_SIZE = 15;
 
-const handleDegreeChange: DragInputCallbackType<
-  MultiAngleProps["property"]
-> = ({
+const handleDegreeChange: DragInputCallbackType<MultiAngleProps["property"]> = ({
   accumulatedChange,
   originalElements,
   shouldChangeByStepSize,
@@ -74,16 +72,14 @@ const handleDegreeChange: DragInputCallbackType<
       continue;
     }
     const originalElement = editableOriginalIndividualElements[i];
-    const originalAngleInDegrees =
-      Math.round(radiansToDegrees(originalElement.angle) * 100) / 100;
+    const originalAngleInDegrees = Math.round(radiansToDegrees(originalElement.angle) * 100) / 100;
     const changeInDegrees = Math.round(accumulatedChange);
     let nextAngleInDegrees = (originalAngleInDegrees + changeInDegrees) % 360;
     if (shouldChangeByStepSize) {
       nextAngleInDegrees = getStepSizedValue(nextAngleInDegrees, STEP_SIZE);
     }
 
-    nextAngleInDegrees =
-      nextAngleInDegrees < 0 ? nextAngleInDegrees + 360 : nextAngleInDegrees;
+    nextAngleInDegrees = nextAngleInDegrees < 0 ? nextAngleInDegrees + 360 : nextAngleInDegrees;
 
     const nextAngle = degreesToRadians(nextAngleInDegrees as Degrees);
 
@@ -99,12 +95,7 @@ const handleDegreeChange: DragInputCallbackType<
   scene.triggerUpdate();
 };
 
-const MultiAngle = ({
-  elements,
-  scene,
-  appState,
-  property,
-}: MultiAngleProps) => {
+const MultiAngle = ({ elements, scene, appState, property }: MultiAngleProps) => {
   const editableLatestIndividualElements = elements.filter(
     (el) => !isInGroup(el) && isPropertyEditable(el, "angle"),
   );
@@ -113,9 +104,7 @@ const MultiAngle = ({
   );
   const value = new Set(angles).size === 1 ? angles[0] : "Mixed";
 
-  const editable = editableLatestIndividualElements.some((el) =>
-    isPropertyEditable(el, "angle"),
-  );
+  const editable = editableLatestIndividualElements.some((el) => isPropertyEditable(el, "angle"));
 
   return (
     <DragInput

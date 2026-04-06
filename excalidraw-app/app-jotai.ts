@@ -14,10 +14,7 @@ export const appJotaiStore = createStore();
 
 export { atom, Provider, useAtom, useAtomValue, useSetAtom };
 
-export const useAtomWithInitialValue = <
-  T extends unknown,
-  A extends PrimitiveAtom<T>,
->(
+export const useAtomWithInitialValue = <T extends unknown, A extends PrimitiveAtom<T>>(
   atom: A,
   initialValue: T | (() => T),
 ) => {

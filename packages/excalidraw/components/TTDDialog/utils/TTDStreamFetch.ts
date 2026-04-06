@@ -39,9 +39,7 @@ function extractRateLimitHeaders(headers: Headers): RateLimitInfo {
 
   return {
     rateLimit: rateLimit ? parseInt(rateLimit, 10) : undefined,
-    rateLimitRemaining: rateLimitRemaining
-      ? parseInt(rateLimitRemaining, 10)
-      : undefined,
+    rateLimitRemaining: rateLimitRemaining ? parseInt(rateLimitRemaining, 10) : undefined,
   };
 }
 
@@ -84,14 +82,7 @@ async function* parseSSEStream(
 export async function TTDStreamFetch(
   options: StreamingOptions,
 ): Promise<TTTDDialog.OnTextSubmitRetValue> {
-  const {
-    url,
-    messages,
-    onChunk,
-    onStreamCreated,
-    extractRateLimits = true,
-    signal,
-  } = options;
+  const { url, messages, onChunk, onStreamCreated, extractRateLimits = true, signal } = options;
 
   try {
     let fullResponse = "";

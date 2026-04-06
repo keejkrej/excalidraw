@@ -6,10 +6,7 @@ import { getDefaultAppState } from "../appState";
 
 import type { AppState } from "../types";
 
-type AppStateSelector =
-  | keyof AppState
-  | (keyof AppState)[]
-  | ((appState: AppState) => unknown);
+type AppStateSelector = keyof AppState | (keyof AppState)[] | ((appState: AppState) => unknown);
 
 const getSelectedValue = (appState: AppState, selector: AppStateSelector) => {
   if (typeof selector === "function") {
@@ -71,18 +68,9 @@ export function useAppStateValue<K extends keyof AppState>(
   prop: K,
   _internal?: boolean,
 ): AppState[K];
-export function useAppStateValue(
-  props: (keyof AppState)[],
-  _internal?: boolean,
-): AppState;
-export function useAppStateValue<T>(
-  selector: (appState: AppState) => T,
-  _internal?: boolean,
-): T;
-export function useAppStateValue(
-  selector: AppStateSelector,
-  _internal: boolean = true,
-): unknown {
+export function useAppStateValue(props: (keyof AppState)[], _internal?: boolean): AppState;
+export function useAppStateValue<T>(selector: (appState: AppState) => T, _internal?: boolean): T;
+export function useAppStateValue(selector: AppStateSelector, _internal: boolean = true): unknown {
   const api = useExcalidrawAPI();
   const [, rerender] = useState(0);
 
@@ -160,12 +148,9 @@ export function useOnAppStateChange(
       api.getAppState(),
     );
 
-    return api.onStateChange(
-      stateRef.current.selector,
-      (newValue: any, state: AppState) => {
-        stateRef.current.callback(newValue, state);
-      },
-    );
+    return api.onStateChange(stateRef.current.selector, (newValue: any, state: AppState) => {
+      stateRef.current.callback(newValue, state);
+    });
   }, [api]);
 
   return undefined;

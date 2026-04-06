@@ -1,13 +1,7 @@
-import {
-  getBoundTextElement,
-  redrawTextBoundingBox,
-} from "@excalidraw/element";
+import { getBoundTextElement, redrawTextBoundingBox } from "@excalidraw/element";
 import { hasBoundTextElement, isTextElement } from "@excalidraw/element";
 
-import type {
-  ExcalidrawElement,
-  ExcalidrawTextElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawElement, ExcalidrawTextElement } from "@excalidraw/element/types";
 
 import type { Scene } from "@excalidraw/element";
 
@@ -32,13 +26,7 @@ const STEP_SIZE = 4;
 const handleFontSizeChange: DragInputCallbackType<
   FontSizeProps["property"],
   ExcalidrawTextElement
-> = ({
-  accumulatedChange,
-  originalElements,
-  shouldChangeByStepSize,
-  nextValue,
-  scene,
-}) => {
+> = ({ accumulatedChange, originalElements, shouldChangeByStepSize, nextValue, scene }) => {
   const elementsMap = scene.getNonDeletedElementsMap();
 
   const origElement = originalElements[0];
@@ -55,10 +43,7 @@ const handleFontSizeChange: DragInputCallbackType<
     } else if (origElement.type === "text") {
       const originalFontSize = Math.round(origElement.fontSize);
       const changeInFontSize = Math.round(accumulatedChange);
-      nextFontSize = Math.max(
-        originalFontSize + changeInFontSize,
-        MIN_FONT_SIZE,
-      );
+      nextFontSize = Math.max(originalFontSize + changeInFontSize, MIN_FONT_SIZE);
       if (shouldChangeByStepSize) {
         nextFontSize = getStepSizedValue(nextFontSize, STEP_SIZE);
       }
@@ -68,11 +53,7 @@ const handleFontSizeChange: DragInputCallbackType<
       scene.mutateElement(latestElement, {
         fontSize: nextFontSize,
       });
-      redrawTextBoundingBox(
-        latestElement,
-        scene.getContainerElement(latestElement),
-        scene,
-      );
+      redrawTextBoundingBox(latestElement, scene.getContainerElement(latestElement), scene);
     }
   }
 };
@@ -81,8 +62,8 @@ const FontSize = ({ element, scene, appState, property }: FontSizeProps) => {
   const _element = isTextElement(element)
     ? element
     : hasBoundTextElement(element)
-    ? getBoundTextElement(element, scene.getNonDeletedElementsMap())
-    : null;
+      ? getBoundTextElement(element, scene.getNonDeletedElementsMap())
+      : null;
 
   if (!_element) {
     return null;

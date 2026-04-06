@@ -8,12 +8,7 @@ import {
   drawSelection,
 } from "@codemirror/view";
 import { Compartment, EditorState, type Extension } from "@codemirror/state";
-import {
-  defaultKeymap,
-  history,
-  historyKeymap,
-  redo,
-} from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap, redo } from "@codemirror/commands";
 import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
 import { tags } from "@lezer/highlight";
 
@@ -105,9 +100,7 @@ const getErrorLineExtension = (
     return EditorView.decorations.of(Decoration.none);
   }
   const line = doc.line(errorLine);
-  return EditorView.decorations.of(
-    Decoration.set([errorLineDeco.range(line.from)]),
-  );
+  return EditorView.decorations.of(Decoration.set([errorLineDeco.range(line.from)]));
 };
 
 // ---- Helpers ----
@@ -195,9 +188,7 @@ const CodeMirrorEditor = ({
       return;
     }
     view.dispatch({
-      effects: themeCompartmentRef.current.reconfigure(
-        getThemeExtensions(theme),
-      ),
+      effects: themeCompartmentRef.current.reconfigure(getThemeExtensions(theme)),
     });
   }, [theme]);
 
@@ -228,12 +219,7 @@ const CodeMirrorEditor = ({
     }
   }, [value]);
 
-  return (
-    <div
-      ref={containerRef}
-      className="ttd-dialog-input ttd-dialog-input--codemirror"
-    />
-  );
+  return <div ref={containerRef} className="ttd-dialog-input ttd-dialog-input--codemirror" />;
 };
 
 export default CodeMirrorEditor;

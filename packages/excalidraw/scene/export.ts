@@ -17,10 +17,7 @@ import {
 
 import { getCommonBounds, getElementAbsoluteCoords } from "@excalidraw/element";
 
-import {
-  getInitializedImageElements,
-  updateImageCache,
-} from "@excalidraw/element";
+import { getInitializedImageElements, updateImageCache } from "@excalidraw/element";
 
 import { newElementWith } from "@excalidraw/element";
 
@@ -111,8 +108,7 @@ const addFrameLabelsAsTextElements = (
         y: element.y - FRAME_STYLE.nameOffsetY,
         fontFamily: FONT_FAMILY.Helvetica,
         fontSize: FRAME_STYLE.nameFontSize,
-        lineHeight:
-          FRAME_STYLE.nameLineHeight as ExcalidrawTextElement["lineHeight"],
+        lineHeight: FRAME_STYLE.nameLineHeight as ExcalidrawTextElement["lineHeight"],
         strokeColor: opts.exportWithDarkMode
           ? FRAME_STYLE.nameColorDarkTheme
           : FRAME_STYLE.nameColorLightTheme,
@@ -157,11 +153,7 @@ const prepareElementsForRender = ({
   let nextElements: readonly ExcalidrawElement[];
 
   if (exportingFrame) {
-    nextElements = getElementsOverlappingFrame(
-      elements,
-      exportingFrame,
-      arrayToMap(elements),
-    );
+    nextElements = getElementsOverlappingFrame(elements, exportingFrame, arrayToMap(elements));
   } else if (frameRendering.enabled && frameRendering.name) {
     nextElements = addFrameLabelsAsTextElements(elements, {
       exportWithDarkMode,
@@ -188,10 +180,10 @@ export const exportToCanvas = async (
     viewBackgroundColor: string;
     exportingFrame?: ExcalidrawFrameLikeElement | null;
   },
-  createCanvas: (
-    width: number,
-    height: number,
-  ) => { canvas: HTMLCanvasElement; scale: number } = (width, height) => {
+  createCanvas: (width: number, height: number) => { canvas: HTMLCanvasElement; scale: number } = (
+    width,
+    height,
+  ) => {
     const canvas = document.createElement("canvas");
     canvas.width = width * appState.exportScale;
     canvas.height = height * appState.exportScale;
@@ -236,18 +228,14 @@ export const exportToCanvas = async (
 
   const { imageCache } = await updateImageCache({
     imageCache: new Map(),
-    fileIds: getInitializedImageElements(elementsForRender).map(
-      (element) => element.fileId,
-    ),
+    fileIds: getInitializedImageElements(elementsForRender).map((element) => element.fileId),
     files,
   });
 
   renderStaticScene({
     canvas,
     rc: rough.canvas(canvas),
-    elementsMap: toBrandedType<RenderableElementsMap>(
-      arrayToMap(elementsForRender),
-    ),
+    elementsMap: toBrandedType<RenderableElementsMap>(arrayToMap(elementsForRender)),
     allElementsMap: toBrandedType<NonDeletedSceneElementsMap>(
       arrayToMap(syncInvalidIndices(elements)),
     ),
@@ -356,10 +344,7 @@ export const exportToSvg = async (
 
   const defsElement = svgRoot.ownerDocument.createElementNS(SVG_NS, "defs");
 
-  const metadataElement = svgRoot.ownerDocument.createElementNS(
-    SVG_NS,
-    "metadata",
-  );
+  const metadataElement = svgRoot.ownerDocument.createElementNS(SVG_NS, "metadata");
 
   svgRoot.appendChild(createHTMLComment("svg-source:excalidraw"));
   svgRoot.appendChild(metadataElement);
@@ -396,10 +381,7 @@ export const exportToSvg = async (
     const elementsMap = arrayToMap(elements);
 
     for (const frame of frameElements) {
-      const clipPath = svgRoot.ownerDocument.createElementNS(
-        SVG_NS,
-        "clipPath",
-      );
+      const clipPath = svgRoot.ownerDocument.createElementNS(SVG_NS, "clipPath");
 
       clipPath.setAttribute("id", frame.id);
 
@@ -410,9 +392,7 @@ export const exportToSvg = async (
       const rect = svgRoot.ownerDocument.createElementNS(SVG_NS, "rect");
       rect.setAttribute(
         "transform",
-        `translate(${frame.x + offsetX} ${frame.y + offsetY}) rotate(${
-          frame.angle
-        } ${cx} ${cy})`,
+        `translate(${frame.x + offsetX} ${frame.y + offsetY}) rotate(${frame.angle} ${cx} ${cy})`,
       );
       rect.setAttribute("width", `${frame.width}`);
       rect.setAttribute("height", `${frame.height}`);
@@ -440,9 +420,7 @@ export const exportToSvg = async (
 
   const style = svgRoot.ownerDocument.createElementNS(SVG_NS, "style");
   style.classList.add("style-fonts");
-  style.appendChild(
-    document.createTextNode(`${delimiter}${fontFaces.join(delimiter)}`),
-  );
+  style.appendChild(document.createTextNode(`${delimiter}${fontFaces.join(delimiter)}`));
 
   defsElement.appendChild(style);
 
@@ -459,9 +437,7 @@ export const exportToSvg = async (
     rect.setAttribute("height", `${height}`);
     rect.setAttribute(
       "fill",
-      exportWithDarkMode
-        ? applyDarkModeFilter(viewBackgroundColor)
-        : viewBackgroundColor,
+      exportWithDarkMode ? applyDarkModeFilter(viewBackgroundColor) : viewBackgroundColor,
     );
     svgRoot.appendChild(rect);
   }
@@ -517,9 +493,7 @@ export const encodeSvgBase64Payload = ({
     true /* is already byte string */,
   );
 
-  metadataElement.appendChild(
-    createHTMLComment(`payload-type:${MIME_TYPES.excalidraw}`),
-  );
+  metadataElement.appendChild(createHTMLComment(`payload-type:${MIME_TYPES.excalidraw}`));
   metadataElement.appendChild(createHTMLComment("payload-version:2"));
   metadataElement.appendChild(createHTMLComment("payload-start"));
   metadataElement.appendChild(document.createTextNode(base64));
@@ -528,9 +502,7 @@ export const encodeSvgBase64Payload = ({
 
 export const decodeSvgBase64Payload = ({ svg }: { svg: string }) => {
   if (svg.includes(`payload-type:${MIME_TYPES.excalidraw}`)) {
-    const match = svg.match(
-      /<!-- payload-start -->\s*(.+?)\s*<!-- payload-end -->/,
-    );
+    const match = svg.match(/<!-- payload-start -->\s*(.+?)\s*<!-- payload-end -->/);
     if (!match) {
       throw new Error("INVALID");
     }
@@ -543,10 +515,7 @@ export const decodeSvgBase64Payload = ({ svg }: { svg: string }) => {
       const encodedData = JSON.parse(json);
       if (!("encoded" in encodedData)) {
         // legacy, un-encoded scene JSON
-        if (
-          "type" in encodedData &&
-          encodedData.type === EXPORT_DATA_TYPES.excalidraw
-        ) {
+        if ("type" in encodedData && encodedData.type === EXPORT_DATA_TYPES.excalidraw) {
           return json;
         }
         throw new Error("FAILED");
@@ -577,8 +546,8 @@ export const getExportSize = (
   exportPadding: number,
   scale: number,
 ): [number, number] => {
-  const [, , width, height] = getCanvasSize(elements, exportPadding).map(
-    (dimension) => Math.trunc(dimension * scale),
+  const [, , width, height] = getCanvasSize(elements, exportPadding).map((dimension) =>
+    Math.trunc(dimension * scale),
   );
 
   return [width, height];

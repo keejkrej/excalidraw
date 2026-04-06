@@ -73,8 +73,7 @@ export const actionFlipVertical = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  keyTest: (event) =>
-    event.shiftKey && event.code === CODES.V && !event[KEYS.CTRL_OR_CMD],
+  keyTest: (event) => event.shiftKey && event.code === CODES.V && !event[KEYS.CTRL_OR_CMD],
 });
 
 const flipSelectedElements = (
@@ -84,27 +83,16 @@ const flipSelectedElements = (
   flipDirection: "horizontal" | "vertical",
   app: AppClassProperties,
 ) => {
-  const selectedElements = getSelectedElements(
-    getNonDeletedElements(elements),
-    appState,
-    {
-      includeBoundTextElement: true,
-      includeElementsInFrames: true,
-    },
-  );
+  const selectedElements = getSelectedElements(getNonDeletedElements(elements), appState, {
+    includeBoundTextElement: true,
+    includeElementsInFrames: true,
+  });
 
-  const updatedElements = flipElements(
-    selectedElements,
-    elementsMap,
-    flipDirection,
-    app,
-  );
+  const updatedElements = flipElements(selectedElements, elementsMap, flipDirection, app);
 
   const updatedElementsMap = arrayToMap(updatedElements);
 
-  return elements.map(
-    (element) => updatedElementsMap.get(element.id) || element,
-  );
+  return elements.map((element) => updatedElementsMap.get(element.id) || element);
 };
 
 const flipElements = (
@@ -115,8 +103,7 @@ const flipElements = (
 ): ExcalidrawElement[] => {
   if (
     selectedElements.every(
-      (element) =>
-        isArrowElement(element) && (element.startBinding || element.endBinding),
+      (element) => isArrowElement(element) && (element.startBinding || element.endBinding),
     )
   ) {
     return selectedElements.map((element) => {
@@ -136,10 +123,7 @@ const flipElements = (
     "nw",
     app.scene,
     new Map(
-      Array.from(elementsMap.values()).map((element) => [
-        element.id,
-        deepCopyElement(element),
-      ]),
+      Array.from(elementsMap.values()).map((element) => [element.id, deepCopyElement(element)]),
     ),
     {
       flipByX: flipDirection === "horizontal",
@@ -149,11 +133,7 @@ const flipElements = (
     },
   );
 
-  bindOrUnbindBindingElements(
-    selectedElements.filter(isArrowElement),
-    app.scene,
-    app.state,
-  );
+  bindOrUnbindBindingElements(selectedElements.filter(isArrowElement), app.scene, app.state);
 
   // ---------------------------------------------------------------------------
   // flipping arrow elements (and potentially other) makes the selection group
@@ -175,8 +155,7 @@ const flipElements = (
     { elbowArrows: [], otherElements: [] },
   );
 
-  const { midX: newMidX, midY: newMidY } =
-    getCommonBoundingBox(selectedElements);
+  const { midX: newMidX, midY: newMidY } = getCommonBoundingBox(selectedElements);
   const [diffX, diffY] = [midX - newMidX, midY - newMidY];
   otherElements.forEach((element) =>
     app.scene.mutateElement(element, {

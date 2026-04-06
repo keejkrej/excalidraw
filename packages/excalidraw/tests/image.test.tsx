@@ -11,17 +11,12 @@ import { API } from "./helpers/api";
 import { mockMultipleHTMLImageElements } from "./helpers/mocks";
 import { UI } from "./helpers/ui";
 import { GlobalTestState, render, waitFor } from "./test-utils";
-import {
-  DEER_IMAGE_DIMENSIONS,
-  SMILEY_IMAGE_DIMENSIONS,
-} from "./fixtures/constants";
+import { DEER_IMAGE_DIMENSIONS, SMILEY_IMAGE_DIMENSIONS } from "./fixtures/constants";
 import { INITIALIZED_IMAGE_PROPS } from "./helpers/constants";
 
 const { h } = window;
 
-export const setupImageTest = async (
-  sizes: { width: number; height: number }[],
-) => {
+export const setupImageTest = async (sizes: { width: number; height: number }[]) => {
   await render(<Excalidraw autoFocus={true} handleKeyboardGlobally={true} />);
 
   h.state.height = 1000;
@@ -39,9 +34,7 @@ describe("image insertion", () => {
     const generateIdSpy = vi.spyOn(blobModule, "generateIdFromFile");
     const resizeFileSpy = vi.spyOn(blobModule, "resizeImageFile");
 
-    generateIdSpy.mockImplementation(() =>
-      Promise.resolve(randomId() as FileId),
-    );
+    generateIdSpy.mockImplementation(() => Promise.resolve(randomId() as FileId));
     resizeFileSpy.mockImplementation((file: File) => Promise.resolve(file));
 
     Object.assign(document, {
@@ -49,8 +42,7 @@ describe("image insertion", () => {
     });
   });
 
-  const setup = () =>
-    setupImageTest([DEER_IMAGE_DIMENSIONS, SMILEY_IMAGE_DIMENSIONS]);
+  const setup = () => setupImageTest([DEER_IMAGE_DIMENSIONS, SMILEY_IMAGE_DIMENSIONS]);
 
   const assert = async () => {
     await waitFor(() => {

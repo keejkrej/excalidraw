@@ -1,21 +1,16 @@
 const MERMAID_SYNTAX_ERROR_LINE = /(?:Parse|Lexical) error on line (\d+)[.:]/i;
-const MERMAID_INACTIVE_PARTICIPANT_ERROR =
-  /Trying to inactivate an inactive participant \((.+)\)/i;
+const MERMAID_INACTIVE_PARTICIPANT_ERROR = /Trying to inactivate an inactive participant \((.+)\)/i;
 const MERMAID_CARET_LINE = /^\s*-+\^\s*$/;
 
 export const isMermaidParseSyntaxError = (message: string) =>
   MERMAID_SYNTAX_ERROR_LINE.test(message);
 
 export const isMermaidAutoFixableError = (message: string) =>
-  isMermaidParseSyntaxError(message) ||
-  MERMAID_INACTIVE_PARTICIPANT_ERROR.test(message);
+  isMermaidParseSyntaxError(message) || MERMAID_INACTIVE_PARTICIPANT_ERROR.test(message);
 
-export const isMermaidCaretLine = (line: string) =>
-  MERMAID_CARET_LINE.test(line);
+export const isMermaidCaretLine = (line: string) => MERMAID_CARET_LINE.test(line);
 
-export const getMermaidInactiveParticipant = (
-  message: string,
-): string | null => {
+export const getMermaidInactiveParticipant = (message: string): string | null => {
   const match = message.match(MERMAID_INACTIVE_PARTICIPANT_ERROR);
   if (!match?.[1]) {
     return null;
@@ -23,13 +18,9 @@ export const getMermaidInactiveParticipant = (
   return match[1].trim();
 };
 
-const escapeRegExp = (value: string) =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const getInactiveParticipantLineNumber = (
-  message: string,
-  sourceText: string,
-): number | null => {
+const getInactiveParticipantLineNumber = (message: string, sourceText: string): number | null => {
   const participant = getMermaidInactiveParticipant(message);
   if (!participant) {
     return null;
@@ -47,10 +38,7 @@ const getInactiveParticipantLineNumber = (
   return null;
 };
 
-export const getMermaidErrorLineNumber = (
-  message: string,
-  sourceText?: string,
-): number | null => {
+export const getMermaidErrorLineNumber = (message: string, sourceText?: string): number | null => {
   const match = message.match(MERMAID_SYNTAX_ERROR_LINE);
   if (!match) {
     if (!sourceText) {
@@ -61,8 +49,7 @@ export const getMermaidErrorLineNumber = (
   return Number.parseInt(match[1], 10);
 };
 
-const countMatches = (text: string, re: RegExp) =>
-  (text.match(re) || []).length;
+const countMatches = (text: string, re: RegExp) => (text.match(re) || []).length;
 
 export const getMermaidSyntaxErrorGuidance = (
   message: string,
@@ -106,15 +93,11 @@ export const getMermaidSyntaxErrorGuidance = (
   }
 
   if (/got 'NODE_STRING'/.test(message) || /got 'PS'/.test(message)) {
-    likelyCauses.push(
-      "An extra character/token may appear after a node or label definition.",
-    );
+    likelyCauses.push("An extra character/token may appear after a node or label definition.");
   }
 
   if (likelyCauses.length === 0) {
-    likelyCauses.push(
-      "A node or edge line is malformed (missing/extra delimiters).",
-    );
+    likelyCauses.push("A node or edge line is malformed (missing/extra delimiters).");
     likelyCauses.push("A block (`subgraph`, `class`, etc.) may be incomplete.");
   }
 

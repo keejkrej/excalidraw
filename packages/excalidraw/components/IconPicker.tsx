@@ -54,13 +54,8 @@ const hasOption = <T,>(
 
 const getNavigationRows = <T,>(sections: readonly PickerSection<T>[]) =>
   sections.flatMap((section) =>
-    Array.from(
-      { length: Math.ceil(section.options.length / PICKER_COLUMNS) },
-      (_, index) =>
-        section.options.slice(
-          index * PICKER_COLUMNS,
-          index * PICKER_COLUMNS + PICKER_COLUMNS,
-        ),
+    Array.from({ length: Math.ceil(section.options.length / PICKER_COLUMNS) }, (_, index) =>
+      section.options.slice(index * PICKER_COLUMNS, index * PICKER_COLUMNS + PICKER_COLUMNS),
     ),
   );
 
@@ -129,14 +124,9 @@ function Picker<T>({
             const currentRow = navigationRows[currentRowIndex];
 
             if (currentRowIndex !== -1 && currentRow) {
-              const column = currentRow.findIndex(
-                (option) => option.value === value,
-              );
-              const nextRow =
-                navigationRows[(currentRowIndex + 1) % navigationRows.length];
-              const nextOption =
-                nextRow[Math.min(column, nextRow.length - 1)] ??
-                allOptions[index];
+              const column = currentRow.findIndex((option) => option.value === value);
+              const nextRow = navigationRows[(currentRowIndex + 1) % navigationRows.length];
+              const nextOption = nextRow[Math.min(column, nextRow.length - 1)] ?? allOptions[index];
 
               onChange(nextOption.value);
               event.preventDefault();
@@ -154,17 +144,13 @@ function Picker<T>({
             const currentRow = navigationRows[currentRowIndex];
 
             if (currentRowIndex !== -1 && currentRow) {
-              const column = currentRow.findIndex(
-                (option) => option.value === value,
-              );
+              const column = currentRow.findIndex((option) => option.value === value);
               const previousRow =
                 navigationRows[
-                  (navigationRows.length + currentRowIndex - 1) %
-                    navigationRows.length
+                  (navigationRows.length + currentRowIndex - 1) % navigationRows.length
                 ];
               const previousOption =
-                previousRow[Math.min(column, previousRow.length - 1)] ??
-                allOptions[index];
+                previousRow[Math.min(column, previousRow.length - 1)] ?? allOptions[index];
 
               onChange(previousOption.value);
               event.preventDefault();
@@ -224,9 +210,7 @@ function Picker<T>({
             }}
           >
             {option.icon}
-            {option.keyBinding && (
-              <span className="picker-keybinding">{option.keyBinding}</span>
-            )}
+            {option.keyBinding && <span className="picker-keybinding">{option.keyBinding}</span>}
           </button>
         ))}
       </div>
@@ -273,9 +257,7 @@ function Picker<T>({
             }}
             className="picker-collapsible"
           >
-            <div className="picker-sections">
-              {renderSections(hiddenSections)}
-            </div>
+            <div className="picker-sections">{renderSections(hiddenSections)}</div>
           </Collapsible>
         )}
       </div>

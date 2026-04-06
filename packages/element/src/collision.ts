@@ -13,17 +13,9 @@ import {
   vectorScale,
 } from "@excalidraw/math";
 
-import {
-  ellipse,
-  ellipseSegmentInterceptPoints,
-} from "@excalidraw/math/ellipse";
+import { ellipse, ellipseSegmentInterceptPoints } from "@excalidraw/math/ellipse";
 
-import type {
-  Curve,
-  GlobalPoint,
-  LineSegment,
-  Radians,
-} from "@excalidraw/math";
+import type { Curve, GlobalPoint, LineSegment, Radians } from "@excalidraw/math";
 
 import type { FrameNameBounds } from "@excalidraw/excalidraw/types";
 
@@ -154,12 +146,7 @@ export const hitElementItself = ({
 
   // Hit test against the extended, rotated bounding box of the element first
   const bounds = getElementBounds(element, elementsMap, true);
-  const hitBounds = isPointInRotatedBounds(
-    point,
-    bounds,
-    element.angle,
-    threshold,
-  );
+  const hitBounds = isPointInRotatedBounds(point, bounds, element.angle, threshold);
 
   // PERF: Bail out early if the point is not even in the
   // rotated bounding box or not hitting the frame name (saves 99%)
@@ -168,9 +155,7 @@ export const hitElementItself = ({
   }
 
   // Do the precise (and relatively costly) hit test
-  const hitElement = (
-    overrideShouldTestInside ? true : shouldTestInside(element)
-  )
+  const hitElement = (overrideShouldTestInside ? true : shouldTestInside(element))
     ? // Since `inShape` tests STRICTLY againt the insides of a shape
       // we would need `onShape` as well to include the "borders"
       isPointInElement(point, element, elementsMap) ||
@@ -196,9 +181,7 @@ const isPointInRotatedBounds = (
   tolerance = 0,
 ) => {
   const adjustedPoint =
-    angle === 0
-      ? point
-      : pointRotateRads(point, getCenterForBounds(bounds), -angle as Radians);
+    angle === 0 ? point : pointRotateRads(point, getCenterForBounds(bounds), -angle as Radians);
 
   return isPointWithinBounds(
     pointFrom(bounds[0] - tolerance, bounds[1] - tolerance),
@@ -217,10 +200,7 @@ export const hitElementBoundingBox = (
   return isPointInRotatedBounds(point, bounds, element.angle, tolerance);
 };
 
-export const hitElementBoundingBoxOnly = (
-  hitArgs: HitTestArgs,
-  elementsMap: ElementsMap,
-) =>
+export const hitElementBoundingBoxOnly = (hitArgs: HitTestArgs, elementsMap: ElementsMap) =>
   !hitElementItself(hitArgs) &&
   // bound text is considered part of the element (even if it's outside the bounding box)
   !hitElementBoundText(hitArgs.point, hitArgs.element, elementsMap) &&
@@ -277,10 +257,7 @@ const bindingBorderTest = (
   if (element.frameId) {
     const enclosingFrame = elementsMap.get(element.frameId);
     if (enclosingFrame && isFrameLikeElement(enclosingFrame)) {
-      const enclosingFrameBounds = getElementBounds(
-        enclosingFrame,
-        elementsMap,
-      );
+      const enclosingFrameBounds = getElementBounds(enclosingFrame, elementsMap);
       if (!pointInsideBounds(p, enclosingFrameBounds)) {
         return false;
       }
@@ -339,12 +316,7 @@ export const getHoveredElementForBinding = (
   elementsMap: NonDeletedSceneElementsMap,
   tolerance?: number,
 ): NonDeleted<ExcalidrawBindableElement> | null => {
-  const candidateElements = getAllHoveredElementAtPoint(
-    point,
-    elements,
-    elementsMap,
-    tolerance,
-  );
+  const candidateElements = getAllHoveredElementAtPoint(point, elements, elementsMap, tolerance);
 
   if (!candidateElements || candidateElements.length === 0) {
     return null;
@@ -356,9 +328,7 @@ export const getHoveredElementForBinding = (
 
   // Prefer smaller shapes
   return candidateElements
-    .sort(
-      (a, b) => b.width ** 2 + b.height ** 2 - (a.width ** 2 + a.height ** 2),
-    )
+    .sort((a, b) => b.width ** 2 + b.height ** 2 - (a.width ** 2 + a.height ** 2))
     .pop() as NonDeleted<ExcalidrawBindableElement>;
 };
 
@@ -451,37 +421,15 @@ export const intersectElementWithLineSegment = (
     case "frame":
     case "selection":
     case "magicframe":
-      return intersectRectanguloidWithLineSegment(
-        element,
-        elementsMap,
-        line,
-        offset,
-        onlyFirst,
-      );
+      return intersectRectanguloidWithLineSegment(element, elementsMap, line, offset, onlyFirst);
     case "diamond":
-      return intersectDiamondWithLineSegment(
-        element,
-        elementsMap,
-        line,
-        offset,
-        onlyFirst,
-      );
+      return intersectDiamondWithLineSegment(element, elementsMap, line, offset, onlyFirst);
     case "ellipse":
-      return intersectEllipseWithLineSegment(
-        element,
-        elementsMap,
-        line,
-        offset,
-      );
+      return intersectEllipseWithLineSegment(element, elementsMap, line, offset);
     case "line":
     case "freedraw":
     case "arrow":
-      return intersectLinearOrFreeDrawWithLineSegment(
-        element,
-        line,
-        elementsMap,
-        onlyFirst,
-      );
+      return intersectLinearOrFreeDrawWithLineSegment(element, line, elementsMap, onlyFirst);
   }
 };
 
@@ -553,10 +501,7 @@ const intersectLinearOrFreeDrawWithLineSegment = (
 ): GlobalPoint[] => {
   // NOTE: This is the only one which return the decomposed elements
   // rotated! This is due to taking advantage of roughjs definitions.
-  const [lines, curves] = deconstructLinearOrFreeDrawElement(
-    element,
-    elementsMap,
-  );
+  const [lines, curves] = deconstructLinearOrFreeDrawElement(element, elementsMap);
   const intersections: GlobalPoint[] = [];
 
   for (const l of lines) {
@@ -610,16 +555,8 @@ const intersectRectanguloidWithLineSegment = (
   const center = elementCenterPoint(element, elementsMap);
   // To emulate a rotated rectangle we rotate the point in the inverse angle
   // instead. It's all the same distance-wise.
-  const rotatedA = pointRotateRads<GlobalPoint>(
-    segment[0],
-    center,
-    -element.angle as Radians,
-  );
-  const rotatedB = pointRotateRads<GlobalPoint>(
-    segment[1],
-    center,
-    -element.angle as Radians,
-  );
+  const rotatedA = pointRotateRads<GlobalPoint>(segment[0], center, -element.angle as Radians);
+  const rotatedB = pointRotateRads<GlobalPoint>(segment[1], center, -element.angle as Radians);
   const rotatedIntersector = lineSegment(rotatedA, rotatedB);
 
   // Get the element's building components we can test against
@@ -627,27 +564,13 @@ const intersectRectanguloidWithLineSegment = (
 
   const intersections: GlobalPoint[] = [];
 
-  lineIntersections(
-    sides,
-    rotatedIntersector,
-    intersections,
-    center,
-    element.angle,
-    onlyFirst,
-  );
+  lineIntersections(sides, rotatedIntersector, intersections, center, element.angle, onlyFirst);
 
   if (onlyFirst && intersections.length > 0) {
     return intersections;
   }
 
-  curveIntersections(
-    corners,
-    rotatedIntersector,
-    intersections,
-    center,
-    element.angle,
-    onlyFirst,
-  );
+  curveIntersections(corners, rotatedIntersector, intersections, center, element.angle, onlyFirst);
 
   return intersections;
 };
@@ -677,27 +600,13 @@ const intersectDiamondWithLineSegment = (
   const [sides, corners] = deconstructDiamondElement(element, offset);
   const intersections: GlobalPoint[] = [];
 
-  lineIntersections(
-    sides,
-    rotatedIntersector,
-    intersections,
-    center,
-    element.angle,
-    onlyFirst,
-  );
+  lineIntersections(sides, rotatedIntersector, intersections, center, element.angle, onlyFirst);
 
   if (onlyFirst && intersections.length > 0) {
     return intersections;
   }
 
-  curveIntersections(
-    corners,
-    rotatedIntersector,
-    intersections,
-    center,
-    element.angle,
-    onlyFirst,
-  );
+  curveIntersections(corners, rotatedIntersector, intersections, center, element.angle, onlyFirst);
 
   return intersections;
 };
@@ -753,10 +662,7 @@ export const isPointInElement = (
   element: ExcalidrawElement,
   elementsMap: ElementsMap,
 ) => {
-  if (
-    (isLinearElement(element) || isFreeDrawElement(element)) &&
-    !isPathALoop(element.points)
-  ) {
+  if ((isLinearElement(element) || isFreeDrawElement(element)) && !isPathALoop(element.points)) {
     // There isn't any "inside" for a non-looping path
     return false;
   }
@@ -776,11 +682,9 @@ export const isPointInElement = (
     center,
   );
   const intersector = lineSegment(point, otherPoint);
-  const intersections = intersectElementWithLineSegment(
-    element,
-    elementsMap,
-    intersector,
-  ).filter((p, pos, arr) => arr.findIndex((q) => pointsEqual(q, p)) === pos);
+  const intersections = intersectElementWithLineSegment(element, elementsMap, intersector).filter(
+    (p, pos, arr) => arr.findIndex((q) => pointsEqual(q, p)) === pos,
+  );
 
   return intersections.length % 2 === 1;
 };
@@ -791,10 +695,7 @@ export const isBindableElementInsideOtherBindable = (
   elementsMap: ElementsMap,
 ): boolean => {
   // Get corner points of the inner element based on its type
-  const getCornerPoints = (
-    element: ExcalidrawElement,
-    offset: number,
-  ): GlobalPoint[] => {
+  const getCornerPoints = (element: ExcalidrawElement, offset: number): GlobalPoint[] => {
     const { x, y, width, height, angle } = element;
     const center = elementCenterPoint(element, elementsMap);
 
@@ -838,7 +739,5 @@ export const isBindableElementInsideOtherBindable = (
   const innerCorners = getCornerPoints(innerElement, offset);
 
   // Check if all corner points of the inner element are inside the outer element
-  return innerCorners.every((corner) =>
-    isPointInElement(corner, outerElement, elementsMap),
-  );
+  return innerCorners.every((corner) => isPointInElement(corner, outerElement, elementsMap));
 };

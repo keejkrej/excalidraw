@@ -1,10 +1,6 @@
 import { VERSIONS } from "@excalidraw/common";
 
-import {
-  diamondFixture,
-  ellipseFixture,
-  rectangleFixture,
-} from "./elementFixture";
+import { diamondFixture, ellipseFixture, rectangleFixture } from "./elementFixture";
 
 export const diagramFixture = {
   type: "excalidraw",
@@ -18,10 +14,7 @@ export const diagramFixture = {
   files: {},
 };
 
-export const diagramFactory = ({
-  overrides = {},
-  elementOverrides = {},
-} = {}) => ({
+export const diagramFactory = ({ overrides = {}, elementOverrides = {} } = {}) => ({
   ...diagramFixture,
   elements: [
     { ...diamondFixture, ...elementOverrides },

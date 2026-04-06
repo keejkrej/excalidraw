@@ -21,10 +21,7 @@ import type {
   NonDeletedExcalidrawElement,
 } from "@excalidraw/element/types";
 
-import {
-  copyBlobToClipboardAsPng,
-  copyTextToSystemClipboard,
-} from "../clipboard";
+import { copyBlobToClipboardAsPng, copyTextToSystemClipboard } from "../clipboard";
 
 import { t } from "../i18n";
 import { getSelectedElements, isSomeElementSelected } from "../scene";
@@ -53,8 +50,7 @@ export const prepareElementsForExport = (
   const elementsMap = arrayToMap(elements);
 
   const isExportingSelection =
-    exportSelectionOnly &&
-    isSomeElementSelected(elements, { selectedElementIds });
+    exportSelectionOnly && isSomeElementSelected(elements, { selectedElementIds });
 
   let exportingFrame: ExcalidrawFrameLikeElement | null = null;
   let exportedElements = isExportingSelection
@@ -68,16 +64,9 @@ export const prepareElementsForExport = (
     : elements;
 
   if (isExportingSelection) {
-    if (
-      exportedElements.length === 1 &&
-      isFrameLikeElement(exportedElements[0])
-    ) {
+    if (exportedElements.length === 1 && isFrameLikeElement(exportedElements[0])) {
       exportingFrame = exportedElements[0];
-      exportedElements = getElementsOverlappingFrame(
-        elements,
-        exportingFrame,
-        elementsMap,
-      );
+      exportedElements = getElementsOverlappingFrame(elements, exportingFrame, elementsMap);
     } else if (exportedElements.length > 1) {
       exportedElements = getSelectedElements(
         elements,
@@ -205,9 +194,7 @@ export const exportCanvas = async (
       // people on Firefox can enable through a flag, so let's tell them.
       if (isFirefox && error.name === "TypeError") {
         throw new Error(
-          `${t("alerts.couldNotCopyToClipboard")}\n\n${t(
-            "hints.firefox_clipboard_write",
-          )}`,
+          `${t("alerts.couldNotCopyToClipboard")}\n\n${t("hints.firefox_clipboard_write")}`,
         );
       } else {
         throw new Error(t("alerts.couldNotCopyToClipboard"));

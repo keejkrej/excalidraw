@@ -13,11 +13,7 @@ import { deepCopyElement } from "@excalidraw/element";
 
 import { API } from "@excalidraw/excalidraw/tests/helpers/api";
 
-import type {
-  ElementsMap,
-  ExcalidrawElement,
-  FractionalIndex,
-} from "@excalidraw/element/types";
+import type { ElementsMap, ExcalidrawElement, FractionalIndex } from "@excalidraw/element/types";
 
 import { InvalidFractionalIndexError } from "../src/fractionalIndex";
 
@@ -555,9 +551,7 @@ describe("sync invalid indices with array order", () => {
           index: index === length - 1 ? lastIndex : undefined,
         };
       });
-      const movedElements = Array.from({ length }).map(
-        (_, index) => `A_${index}`,
-      );
+      const movedElements = Array.from({ length }).map((_, index) => `A_${index}`);
       // remove last element
       movedElements.pop();
 
@@ -590,9 +584,7 @@ describe("sync invalid indices with array order", () => {
           index: lastIndex,
         };
       });
-      const movedElements = Array.from({ length }).map(
-        (_, index) => `A_${index}`,
-      );
+      const movedElements = Array.from({ length }).map((_, index) => `A_${index}`);
       // remove first element
       movedElements.shift();
 
@@ -632,11 +624,7 @@ describe("sync invalid indices with array order", () => {
 
     describe("should fallback to syncing undefined / invalid indices when moved elements are empty", () => {
       testMovedIndicesSync({
-        elements: [
-          { id: "A", index: "a1" },
-          { id: "B" },
-          { id: "C", index: "a0" },
-        ],
+        elements: [{ id: "A", index: "a1" }, { id: "B" }, { id: "C", index: "a0" }],
         // since elements are invalid, this will fail the validation
         // leading to fallback fixing "B" and "C"
         movedElements: [],
@@ -662,11 +650,7 @@ describe("sync invalid indices with array order", () => {
 
     describe("should fallback when trying to generate an index in between unordered elements", () => {
       testMovedIndicesSync({
-        elements: [
-          { id: "A", index: "a2" },
-          { id: "B" },
-          { id: "C", index: "a1" },
-        ],
+        elements: [{ id: "A", index: "a2" }, { id: "B" }, { id: "C", index: "a1" }],
         // 'B' is invalid, but so is 'C', which was not marked as moved
         // therefore it will try to generate a key between 'a2' and 'a1'
         // which it cannot do, thus will throw during generation and automatically fallback
@@ -709,13 +693,8 @@ function testMovedIndicesSync(args: {
     validInput?: true;
   };
 }) {
-  const [elements, movedElements] = prepareArguments(
-    args.elements,
-    args.movedElements,
-  );
-  const expectUnchangedElements = arrayToMap(
-    args.expect.unchangedElements.map((x) => ({ id: x })),
-  );
+  const [elements, movedElements] = prepareArguments(args.elements, args.movedElements);
+  const expectUnchangedElements = arrayToMap(args.expect.unchangedElements.map((x) => ({ id: x })));
 
   test(
     "should sync invalid indices of moved elements or fallback",
@@ -734,9 +713,7 @@ function testInvalidIndicesSync(args: {
   };
 }) {
   const [elements] = prepareArguments(args.elements);
-  const expectUnchangedElements = arrayToMap(
-    args.expect.unchangedElements.map((x) => ({ id: x })),
-  );
+  const expectUnchangedElements = arrayToMap(args.expect.unchangedElements.map((x) => ({ id: x })));
 
   test(
     "should sync invalid indices of all elements",

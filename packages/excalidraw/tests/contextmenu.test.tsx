@@ -30,14 +30,10 @@ import type { ShortcutName } from "../actions/shortcuts";
 import type { ActionName } from "../actions/types";
 
 const checkpoint = (name: string) => {
-  expect(renderStaticScene.mock.calls.length).toMatchSnapshot(
-    `[${name}] number of renders`,
-  );
+  expect(renderStaticScene.mock.calls.length).toMatchSnapshot(`[${name}] number of renders`);
   expect(h.state).toMatchSnapshot(`[${name}] appState`);
   expect(h.elements.length).toMatchSnapshot(`[${name}] number of elements`);
-  h.elements.forEach((element, i) =>
-    expect(element).toMatchSnapshot(`[${name}] element ${i}`),
-  );
+  h.elements.forEach((element, i) => expect(element).toMatchSnapshot(`[${name}] element ${i}`));
 
   checkpointHistory(h.history, name);
 };
@@ -99,9 +95,7 @@ describe("contextMenu element", () => {
 
     expect(contextMenu).not.toBeNull();
     expectedShortcutNames.forEach((shortcutName) => {
-      expect(
-        contextMenu?.querySelector(`li[data-testid="${shortcutName}"]`),
-      ).not.toBeNull();
+      expect(contextMenu?.querySelector(`li[data-testid="${shortcutName}"]`)).not.toBeNull();
     });
   });
 
@@ -116,8 +110,7 @@ describe("contextMenu element", () => {
       clientY: 3,
     });
     const contextMenu = UI.queryContextMenu();
-    const contextMenuOptions =
-      contextMenu?.querySelectorAll(".context-menu li");
+    const contextMenuOptions = contextMenu?.querySelectorAll(".context-menu li");
     const expectedContextMenuItems: ActionName[] = [
       "cut",
       "copy",
@@ -142,9 +135,7 @@ describe("contextMenu element", () => {
     expect(contextMenu).not.toBeNull();
     expect(contextMenuOptions?.length).toBe(expectedContextMenuItems.length);
     expectedContextMenuItems.forEach((item) => {
-      expect(
-        contextMenu?.querySelector(`li[data-testid="${item}"]`),
-      ).not.toBeNull();
+      expect(contextMenu?.querySelector(`li[data-testid="${item}"]`)).not.toBeNull();
     });
   });
 
@@ -210,8 +201,7 @@ describe("contextMenu element", () => {
     });
 
     const contextMenu = UI.queryContextMenu();
-    const contextMenuOptions =
-      contextMenu?.querySelectorAll(".context-menu li");
+    const contextMenuOptions = contextMenu?.querySelectorAll(".context-menu li");
     const expectedShortcutNames: ShortcutName[] = [
       "cut",
       "copy",
@@ -235,9 +225,7 @@ describe("contextMenu element", () => {
     expect(contextMenu).not.toBeNull();
     expect(contextMenuOptions?.length).toBe(expectedShortcutNames.length);
     expectedShortcutNames.forEach((shortcutName) => {
-      expect(
-        contextMenu?.querySelector(`li[data-testid="${shortcutName}"]`),
-      ).not.toBeNull();
+      expect(contextMenu?.querySelector(`li[data-testid="${shortcutName}"]`)).not.toBeNull();
     });
   });
 
@@ -267,8 +255,7 @@ describe("contextMenu element", () => {
     });
 
     const contextMenu = UI.queryContextMenu();
-    const contextMenuOptions =
-      contextMenu?.querySelectorAll(".context-menu li");
+    const contextMenuOptions = contextMenu?.querySelectorAll(".context-menu li");
     const expectedContextMenuItems: ActionName[] = [
       "cut",
       "copy",
@@ -293,9 +280,7 @@ describe("contextMenu element", () => {
     expect(contextMenu).not.toBeNull();
     expect(contextMenuOptions?.length).toBe(expectedContextMenuItems.length);
     expectedContextMenuItems.forEach((item) => {
-      expect(
-        contextMenu?.querySelector(`li[data-testid="${item}"]`),
-      ).not.toBeNull();
+      expect(contextMenu?.querySelector(`li[data-testid="${item}"]`)).not.toBeNull();
     });
   });
 

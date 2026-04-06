@@ -37,9 +37,7 @@ export const LibraryUnit = memo(
 
     const [isHovered, setIsHovered] = useState(false);
     const isMobile = useEditorInterface().formFactor === "phone";
-    const adder = isPending && (
-      <div className="library-unit__adder">{PlusIcon}</div>
-    );
+    const adder = isPending && <div className="library-unit__adder">{PlusIcon}</div>;
 
     return (
       <div
@@ -91,6 +89,4 @@ export const LibraryUnit = memo(
   },
 );
 
-export const EmptyLibraryUnit = () => (
-  <div className="library-unit library-unit--skeleton" />
-);
+export const EmptyLibraryUnit = () => <div className="library-unit library-unit--skeleton" />;

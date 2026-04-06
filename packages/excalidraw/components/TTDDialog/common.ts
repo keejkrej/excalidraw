@@ -1,17 +1,10 @@
-import {
-  DEFAULT_EXPORT_PADDING,
-  EDITOR_LS_KEYS,
-  THEME,
-} from "@excalidraw/common";
+import { DEFAULT_EXPORT_PADDING, EDITOR_LS_KEYS, THEME } from "@excalidraw/common";
 
 import { convertToExcalidrawElements } from "@excalidraw/element";
 
 import { exportToCanvas } from "@excalidraw/utils";
 
-import type {
-  NonDeletedExcalidrawElement,
-  Theme,
-} from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement, Theme } from "@excalidraw/element/types";
 
 import { EditorLocalStorage } from "../../data/EditorLocalStorage";
 
@@ -84,9 +77,7 @@ export const convertMermaidToExcalidraw = async ({
       }
 
       try {
-        ret = await api.parseMermaidToExcalidraw(
-          mermaidDefinition.replace(/"/g, "'"),
-        );
+        ret = await api.parseMermaidToExcalidraw(mermaidDefinition.replace(/"/g, "'"));
       } catch {
         // Keep the original error so line/column references stay aligned with
         // the user's unmodified input.
@@ -108,9 +99,7 @@ export const convertMermaidToExcalidraw = async ({
       elements: data.current.elements,
       files: data.current.files,
       exportPadding: DEFAULT_EXPORT_PADDING,
-      maxWidthOrHeight:
-        Math.max(parent.offsetWidth, parent.offsetHeight) *
-        window.devicePixelRatio,
+      maxWidthOrHeight: Math.max(parent.offsetWidth, parent.offsetHeight) * window.devicePixelRatio,
       appState: {
         exportWithDarkMode: theme === THEME.DARK,
       },
@@ -130,10 +119,7 @@ export const convertMermaidToExcalidraw = async ({
   }
 };
 export const saveMermaidDataToStorage = (mermaidDefinition: string) => {
-  EditorLocalStorage.set(
-    EDITOR_LS_KEYS.MERMAID_TO_EXCALIDRAW,
-    mermaidDefinition,
-  );
+  EditorLocalStorage.set(EDITOR_LS_KEYS.MERMAID_TO_EXCALIDRAW, mermaidDefinition);
 };
 
 export const insertToEditor = ({

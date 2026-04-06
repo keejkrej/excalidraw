@@ -4,15 +4,11 @@ import { PRECISION } from "./utils";
 
 import type { GlobalPoint, LocalPoint, Polygon } from "./types";
 
-export function polygon<Point extends GlobalPoint | LocalPoint>(
-  ...points: Point[]
-) {
+export function polygon<Point extends GlobalPoint | LocalPoint>(...points: Point[]) {
   return polygonClose(points) as Polygon<Point>;
 }
 
-export function polygonFromPoints<Point extends GlobalPoint | LocalPoint>(
-  points: Point[],
-) {
+export function polygonFromPoints<Point extends GlobalPoint | LocalPoint>(points: Point[]) {
   return polygonClose(points) as Polygon<Point>;
 }
 
@@ -86,16 +82,10 @@ export const pointOnPolygon = <Point extends LocalPoint | GlobalPoint>(
   return on;
 };
 
-function polygonClose<Point extends LocalPoint | GlobalPoint>(
-  polygon: Point[],
-) {
-  return polygonIsClosed(polygon)
-    ? polygon
-    : ([...polygon, polygon[0]] as Polygon<Point>);
+function polygonClose<Point extends LocalPoint | GlobalPoint>(polygon: Point[]) {
+  return polygonIsClosed(polygon) ? polygon : ([...polygon, polygon[0]] as Polygon<Point>);
 }
 
-function polygonIsClosed<Point extends LocalPoint | GlobalPoint>(
-  polygon: Point[],
-) {
+function polygonIsClosed<Point extends LocalPoint | GlobalPoint>(polygon: Point[]) {
   return pointsEqual(polygon[0], polygon[polygon.length - 1]);
 }

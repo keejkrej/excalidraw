@@ -19,12 +19,7 @@ import type {
   SceneElementsMap,
 } from "@excalidraw/element/types";
 
-import type {
-  DTO,
-  Mutable,
-  SubtypeOf,
-  ValueOf,
-} from "@excalidraw/common/utility-types";
+import type { DTO, Mutable, SubtypeOf, ValueOf } from "@excalidraw/common/utility-types";
 
 import type {
   AppState,
@@ -35,12 +30,7 @@ import type {
 
 import { getObservedAppState } from "./store";
 
-import {
-  BoundElement,
-  BindableElement,
-  bindingProperties,
-  updateBoundElements,
-} from "./binding";
+import { BoundElement, BindableElement, bindingProperties, updateBoundElements } from "./binding";
 import { LinearElementEditor } from "./linearElementEditor";
 import { mutateElement, newElementWith } from "./mutateElement";
 import { getBoundTextElementId, redrawTextBoundingBox } from "./textElement";
@@ -81,20 +71,13 @@ export class Delta<T> {
   public static create<T>(
     deleted: Partial<T>,
     inserted: Partial<T>,
-    modifier?: (
-      delta: Partial<T>,
-      partialType: "deleted" | "inserted",
-    ) => Partial<T>,
+    modifier?: (delta: Partial<T>, partialType: "deleted" | "inserted") => Partial<T>,
     modifierOptions?: "deleted" | "inserted" | "both",
   ) {
     const modifiedDeleted =
-      modifier && modifierOptions !== "inserted"
-        ? modifier(deleted, "deleted")
-        : deleted;
+      modifier && modifierOptions !== "inserted" ? modifier(deleted, "deleted") : deleted;
     const modifiedInserted =
-      modifier && modifierOptions !== "deleted"
-        ? modifier(inserted, "inserted")
-        : inserted;
+      modifier && modifierOptions !== "deleted" ? modifier(inserted, "inserted") : inserted;
 
     return new Delta(modifiedDeleted, modifiedInserted);
   }
@@ -111,10 +94,7 @@ export class Delta<T> {
     prevObject: T,
     nextObject: T,
     modifier?: (partial: Partial<T>) => Partial<T>,
-    postProcess?: (
-      deleted: Partial<T>,
-      inserted: Partial<T>,
-    ) => [Partial<T>, Partial<T>],
+    postProcess?: (deleted: Partial<T>, inserted: Partial<T>) => [Partial<T>, Partial<T>],
   ): Delta<T> {
     if (prevObject === nextObject) {
       return Delta.empty();
@@ -145,19 +125,13 @@ export class Delta<T> {
   }
 
   public static isEmpty<T>(delta: Delta<T>): boolean {
-    return (
-      !Object.keys(delta.deleted).length && !Object.keys(delta.inserted).length
-    );
+    return !Object.keys(delta.deleted).length && !Object.keys(delta.inserted).length;
   }
 
   /**
    * Merges two deltas into a new one.
    */
-  public static merge<T>(
-    delta1: Delta<T>,
-    delta2: Delta<T>,
-    delta3: Delta<T> = Delta.empty(),
-  ) {
+  public static merge<T>(delta1: Delta<T>, delta2: Delta<T>, delta3: Delta<T> = Delta.empty()) {
     return Delta.create(
       { ...delta1.deleted, ...delta2.deleted, ...delta3.deleted },
       { ...delta1.inserted, ...delta2.inserted, ...delta3.inserted },
@@ -212,10 +186,8 @@ export class Delta<T> {
       return;
     }
 
-    const isDeletedObject =
-      deleted[property] !== null && typeof deleted[property] === "object";
-    const isInsertedObject =
-      inserted[property] !== null && typeof inserted[property] === "object";
+    const isDeletedObject = deleted[property] !== null && typeof deleted[property] === "object";
+    const isInsertedObject = inserted[property] !== null && typeof inserted[property] === "object";
 
     if (isDeletedObject || isInsertedObject) {
       type RecordLike = Record<string, V | undefined>;
@@ -223,26 +195,23 @@ export class Delta<T> {
       const deletedObject: RecordLike = deleted[property] ?? {};
       const insertedObject: RecordLike = inserted[property] ?? {};
 
-      const deletedDifferences = Delta.getLeftDifferences(
-        deletedObject,
-        insertedObject,
-      ).reduce((acc, curr) => {
-        acc[curr] = setValue(deletedObject[curr]);
-        return acc;
-      }, {} as RecordLike);
+      const deletedDifferences = Delta.getLeftDifferences(deletedObject, insertedObject).reduce(
+        (acc, curr) => {
+          acc[curr] = setValue(deletedObject[curr]);
+          return acc;
+        },
+        {} as RecordLike,
+      );
 
-      const insertedDifferences = Delta.getRightDifferences(
-        deletedObject,
-        insertedObject,
-      ).reduce((acc, curr) => {
-        acc[curr] = setValue(insertedObject[curr]);
-        return acc;
-      }, {} as RecordLike);
+      const insertedDifferences = Delta.getRightDifferences(deletedObject, insertedObject).reduce(
+        (acc, curr) => {
+          acc[curr] = setValue(insertedObject[curr]);
+          return acc;
+        },
+        {} as RecordLike,
+      );
 
-      if (
-        Object.keys(deletedDifferences).length ||
-        Object.keys(insertedDifferences).length
-      ) {
+      if (Object.keys(deletedDifferences).length || Object.keys(insertedDifferences).length) {
         Reflect.set(deleted, property, deletedDifferences);
         Reflect.set(inserted, property, insertedDifferences);
       } else {
@@ -269,12 +238,8 @@ export class Delta<T> {
     }
 
     if (Array.isArray(deleted[property]) || Array.isArray(inserted[property])) {
-      const deletedArray = (
-        Array.isArray(deleted[property]) ? deleted[property] : []
-      ) as [];
-      const insertedArray = (
-        Array.isArray(inserted[property]) ? inserted[property] : []
-      ) as [];
+      const deletedArray = (Array.isArray(deleted[property]) ? deleted[property] : []) as [];
+      const insertedArray = (Array.isArray(inserted[property]) ? inserted[property] : []) as [];
 
       const deletedDifferences = arrayToObject(
         Delta.getLeftDifferences(
@@ -291,10 +256,7 @@ export class Delta<T> {
         (x) => x,
       );
 
-      if (
-        Object.keys(deletedDifferences).length ||
-        Object.keys(insertedDifferences).length
-      ) {
+      if (Object.keys(deletedDifferences).length || Object.keys(insertedDifferences).length) {
         const deletedValue = deletedArray.filter(
           (x) => deletedDifferences[groupBy ? groupBy(x) : String(x)],
         );
@@ -425,11 +387,7 @@ export class Delta<T> {
   /**
    * Returns sorted keys that have distinct values between object1 and object2 (aka full join).
    */
-  public static getDifferences<T extends {}>(
-    object1: T,
-    object2: T,
-    skipShallowCompare = false,
-  ) {
+  public static getDifferences<T extends {}>(object1: T, object2: T, skipShallowCompare = false) {
     return Array.from(
       this.distinctKeysIterator("full", object1, object2, skipShallowCompare),
     ).sort();
@@ -461,15 +419,9 @@ export class Delta<T> {
     } else if (join === "inner") {
       keys = Object.keys(object1).filter((key) => key in object2);
     } else if (join === "full") {
-      keys = Array.from(
-        new Set([...Object.keys(object1), ...Object.keys(object2)]),
-      );
+      keys = Array.from(new Set([...Object.keys(object1), ...Object.keys(object2)]));
     } else {
-      assertNever(
-        join,
-        `Unknown distinctKeysIterator's join param "${join}"`,
-        true,
-      );
+      assertNever(join, `Unknown distinctKeysIterator's join param "${join}"`, true);
     }
 
     for (const key of keys) {
@@ -616,23 +568,15 @@ export class AppStateDelta implements DeltaContainer<AppState> {
       Object.keys(mergedInsertedLockedMultiSelections).length
     ) {
       mergedDeleted.lockedMultiSelections = mergedDeletedLockedMultiSelections;
-      mergedInserted.lockedMultiSelections =
-        mergedInsertedLockedMultiSelections;
+      mergedInserted.lockedMultiSelections = mergedInsertedLockedMultiSelections;
     }
 
-    this.delta = Delta.merge(
-      this.delta,
-      delta.delta,
-      Delta.create(mergedDeleted, mergedInserted),
-    );
+    this.delta = Delta.merge(this.delta, delta.delta, Delta.create(mergedDeleted, mergedInserted));
 
     return this;
   }
 
-  public applyTo(
-    appState: AppState,
-    nextElements: SceneElementsMap,
-  ): [AppState, boolean] {
+  public applyTo(appState: AppState, nextElements: SceneElementsMap): [AppState, boolean] {
     try {
       const {
         selectedElementIds: deletedSelectedElementIds = {},
@@ -667,8 +611,7 @@ export class AppStateDelta implements DeltaContainer<AppState> {
       );
 
       const selectedLinearElement =
-        insertedSelectedLinearElement &&
-        nextElements.has(insertedSelectedLinearElement.elementId)
+        insertedSelectedLinearElement && nextElements.has(insertedSelectedLinearElement.elementId)
           ? new LinearElementEditor(
               nextElements.get(
                 insertedSelectedLinearElement.elementId,
@@ -858,11 +801,7 @@ export class AppStateDelta implements DeltaContainer<AppState> {
             }
             break;
           default:
-            assertNever(
-              key,
-              `Unknown ObservedElementsAppState's key "${key}"`,
-              true,
-            );
+            assertNever(key, `Unknown ObservedElementsAppState's key "${key}"`, true);
         }
       }
     }
@@ -941,23 +880,16 @@ export class AppStateDelta implements DeltaContainer<AppState> {
       ...standaloneProps
     } = delta as ObservedAppState;
 
-    return standaloneProps as SubtypeOf<
-      typeof standaloneProps,
-      ObservedStandaloneAppState
-    >;
+    return standaloneProps as SubtypeOf<typeof standaloneProps, ObservedStandaloneAppState>;
   }
 
   private static stripStandaloneProps(
     delta: Partial<ObservedAppState>,
   ): Partial<ObservedElementsAppState> {
     // WARN: Do not remove the type-casts as they here to ensure proper type checks
-    const { name, viewBackgroundColor, ...elementsProps } =
-      delta as ObservedAppState;
+    const { name, viewBackgroundColor, ...elementsProps } = delta as ObservedAppState;
 
-    return elementsProps as SubtypeOf<
-      typeof elementsProps,
-      ObservedElementsAppState
-    >;
+    return elementsProps as SubtypeOf<typeof elementsProps, ObservedElementsAppState>;
   }
 
   /**
@@ -1012,8 +944,10 @@ export class AppStateDelta implements DeltaContainer<AppState> {
   }
 }
 
-type ElementPartial<TElement extends ExcalidrawElement = ExcalidrawElement> =
-  Omit<Partial<Ordered<TElement>>, "id" | "updated" | "seed">;
+type ElementPartial<TElement extends ExcalidrawElement = ExcalidrawElement> = Omit<
+  Partial<Ordered<TElement>>,
+  "id" | "updated" | "seed"
+>;
 
 export type ApplyToOptions = {
   excludedProperties?: Set<keyof ElementPartial>;
@@ -1088,28 +1022,17 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     return ElementsDelta.create(added, removed, updated);
   }
 
-  private static satisfiesAddition = ({
-    deleted,
-    inserted,
-  }: Delta<ElementPartial>) =>
+  private static satisfiesAddition = ({ deleted, inserted }: Delta<ElementPartial>) =>
     // dissallowing added as "deleted", which could cause issues when resolving conflicts
     deleted.isDeleted === true && !inserted.isDeleted;
 
-  private static satisfiesRemoval = ({
-    deleted,
-    inserted,
-  }: Delta<ElementPartial>) =>
+  private static satisfiesRemoval = ({ deleted, inserted }: Delta<ElementPartial>) =>
     !deleted.isDeleted && inserted.isDeleted === true;
 
-  private static satisfiesUpdate = ({
-    deleted,
-    inserted,
-  }: Delta<ElementPartial>) => !!deleted.isDeleted === !!inserted.isDeleted;
+  private static satisfiesUpdate = ({ deleted, inserted }: Delta<ElementPartial>) =>
+    !!deleted.isDeleted === !!inserted.isDeleted;
 
-  private static satisfiesCommmonInvariants = ({
-    deleted,
-    inserted,
-  }: Delta<ElementPartial>) =>
+  private static satisfiesCommmonInvariants = ({ deleted, inserted }: Delta<ElementPartial>) =>
     !!(
       // versions are required integers
       (
@@ -1123,10 +1046,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
       )
     );
 
-  private static satisfiesUniqueInvariants = (
-    elementsDelta: ElementsDelta,
-    id: string,
-  ) => {
+  private static satisfiesUniqueInvariants = (elementsDelta: ElementsDelta, id: string) => {
     const { added, removed, updated } = elementsDelta;
     // it's required that there is only one unique delta type per element
     return [added[id], removed[id], updated[id]].filter(Boolean).length === 1;
@@ -1143,10 +1063,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
         !this.satisfiesUniqueInvariants(elementsDelta, id) ||
         !satifiesSpecialInvariants(delta)
       ) {
-        console.error(
-          `Broken invariant for "${type}" delta, element "${id}", delta:`,
-          delta,
-        );
+        console.error(`Broken invariant for "${type}" delta, element "${id}", delta:`, delta);
         throw new Error(`ElementsDelta invariant broken for element "${id}".`);
       }
     }
@@ -1185,11 +1102,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
           versionNonce: randomInteger(),
         } as ElementPartial;
 
-        const delta = Delta.create(
-          deleted,
-          inserted,
-          ElementsDelta.stripIrrelevantProps,
-        );
+        const delta = Delta.create(deleted, inserted, ElementsDelta.stripIrrelevantProps);
 
         if (!prevElement.isDeleted) {
           removed[prevElement.id] = delta;
@@ -1213,11 +1126,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
           ...nextElement,
         } as ElementPartial;
 
-        const delta = Delta.create(
-          deleted,
-          inserted,
-          ElementsDelta.stripIrrelevantProps,
-        );
+        const delta = Delta.create(deleted, inserted, ElementsDelta.stripIrrelevantProps);
 
         // ignore updates which would "delete" already deleted element
         if (!nextElement.isDeleted) {
@@ -1322,9 +1231,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
 
         // the element wasn't found -> don't update the partial
         if (!element) {
-          console.error(
-            `Element not found when trying to apply latest changes`,
-          );
+          console.error(`Element not found when trying to apply latest changes`);
           return partial;
         }
 
@@ -1345,9 +1252,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
         return latestPartial;
       };
 
-    const applyLatestChangesInternal = (
-      deltas: Record<string, Delta<ElementPartial>>,
-    ) => {
+    const applyLatestChangesInternal = (deltas: Record<string, Delta<ElementPartial>>) => {
       const modifiedDeltas: Record<string, Delta<ElementPartial>> = {};
 
       for (const [id, delta] of Object.entries(deltas)) {
@@ -1413,11 +1318,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
       const removedElements = applyDeltas(this.removed);
       const updatedElements = applyDeltas(this.updated);
 
-      const affectedElements = this.resolveConflicts(
-        elements,
-        nextElements,
-        flags.applyDirection,
-      );
+      const affectedElements = this.resolveConflicts(elements, nextElements, flags.applyDirection);
 
       // TODO: #7348 validate elements semantically and syntactically the changed elements, in case they would result data integrity issues
       changedElements = new Map([
@@ -1443,18 +1344,11 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     try {
       // the following reorder performs mutations, but only on new instances of changed elements,
       // unless something goes really bad and it fallbacks to fixing all invalid indices
-      nextElements = ElementsDelta.reorderElements(
-        nextElements,
-        changedElements,
-        flags,
-      );
+      nextElements = ElementsDelta.reorderElements(nextElements, changedElements, flags);
 
       ElementsDelta.redrawElements(nextElements, changedElements);
     } catch (e) {
-      console.error(
-        `Couldn't mutate elements after applying elements change`,
-        e,
-      );
+      console.error(`Couldn't mutate elements after applying elements change`, e);
 
       if (isTestEnv() || isDevEnv()) {
         throw e;
@@ -1491,10 +1385,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
           (x) => x.id,
         ) ?? [];
 
-      if (
-        !mergedDeletedBoundElements.length &&
-        !mergedInsertedBoundElements.length
-      ) {
+      if (!mergedDeletedBoundElements.length && !mergedInsertedBoundElements.length) {
         return;
       }
 
@@ -1573,22 +1464,13 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
       options?: ApplyToOptions,
     ) =>
     (deltas: Record<string, Delta<ElementPartial>>) => {
-      const getElement = ElementsDelta.createGetter(
-        nextElements,
-        snapshot,
-        flags,
-      );
+      const getElement = ElementsDelta.createGetter(nextElements, snapshot, flags);
 
       return Object.entries(deltas).reduce((acc, [id, delta]) => {
         const element = getElement(id, delta.inserted);
 
         if (element) {
-          const nextElement = ElementsDelta.applyDelta(
-            element,
-            delta,
-            flags,
-            options,
-          );
+          const nextElement = ElementsDelta.applyDelta(element, delta, flags, options);
 
           nextElements.set(nextElement.id, nextElement);
           acc.set(nextElement.id, nextElement);
@@ -1598,9 +1480,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
 
             if (prevElement) {
               flags.applyDirection =
-                prevElement.version > nextElement.version
-                  ? "backward"
-                  : "forward";
+                prevElement.version > nextElement.version ? "backward" : "forward";
             }
           }
         }
@@ -1610,11 +1490,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     };
 
   private static createGetter =
-    (
-      elements: SceneElementsMap,
-      snapshot: StoreSnapshot["elements"],
-      flags: ApplyToFlags,
-    ) =>
+    (elements: SceneElementsMap, snapshot: StoreSnapshot["elements"], flags: ApplyToFlags) =>
     (id: string, partial: ElementPartial) => {
       let element = elements.get(id);
 
@@ -1632,12 +1508,9 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
           }
         } else {
           // not in elements, not in snapshot? element might have been added remotely!
-          element = newElementWith(
-            { id, version: 1 } as OrderedExcalidrawElement,
-            {
-              ...partial,
-            },
-          );
+          element = newElementWith({ id, version: 1 } as OrderedExcalidrawElement, {
+            ...partial,
+          });
         }
       }
 
@@ -1655,9 +1528,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     // some properties are not directly applicable, such as:
     // - boundElements which contains only diff)
     // - version & versionNonce, if we don't want to return to previous versions
-    for (const key of Object.keys(delta.inserted) as Array<
-      keyof typeof delta.inserted
-    >) {
+    for (const key of Object.keys(delta.inserted) as Array<keyof typeof delta.inserted>) {
       if (key === "boundElements") {
         continue;
       }
@@ -1670,10 +1541,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
       Reflect.set(directlyApplicablePartial, key, value);
     }
 
-    if (
-      delta.deleted.boundElements?.length ||
-      delta.inserted.boundElements?.length
-    ) {
+    if (delta.deleted.boundElements?.length || delta.inserted.boundElements?.length) {
       const mergedBoundElements = Delta.mergeArrays(
         element.boundElements,
         delta.inserted.boundElements,
@@ -1689,17 +1557,13 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     if (!flags.containsVisibleDifference) {
       // strip away fractional index, as even if it would be different, it doesn't have to result in visible change
       const { index, ...rest } = directlyApplicablePartial;
-      const containsVisibleDifference = ElementsDelta.checkForVisibleDifference(
-        element,
-        rest,
-      );
+      const containsVisibleDifference = ElementsDelta.checkForVisibleDifference(element, rest);
 
       flags.containsVisibleDifference = containsVisibleDifference;
     }
 
     if (!flags.containsZindexDifference) {
-      flags.containsZindexDifference =
-        delta.deleted.index !== delta.inserted.index;
+      flags.containsZindexDifference = delta.deleted.index !== delta.inserted.index;
     }
 
     return newElementWith(element, directlyApplicablePartial, true);
@@ -1745,10 +1609,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     applyDirection: "forward" | "backward" = "forward",
   ) {
     const nextAffectedElements = new Map<string, OrderedExcalidrawElement>();
-    const updater = (
-      element: ExcalidrawElement,
-      updates: ElementUpdate<ExcalidrawElement>,
-    ) => {
+    const updater = (element: ExcalidrawElement, updates: ElementUpdate<ExcalidrawElement>) => {
       const nextElement = nextElements.get(element.id); // only ever modify next element!
       if (!nextElement) {
         return;
@@ -1756,9 +1617,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
 
       const prevElement = prevElements.get(element.id);
       const nextVersion =
-        applyDirection === "forward"
-          ? nextElement.version + 1
-          : nextElement.version - 1;
+        applyDirection === "forward" ? nextElement.version + 1 : nextElement.version - 1;
 
       const elementUpdates = updates as ElementUpdate<OrderedExcalidrawElement>;
 
@@ -1779,10 +1638,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
         affectedElement = mutateElement(nextElement, nextElements, {
           ...elementUpdates,
           // don't modify the version further, if it's already different
-          version:
-            prevElement?.version !== nextElement.version
-              ? nextElement.version
-              : nextVersion,
+          version: prevElement?.version !== nextElement.version ? nextElement.version : nextVersion,
         });
       }
 
@@ -1801,11 +1657,10 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     }
 
     // updated delta is affecting the binding only in case it contains changed binding or bindable property
-    for (const [id] of Array.from(Object.entries(this.updated)).filter(
-      ([_, delta]) =>
-        Object.keys({ ...delta.deleted, ...delta.inserted }).find((prop) =>
-          bindingProperties.has(prop as BindingProp | BindableProp),
-        ),
+    for (const [id] of Array.from(Object.entries(this.updated)).filter(([_, delta]) =>
+      Object.keys({ ...delta.deleted, ...delta.inserted }).find((prop) =>
+        bindingProperties.has(prop as BindingProp | BindableProp),
+      ),
     )) {
       const updatedElement = nextElements.get(id);
       if (!updatedElement || updatedElement.isDeleted) {
@@ -1838,10 +1693,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     prevElements: SceneElementsMap,
     nextElements: SceneElementsMap,
     id: string,
-    updater: (
-      element: ExcalidrawElement,
-      updates: ElementUpdate<ExcalidrawElement>,
-    ) => void,
+    updater: (element: ExcalidrawElement, updates: ElementUpdate<ExcalidrawElement>) => void,
   ) {
     // the instance could have been updated, so make sure we are passing the latest element to each function below
     const prevElement = () => prevElements.get(id); // element before removal
@@ -1862,10 +1714,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     prevElements: SceneElementsMap,
     nextElements: SceneElementsMap,
     id: string,
-    updater: (
-      element: ExcalidrawElement,
-      updates: ElementUpdate<ExcalidrawElement>,
-    ) => void,
+    updater: (element: ExcalidrawElement, updates: ElementUpdate<ExcalidrawElement>) => void,
   ) {
     // the instance could have been updated, so make sure we are passing the latest element to each function below
     const prevElement = () => prevElements.get(id); // element before addition / update
@@ -1874,17 +1723,13 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     BoundElement.unbindAffected(nextElements, prevElement(), updater);
     BoundElement.rebindAffected(nextElements, nextElement(), updater);
 
-    BindableElement.unbindAffected(
-      nextElements,
-      prevElement(),
-      (element, updates) => {
-        // we cannot rebind arrows with bindable element so we don't unbind them at all during rebind (we still need to unbind them on removal)
-        // TODO: #7348 add startBinding / endBinding to the `BoundElement` context so that we could rebind arrows and remove this condition
-        if (isTextElement(element)) {
-          updater(element, updates);
-        }
-      },
-    );
+    BindableElement.unbindAffected(nextElements, prevElement(), (element, updates) => {
+      // we cannot rebind arrows with bindable element so we don't unbind them at all during rebind (we still need to unbind them on removal)
+      // TODO: #7348 add startBinding / endBinding to the `BoundElement` context so that we could rebind arrows and remove this condition
+      if (isTextElement(element)) {
+        updater(element, updates);
+      }
+    });
     BindableElement.rebindAffected(nextElements, nextElement(), updater);
   }
 
@@ -1938,9 +1783,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
 
       if (hasBoundTextElement(element)) {
         const boundTextElementId = getBoundTextElementId(element);
-        const boundText = boundTextElementId
-          ? elements.get(boundTextElementId)
-          : undefined;
+        const boundText = boundTextElementId ? elements.get(boundTextElementId) : undefined;
 
         if (boundText) {
           boxesToRedraw.set(element.id, {
@@ -1961,10 +1804,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     }
   }
 
-  private static redrawBoundArrows(
-    scene: Scene,
-    changed: Map<string, OrderedExcalidrawElement>,
-  ) {
+  private static redrawBoundArrows(scene: Scene, changed: Map<string, OrderedExcalidrawElement>) {
     for (const element of changed.values()) {
       if (!element.isDeleted && isBindableElement(element)) {
         // TODO: with precise bindings this is quite expensive, so consider optimisation so it's only triggered when the arrow does not intersect (imprecise) element bounds
@@ -1989,17 +1829,14 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
 
     const unordered = Array.from(elements.values());
     const ordered = orderByFractionalIndex([...unordered]);
-    const moved = Delta.getRightDifferences(unordered, ordered, true).reduce(
-      (acc, arrayIndex) => {
-        const candidate = unordered[Number(arrayIndex)];
-        if (candidate && changed.has(candidate.id)) {
-          acc.set(candidate.id, candidate);
-        }
+    const moved = Delta.getRightDifferences(unordered, ordered, true).reduce((acc, arrayIndex) => {
+      const candidate = unordered[Number(arrayIndex)];
+      if (candidate && changed.has(candidate.id)) {
+        acc.set(candidate.id, candidate);
+      }
 
-        return acc;
-      },
-      new Map(),
-    );
+      return acc;
+    }, new Map());
 
     if (!flags.containsVisibleDifference && moved.size) {
       // we found a difference in order!
@@ -2026,18 +1863,12 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
       // - we can't ensure the multiplayer order consistency without fractional index on each point
       // - we prefer to not merge the points, as it might just lead to unexpected / incosistent results
       const deletedPoints =
-        (
-          deleted as ElementPartial<
-            ExcalidrawFreeDrawElement | ExcalidrawLinearElement
-          >
-        ).points ?? [];
+        (deleted as ElementPartial<ExcalidrawFreeDrawElement | ExcalidrawLinearElement>).points ??
+        [];
 
       const insertedPoints =
-        (
-          inserted as ElementPartial<
-            ExcalidrawFreeDrawElement | ExcalidrawLinearElement
-          >
-        ).points ?? [];
+        (inserted as ElementPartial<ExcalidrawFreeDrawElement | ExcalidrawLinearElement>).points ??
+        [];
 
       if (!Delta.isDifferent(deletedPoints, insertedPoints)) {
         // delete the points from delta if there is no difference, otherwise leave them as they were captured due to consistency
@@ -2056,9 +1887,7 @@ export class ElementsDelta implements DeltaContainer<SceneElementsMap> {
     }
   }
 
-  private static stripIrrelevantProps(
-    partial: Partial<OrderedExcalidrawElement>,
-  ): ElementPartial {
+  private static stripIrrelevantProps(partial: Partial<OrderedExcalidrawElement>): ElementPartial {
     const { id, updated, ...strippedPartial } = partial;
 
     return strippedPartial;

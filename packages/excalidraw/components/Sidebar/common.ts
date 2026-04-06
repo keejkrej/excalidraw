@@ -34,10 +34,11 @@ export type SidebarProps<P = {}> = {
   __fallback?: boolean;
 } & P;
 
-export type SidebarPropsContextValue = Pick<
-  SidebarProps,
-  "onDock" | "docked"
-> & { onCloseRequest: () => void; shouldRenderDockButton: boolean };
+export type SidebarPropsContextValue = Pick<SidebarProps, "onDock" | "docked"> & {
+  onCloseRequest: () => void;
+  shouldRenderDockButton: boolean;
+};
 
-export const SidebarPropsContext =
-  React.createContext<SidebarPropsContextValue>({} as SidebarPropsContextValue);
+export const SidebarPropsContext = React.createContext<SidebarPropsContextValue>(
+  {} as SidebarPropsContextValue,
+);

@@ -6,11 +6,7 @@ import { invariant } from "@excalidraw/common";
 
 import { getClientColor } from "../clients";
 import { Avatar } from "../components/Avatar";
-import {
-  eyeIcon,
-  microphoneIcon,
-  microphoneMutedIcon,
-} from "../components/icons";
+import { eyeIcon, microphoneIcon, microphoneMutedIcon } from "../components/icons";
 import { t } from "../i18n";
 
 import { register } from "./register";
@@ -105,9 +101,7 @@ export const actionGoToCollaborator = register<Collaborator>({
           src={collaborator.avatarUrl}
           className={statusClassNames}
         />
-        <div className="UserList__collaborator-name">
-          {collaborator.username}
-        </div>
+        <div className="UserList__collaborator-name">{collaborator.username}</div>
         <div className="UserList__collaborator-status-icons" aria-hidden>
           {isBeingFollowed && (
             <div
@@ -133,11 +127,7 @@ export const actionGoToCollaborator = register<Collaborator>({
           src={collaborator.avatarUrl}
           className={statusClassNames}
         />
-        {statusIconJSX && (
-          <div className="UserList__collaborator-status-icon">
-            {statusIconJSX}
-          </div>
-        )}
+        {statusIconJSX && <div className="UserList__collaborator-status-icon">{statusIconJSX}</div>}
       </div>
     );
   },

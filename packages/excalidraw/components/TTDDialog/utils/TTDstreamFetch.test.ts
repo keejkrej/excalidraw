@@ -50,11 +50,7 @@ describe("TTDStreamFetch", () => {
   describe("successful streaming", () => {
     it("should stream data chunks and return full response", async () => {
       const chunks: string[] = [];
-      const mockChunks = [
-        createContentChunk("Hello "),
-        createContentChunk("world"),
-        DONE_CHUNK,
-      ];
+      const mockChunks = [createContentChunk("Hello "), createContentChunk("world"), DONE_CHUNK];
 
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
@@ -74,11 +70,7 @@ describe("TTDStreamFetch", () => {
     });
 
     it("should handle multi-line chunks", async () => {
-      const mockChunks = [
-        createContentChunk("Line 1\n"),
-        createContentChunk("Line 2"),
-        DONE_CHUNK,
-      ];
+      const mockChunks = [createContentChunk("Line 1\n"), createContentChunk("Line 2"), DONE_CHUNK];
 
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
@@ -114,11 +106,7 @@ describe("TTDStreamFetch", () => {
     });
 
     it("should handle empty chunks gracefully", async () => {
-      const mockChunks = [
-        createContentChunk(""),
-        createContentChunk("valid"),
-        DONE_CHUNK,
-      ];
+      const mockChunks = [createContentChunk(""), createContentChunk("valid"), DONE_CHUNK];
 
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
@@ -293,9 +281,7 @@ describe("TTDStreamFetch", () => {
       });
 
       expect(result.error).toBeDefined();
-      expect(result.error?.message).toBe(
-        "Couldn't get reader from response body",
-      );
+      expect(result.error?.message).toBe("Couldn't get reader from response body");
     });
 
     it("should handle empty response", async () => {
@@ -317,9 +303,7 @@ describe("TTDStreamFetch", () => {
     });
 
     it("should handle network errors", async () => {
-      global.fetch = vi
-        .fn()
-        .mockRejectedValue(new Error("Network connection failed"));
+      global.fetch = vi.fn().mockRejectedValue(new Error("Network connection failed"));
 
       const result = await TTDStreamFetch({
         url: "https://api.example.com/stream",
@@ -331,15 +315,9 @@ describe("TTDStreamFetch", () => {
     });
 
     it("should handle invalid JSON in stream", async () => {
-      const consoleWarnSpy = vi
-        .spyOn(console, "warn")
-        .mockImplementation(() => {});
+      const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      const mockChunks = [
-        createDataChunk("invalid"),
-        createContentChunk("valid"),
-        DONE_CHUNK,
-      ];
+      const mockChunks = [createDataChunk("invalid"), createContentChunk("valid"), DONE_CHUNK];
 
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
@@ -408,11 +386,7 @@ describe("TTDStreamFetch", () => {
 
   describe("SSE parsing", () => {
     it("should handle lines without data prefix", async () => {
-      const mockChunks = [
-        ": comment line\n",
-        createContentChunk("valid"),
-        DONE_CHUNK,
-      ];
+      const mockChunks = [": comment line\n", createContentChunk("valid"), DONE_CHUNK];
 
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,
@@ -452,12 +426,7 @@ describe("TTDStreamFetch", () => {
 
     it("should handle partial chunks across reads", async () => {
       // Split an SSE message across multiple chunks
-      const mockChunks = [
-        "data: ",
-        createContentChunkData("partial"),
-        "\n\n",
-        DONE_CHUNK,
-      ];
+      const mockChunks = ["data: ", createContentChunkData("partial"), "\n\n", DONE_CHUNK];
 
       global.fetch = vi.fn().mockResolvedValue({
         ok: true,

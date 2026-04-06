@@ -3,10 +3,7 @@ import React from "react";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 
 import MenuItemContent from "./DropdownMenuItemContent";
-import {
-  getDropdownMenuItemClassName,
-  useHandleDropdownMenuItemSelect,
-} from "./common";
+import { getDropdownMenuItemClassName, useHandleDropdownMenuItemSelect } from "./common";
 
 import type { JSX } from "react";
 
@@ -34,11 +31,7 @@ const DropdownMenuItemLink = ({
 
   return (
     // eslint-disable-next-line react/jsx-no-target-blank
-    <DropdownMenuPrimitive.Item
-      className="radix-menu-item"
-      onSelect={handleSelect}
-      asChild
-    >
+    <DropdownMenuPrimitive.Item className="radix-menu-item" onSelect={handleSelect} asChild>
       <a
         {...rest}
         href={href}

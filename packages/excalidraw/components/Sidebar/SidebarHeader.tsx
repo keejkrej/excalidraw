@@ -19,15 +19,10 @@ export const SidebarHeader = ({
   const editorInterface = useEditorInterface();
   const props = useContext(SidebarPropsContext);
 
-  const renderDockButton = !!(
-    editorInterface.canFitSidebar && props.shouldRenderDockButton
-  );
+  const renderDockButton = !!(editorInterface.canFitSidebar && props.shouldRenderDockButton);
 
   return (
-    <div
-      className={clsx("sidebar__header", className)}
-      data-testid="sidebar-header"
-    >
+    <div className={clsx("sidebar__header", className)} data-testid="sidebar-header">
       {children}
       <div className="sidebar__header__buttons">
         {renderDockButton && (

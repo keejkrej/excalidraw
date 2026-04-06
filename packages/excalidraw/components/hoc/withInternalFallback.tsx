@@ -3,10 +3,7 @@ import React, { useLayoutEffect, useRef } from "react";
 import { useTunnels } from "../../context/tunnels";
 import { atom } from "../../editor-jotai";
 
-export const withInternalFallback = <P,>(
-  componentName: string,
-  Component: React.FC<P>,
-) => {
+export const withInternalFallback = <P,>(componentName: string, Component: React.FC<P>) => {
   const renderAtom = atom(0);
 
   const WrapperComponent: React.FC<
@@ -57,9 +54,7 @@ export const withInternalFallback = <P,>(
     // ensure we don't render fallback and host components at the same time
     if (
       // either before the counters are initialized
-      (!metaRef.current.counter &&
-        props.__fallback &&
-        metaRef.current.preferHost) ||
+      (!metaRef.current.counter && props.__fallback && metaRef.current.preferHost) ||
       // or after the counters are initialized, and both are rendered
       // (this is the default when host renders as well)
       (metaRef.current.counter > 1 && props.__fallback)

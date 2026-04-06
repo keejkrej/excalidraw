@@ -14,11 +14,7 @@ import {
   unbindBindingElement,
   updateBoundPoint,
 } from "../binding";
-import {
-  isBindableElement,
-  isBindingElement,
-  isElbowArrow,
-} from "../typeChecks";
+import { isBindableElement, isBindingElement, isElbowArrow } from "../typeChecks";
 import { LinearElementEditor } from "../linearElementEditor";
 import { getHoveredElementForFocusPoint, hitElementItself } from "../collision";
 import { moveArrowAboveBindable } from "../zindex";
@@ -47,11 +43,7 @@ export const isFocusPointVisible = (
 ): boolean => {
   // No focus point management for elbow arrows, because elbow arrows
   // always have their focus point at the arrow point itself
-  if (
-    isElbowArrow(arrow) ||
-    !isBindingEnabled(appState) ||
-    arrow.points.length !== 2
-  ) {
+  if (isElbowArrow(arrow) || !isBindingEnabled(appState) || arrow.points.length !== 2) {
     return false;
   }
 
@@ -59,15 +51,12 @@ export const isFocusPointVisible = (
   // on top of the arrow point it belongs to itself, if not ignoring specifically
   if (!ignoreOverlap) {
     const associatedPointIdx =
-      arrow.startBinding?.elementId === bindableElement.id
-        ? 0
-        : arrow.points.length - 1;
-    const associatedArrowPoint =
-      LinearElementEditor.getPointAtIndexGlobalCoordinates(
-        arrow,
-        associatedPointIdx,
-        elementsMap,
-      );
+      arrow.startBinding?.elementId === bindableElement.id ? 0 : arrow.points.length - 1;
+    const associatedArrowPoint = LinearElementEditor.getPointAtIndexGlobalCoordinates(
+      arrow,
+      associatedPointIdx,
+      elementsMap,
+    );
 
     if (
       pointDistance(focusPoint, associatedArrowPoint) <
@@ -86,8 +75,7 @@ export const isFocusPointVisible = (
   // Check if the focus point is within the element's shape bounds
   // Endpoint dragging takes precedence
   return (
-    pointDistance(focusPoint, arrowPoint) >=
-      (FOCUS_POINT_SIZE * 1.5) / appState.zoom.value &&
+    pointDistance(focusPoint, arrowPoint) >= (FOCUS_POINT_SIZE * 1.5) / appState.zoom.value &&
     hitElementItself({
       element: bindableElement,
       elementsMap,
@@ -119,9 +107,7 @@ const focusPointUpdate = (
   if (currentBinding && bindableElement) {
     // Update the targeted bindings
     const boundToSameElement =
-      bindableElement &&
-      adjacentBinding &&
-      currentBinding.elementId === adjacentBinding.elementId;
+      bindableElement && adjacentBinding && currentBinding.elementId === adjacentBinding.elementId;
     if (switchToInsideBinding || boundToSameElement) {
       currentBinding = {
         ...currentBinding,
@@ -209,10 +195,7 @@ export const handleFocusPointDrag = (
   gridSize: NullableGridSize,
   switchToInsideBinding: boolean,
 ) => {
-  const arrow = LinearElementEditor.getElement(
-    linearElementEditor.elementId,
-    elementsMap,
-  ) as any;
+  const arrow = LinearElementEditor.getElement(linearElementEditor.elementId, elementsMap) as any;
 
   // Sanity checks
   if (
@@ -225,14 +208,10 @@ export const handleFocusPointDrag = (
     return;
   }
 
-  const isStartBinding =
-    linearElementEditor.draggedFocusPointBinding === "start";
+  const isStartBinding = linearElementEditor.draggedFocusPointBinding === "start";
   const binding = isStartBinding ? arrow.startBinding : arrow.endBinding;
   const { x: offsetX, y: offsetY } = linearElementEditor.pointerOffset;
-  const point = pointFrom<GlobalPoint>(
-    pointerCoords.x - offsetX,
-    pointerCoords.y - offsetY,
-  );
+  const point = pointFrom<GlobalPoint>(pointerCoords.x - offsetX, pointerCoords.y - offsetY);
   const bindingField = isStartBinding ? "startBinding" : "endBinding";
   const hit = getHoveredElementForFocusPoint(
     point,
@@ -246,11 +225,7 @@ export const handleFocusPointDrag = (
   if (hit && isBindingEnabled(appState)) {
     // Break existing binding if bound to another shape or if binding is disabled
     if (arrow[bindingField] && hit.id !== binding?.elementId) {
-      unbindBindingElement(
-        arrow,
-        linearElementEditor.draggedFocusPointBinding,
-        scene,
-      );
+      unbindBindingElement(arrow, linearElementEditor.draggedFocusPointBinding, scene);
     }
 
     // Handle binding mode switch
@@ -258,8 +233,8 @@ export const handleFocusPointDrag = (
       switchToInsideBinding && arrow[bindingField]?.mode === "orbit"
         ? "inside"
         : !switchToInsideBinding && arrow[bindingField]?.mode === "inside"
-        ? "orbit"
-        : null;
+          ? "orbit"
+          : null;
 
     // If no existing binding, create it
     if (!arrow[bindingField] || newMode) {
@@ -294,13 +269,7 @@ export const handleFocusPointDrag = (
     const pointUpdates: PointsPositionUpdates = new Map();
     const pointIndex = isStartBinding ? 0 : arrow.points.length - 1;
     pointUpdates.set(pointIndex, {
-      point: LinearElementEditor.createPointAt(
-        arrow,
-        elementsMap,
-        point[0],
-        point[1],
-        gridSize,
-      ),
+      point: LinearElementEditor.createPointAt(arrow, elementsMap, point[0], point[1], gridSize),
     });
     LinearElementEditor.movePoints(arrow, scene, pointUpdates);
     if (arrow[bindingField]) {
@@ -309,15 +278,7 @@ export const handleFocusPointDrag = (
   }
 
   // Update the arrow endpoints
-  focusPointUpdate(
-    arrow,
-    hit,
-    isStartBinding,
-    elementsMap,
-    scene,
-    appState,
-    switchToInsideBinding,
-  );
+  focusPointUpdate(arrow, hit, isStartBinding, elementsMap, scene, appState, switchToInsideBinding);
 
   if (hit && isBindingEnabled(appState)) {
     moveArrowAboveBindable(
@@ -340,34 +301,20 @@ export const handleFocusPointPointerDown = (
   hitFocusPoint: "start" | "end" | null;
   pointerOffset: { x: number; y: number };
 } => {
-  const pointerPos = pointFrom(
-    pointerDownState.origin.x,
-    pointerDownState.origin.y,
-  );
+  const pointerPos = pointFrom(pointerDownState.origin.x, pointerDownState.origin.y);
   const hitThreshold = (FOCUS_POINT_SIZE * 1.5) / appState.zoom.value;
 
   // Check start binding focus point
   if (arrow.startBinding?.elementId) {
     const bindableElement = elementsMap.get(arrow.startBinding.elementId);
-    if (
-      bindableElement &&
-      isBindableElement(bindableElement) &&
-      !bindableElement.isDeleted
-    ) {
+    if (bindableElement && isBindableElement(bindableElement) && !bindableElement.isDeleted) {
       const focusPoint = getGlobalFixedPointForBindableElement(
         arrow.startBinding.fixedPoint,
         bindableElement,
         elementsMap,
       );
       if (
-        isFocusPointVisible(
-          focusPoint,
-          arrow,
-          bindableElement,
-          elementsMap,
-          appState,
-          "start",
-        ) &&
+        isFocusPointVisible(focusPoint, arrow, bindableElement, elementsMap, appState, "start") &&
         pointDistance(pointerPos, focusPoint) <= hitThreshold
       ) {
         return {
@@ -384,25 +331,14 @@ export const handleFocusPointPointerDown = (
   // Check end binding focus point (only if start not already hit)
   if (arrow.endBinding?.elementId) {
     const bindableElement = elementsMap.get(arrow.endBinding.elementId);
-    if (
-      bindableElement &&
-      isBindableElement(bindableElement) &&
-      !bindableElement.isDeleted
-    ) {
+    if (bindableElement && isBindableElement(bindableElement) && !bindableElement.isDeleted) {
       const focusPoint = getGlobalFixedPointForBindableElement(
         arrow.endBinding.fixedPoint,
         bindableElement,
         elementsMap,
       );
       if (
-        isFocusPointVisible(
-          focusPoint,
-          arrow,
-          bindableElement,
-          elementsMap,
-          appState,
-          "end",
-        ) &&
+        isFocusPointVisible(focusPoint, arrow, bindableElement, elementsMap, appState, "end") &&
         pointDistance(pointerPos, focusPoint) <= hitThreshold
       ) {
         return {
@@ -439,13 +375,9 @@ export const handleFocusPointPointerUp = (
 
   // Clean up
   const bindingKey =
-    linearElementEditor.draggedFocusPointBinding === "start"
-      ? "startBinding"
-      : "endBinding";
+    linearElementEditor.draggedFocusPointBinding === "start" ? "startBinding" : "endBinding";
   const otherBindingKey =
-    linearElementEditor.draggedFocusPointBinding === "start"
-      ? "endBinding"
-      : "startBinding";
+    linearElementEditor.draggedFocusPointBinding === "start" ? "endBinding" : "startBinding";
   const boundElementId = arrow[bindingKey]?.elementId;
   const otherBoundElementId = arrow[otherBindingKey]?.elementId;
   const oldBoundElement =
@@ -461,21 +393,16 @@ export const handleFocusPointPointerUp = (
       );
   if (oldBoundElement) {
     scene.mutateElement(oldBoundElement, {
-      boundElements: oldBoundElement.boundElements?.filter(
-        ({ id }) => id !== arrow.id,
-      ),
+      boundElements: oldBoundElement.boundElements?.filter(({ id }) => id !== arrow.id),
     });
   }
 
   // Record the new bound element
-  const boundElement =
-    boundElementId && scene.getNonDeletedElementsMap().get(boundElementId);
+  const boundElement = boundElementId && scene.getNonDeletedElementsMap().get(boundElementId);
   if (boundElement) {
     scene.mutateElement(boundElement, {
       boundElements: [
-        ...(boundElement.boundElements || [])?.filter(
-          ({ id }) => id !== arrow.id,
-        ),
+        ...(boundElement.boundElements || [])?.filter(({ id }) => id !== arrow.id),
         {
           id: arrow.id,
           type: "arrow",
@@ -499,25 +426,14 @@ export const handleFocusPointHover = (
   // Check start binding focus point
   if (arrow.startBinding?.elementId) {
     const bindableElement = elementsMap.get(arrow.startBinding.elementId);
-    if (
-      bindableElement &&
-      isBindableElement(bindableElement) &&
-      !bindableElement.isDeleted
-    ) {
+    if (bindableElement && isBindableElement(bindableElement) && !bindableElement.isDeleted) {
       const focusPoint = getGlobalFixedPointForBindableElement(
         arrow.startBinding.fixedPoint,
         bindableElement,
         elementsMap,
       );
       if (
-        isFocusPointVisible(
-          focusPoint,
-          arrow,
-          bindableElement,
-          elementsMap,
-          appState,
-          "start",
-        ) &&
+        isFocusPointVisible(focusPoint, arrow, bindableElement, elementsMap, appState, "start") &&
         pointDistance(pointerPos, focusPoint) <= hitThreshold
       ) {
         return "start";
@@ -528,25 +444,14 @@ export const handleFocusPointHover = (
   // Check end binding focus point (only if start not already hovered)
   if (arrow.endBinding?.elementId) {
     const bindableElement = elementsMap.get(arrow.endBinding.elementId);
-    if (
-      bindableElement &&
-      isBindableElement(bindableElement) &&
-      !bindableElement.isDeleted
-    ) {
+    if (bindableElement && isBindableElement(bindableElement) && !bindableElement.isDeleted) {
       const focusPoint = getGlobalFixedPointForBindableElement(
         arrow.endBinding.fixedPoint,
         bindableElement,
         elementsMap,
       );
       if (
-        isFocusPointVisible(
-          focusPoint,
-          arrow,
-          bindableElement,
-          elementsMap,
-          appState,
-          "end",
-        ) &&
+        isFocusPointVisible(focusPoint, arrow, bindableElement, elementsMap, appState, "end") &&
         pointDistance(pointerPos, focusPoint) <= hitThreshold
       ) {
         return "end";

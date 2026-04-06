@@ -55,11 +55,7 @@ const DropdownMenuSubContent = ({
       {editorInterface.formFactor === "phone" ? (
         <Stack.Col className="dropdown-menu-container">{children}</Stack.Col>
       ) : (
-        <Island
-          className="dropdown-menu-container"
-          padding={2}
-          style={{ zIndex: 1 }}
-        >
+        <Island className="dropdown-menu-container" padding={2} style={{ zIndex: 1 }}>
           {children}
         </Island>
       )}

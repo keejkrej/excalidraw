@@ -33,9 +33,7 @@ describe("embedding scene data", () => {
       const parsedString = decodeSvgBase64Payload({ svg });
       const importedData: ImportedDataState = JSON.parse(parsedString);
 
-      expect(sourceElements.map((x) => x.id)).toEqual(
-        importedData.elements?.map((el) => el.id),
-      );
+      expect(sourceElements.map((x) => x.id)).toEqual(importedData.elements?.map((el) => el.id));
     });
   });
 
@@ -62,9 +60,7 @@ describe("embedding scene data", () => {
       const parsedString = await decodePngMetadata(blob);
       const importedData: ImportedDataState = JSON.parse(parsedString);
 
-      expect(sourceElements.map((x) => x.id)).toEqual(
-        importedData.elements?.map((el) => el.id),
-      );
+      expect(sourceElements.map((x) => x.id)).toEqual(importedData.elements?.map((el) => el.id));
     });
   });
 });

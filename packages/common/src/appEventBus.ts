@@ -25,9 +25,7 @@ type AwaitableAppEventKeys<
     : never;
 }[keyof Events];
 
-type AppEventPromiseValue<Args extends any[]> = Args extends [infer Only]
-  ? Only
-  : Args;
+type AppEventPromiseValue<Args extends any[]> = Args extends [infer Only] ? Only : Args;
 
 export class AppEventBus<
   Events extends AppEventPayloadMap,
@@ -48,9 +46,7 @@ export class AppEventBus<
     return emitter as Emitter<Events[K]>;
   }
 
-  private toPromiseValue<Args extends any[]>(
-    args: Args,
-  ): AppEventPromiseValue<Args> {
+  private toPromiseValue<Args extends any[]>(args: Args): AppEventPromiseValue<Args> {
     return (args.length === 1 ? args[0] : args) as AppEventPromiseValue<Args>;
   }
 
@@ -80,10 +76,7 @@ export class AppEventBus<
       return this.getEmitter(name).on(callback);
     }
 
-    if (
-      eventBehavior.cardinality !== "once" ||
-      eventBehavior.replay !== "last"
-    ) {
+    if (eventBehavior.cardinality !== "once" || eventBehavior.replay !== "last") {
       throw new Error(`Event "${String(name)}" requires a callback`);
     }
 

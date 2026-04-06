@@ -24,29 +24,21 @@ const Footer = ({
   const { FooterCenterTunnel, WelcomeScreenHelpHintTunnel } = useTunnels();
 
   return (
-    <footer
-      role="contentinfo"
-      className="layer-ui__wrapper__footer App-menu App-menu_bottom"
-    >
+    <footer role="contentinfo" className="layer-ui__wrapper__footer App-menu App-menu_bottom">
       <div
         className={clsx("layer-ui__wrapper__footer-left zen-mode-transition", {
-          "layer-ui__wrapper__footer-left--transition-left":
-            appState.zenModeEnabled,
+          "layer-ui__wrapper__footer-left--transition-left": appState.zenModeEnabled,
         })}
       >
         <Stack.Col gap={2}>
           <Section heading="canvasActions">
-            <ZoomActions
-              renderAction={actionManager.renderAction}
-              zoom={appState.zoom}
-            />
+            <ZoomActions renderAction={actionManager.renderAction} zoom={appState.zoom} />
 
             {!appState.viewModeEnabled && (
               <UndoRedoActions
                 renderAction={actionManager.renderAction}
                 className={clsx("zen-mode-transition", {
-                  "layer-ui__wrapper__footer-left--transition-bottom":
-                    appState.zenModeEnabled,
+                  "layer-ui__wrapper__footer-left--transition-bottom": appState.zenModeEnabled,
                 })}
               />
             )}
@@ -61,15 +53,10 @@ const Footer = ({
       >
         <div style={{ position: "relative" }}>
           {renderWelcomeScreen && <WelcomeScreenHelpHintTunnel.Out />}
-          <HelpButton
-            onClick={() => actionManager.executeAction(actionShortcuts)}
-          />
+          <HelpButton onClick={() => actionManager.executeAction(actionShortcuts)} />
         </div>
       </div>
-      <ExitZenModeButton
-        actionManager={actionManager}
-        showExitZenModeBtn={showExitZenModeBtn}
-      />
+      <ExitZenModeButton actionManager={actionManager} showExitZenModeBtn={showExitZenModeBtn} />
     </footer>
   );
 };

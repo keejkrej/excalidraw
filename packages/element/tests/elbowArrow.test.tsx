@@ -64,9 +64,7 @@ describe("elbow arrow segment move", () => {
     mouse.moveTo(115, 100);
     mouse.up();
 
-    const arrow = h.scene.getSelectedElements(
-      h.state,
-    )[0] as ExcalidrawElbowArrowElement;
+    const arrow = h.scene.getSelectedElements(h.state)[0] as ExcalidrawElbowArrowElement;
 
     expect(h.state.selectedElementIds).toEqual({ [arrow.id]: true });
     expect(arrow.fixedSegments?.length).toBe(1);
@@ -106,9 +104,7 @@ describe("elbow arrow segment move", () => {
     mouse.moveTo(130, 100);
     mouse.up();
 
-    const arrow = h.scene.getSelectedElements(
-      h.state,
-    )[0] as ExcalidrawArrowElement;
+    const arrow = h.scene.getSelectedElements(h.state)[0] as ExcalidrawArrowElement;
 
     expect(arrow.points).toCloselyEqualPoints([
       [0, 0],
@@ -245,9 +241,7 @@ describe("elbow arrow ui", () => {
     mouse.moveTo(53, 99);
     mouse.click();
 
-    const arrow = h.scene.getSelectedElements(
-      h.state,
-    )[0] as ExcalidrawArrowElement;
+    const arrow = h.scene.getSelectedElements(h.state)[0] as ExcalidrawArrowElement;
 
     expect(arrow.type).toBe("arrow");
     expect(arrow.elbowed).toBe(true);
@@ -282,15 +276,11 @@ describe("elbow arrow ui", () => {
     mouse.moveTo(53, 99);
     mouse.click();
 
-    const arrow = h.scene.getSelectedElements(
-      h.state,
-    )[0] as ExcalidrawArrowElement;
+    const arrow = h.scene.getSelectedElements(h.state)[0] as ExcalidrawArrowElement;
 
     mouse.click(51, 51);
 
-    const inputAngle = UI.queryStatsProperty("A")?.querySelector(
-      ".drag-input",
-    ) as HTMLInputElement;
+    const inputAngle = UI.queryStatsProperty("A")?.querySelector(".drag-input") as HTMLInputElement;
     UI.updateInput(inputAngle, String("40"));
 
     expect(arrow.points.map((point) => point.map(Math.round))).toEqual([
@@ -326,9 +316,7 @@ describe("elbow arrow ui", () => {
     mouse.moveTo(53, 99);
     mouse.click();
 
-    const arrow = h.scene.getSelectedElements(
-      h.state,
-    )[0] as ExcalidrawArrowElement;
+    const arrow = h.scene.getSelectedElements(h.state)[0] as ExcalidrawArrowElement;
     const originalArrowId = arrow.id;
 
     expect(arrow.startBinding).not.toBe(null);
@@ -344,9 +332,7 @@ describe("elbow arrow ui", () => {
 
     expect(h.elements.length).toEqual(6);
 
-    const duplicatedArrow = h.scene.getSelectedElements(
-      h.state,
-    )[2] as ExcalidrawArrowElement;
+    const duplicatedArrow = h.scene.getSelectedElements(h.state)[2] as ExcalidrawArrowElement;
 
     expect(duplicatedArrow.id).not.toBe(originalArrowId);
     expect(duplicatedArrow.type).toBe("arrow");
@@ -384,9 +370,7 @@ describe("elbow arrow ui", () => {
     mouse.moveTo(53, 99);
     mouse.click();
 
-    const arrow = h.scene.getSelectedElements(
-      h.state,
-    )[0] as ExcalidrawArrowElement;
+    const arrow = h.scene.getSelectedElements(h.state)[0] as ExcalidrawArrowElement;
     const originalArrowId = arrow.id;
 
     expect(arrow.startBinding).not.toBe(null);
@@ -398,9 +382,7 @@ describe("elbow arrow ui", () => {
 
     expect(h.elements.length).toEqual(4);
 
-    const duplicatedArrow = h.scene.getSelectedElements(
-      h.state,
-    )[0] as ExcalidrawArrowElement;
+    const duplicatedArrow = h.scene.getSelectedElements(h.state)[0] as ExcalidrawArrowElement;
 
     expect(duplicatedArrow.id).not.toBe(originalArrowId);
     expect(duplicatedArrow.type).toBe("arrow");

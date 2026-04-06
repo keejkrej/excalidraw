@@ -71,8 +71,7 @@ export const positionElementsOnGrid = <TElement extends ExcalidrawElement>(
   });
 
   // Calculate the total height of the grid including padding between rows
-  const totalGridHeightWithPadding =
-    totalGridActualHeight + Math.max(0, rows.length - 1) * padding;
+  const totalGridHeightWithPadding = totalGridActualHeight + Math.max(0, rows.length - 1) * padding;
 
   // Calculate the starting Y position to center the entire grid vertically around centerY
   let currentY = centerY - totalGridHeightWithPadding / 2;

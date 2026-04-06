@@ -53,9 +53,7 @@ function subset(
 ) {
   const input = hbSubsetWasm.hb_subset_input_create_or_fail();
   if (input === 0) {
-    throw new Error(
-      "hb_subset_input_create_or_fail (harfbuzz) returned zero, indicating failure",
-    );
+    throw new Error("hb_subset_input_create_or_fail (harfbuzz) returned zero, indicating failure");
   }
 
   const fontBuffer = hbSubsetWasm.malloc(font.byteLength);
@@ -179,14 +177,10 @@ function subset(
     hbSubsetWasm.hb_face_destroy(subset);
     hbSubsetWasm.hb_face_destroy(face);
     hbSubsetWasm.free(fontBuffer);
-    throw new Error(
-      "Failed to create subset font, maybe the input file is corrupted?",
-    );
+    throw new Error("Failed to create subset font, maybe the input file is corrupted?");
   }
 
-  const subsetFont = new Uint8Array(
-    heapu8.subarray(offset, offset + subsetByteLength),
-  );
+  const subsetFont = new Uint8Array(heapu8.subarray(offset, offset + subsetByteLength));
 
   // Clean up
   hbSubsetWasm.hb_blob_destroy(result);

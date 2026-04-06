@@ -44,9 +44,7 @@ const ChartPreviewBtn = (props: {
   onClick: OnInsertChart;
 }) => {
   const previewRef = useRef<HTMLDivElement | null>(null);
-  const [chartElements, setChartElements] = useState<ChartElements | null>(
-    null,
-  );
+  const [chartElements, setChartElements] = useState<ChartElements | null>(null);
   const { theme } = useUIAppState();
 
   useLayoutEffect(() => {
@@ -55,13 +53,7 @@ const ChartPreviewBtn = (props: {
       return;
     }
 
-    const elements = renderSpreadsheet(
-      props.chartType,
-      props.spreadsheet,
-      0,
-      0,
-      props.colorSeed,
-    );
+    const elements = renderSpreadsheet(props.chartType, props.spreadsheet, 0, 0, props.colorSeed);
     if (!elements) {
       setChartElements(null);
       previewRef.current?.replaceChildren();
@@ -113,10 +105,7 @@ const ChartPreviewBtn = (props: {
   );
 };
 
-const PlainTextPreviewBtn = (props: {
-  rawText: string;
-  onClick: OnPlainTextPaste;
-}) => {
+const PlainTextPreviewBtn = (props: { rawText: string; onClick: OnPlainTextPaste }) => {
   const previewRef = useRef<HTMLDivElement | null>(null);
   const { theme } = useUIAppState();
 
@@ -166,9 +155,7 @@ const PlainTextPreviewBtn = (props: {
       }}
     >
       <div className="ChartPreview__canvas" ref={previewRef} />
-      <div className="ChartPreview__label">
-        {t("labels.chartType_plaintext")}
-      </div>
+      <div className="ChartPreview__label">{t("labels.chartType_plaintext")}</div>
     </button>
   );
 };
@@ -220,9 +207,7 @@ export const PasteChartDialog = ({
       onCloseRequest={handleClose}
       title={
         <div className="PasteChartDialog__title">
-          <div className="PasteChartDialog__titleText">
-            {t("labels.pasteCharts")}
-          </div>
+          <div className="PasteChartDialog__titleText">{t("labels.pasteCharts")}</div>
           <div
             className="PasteChartDialog__reshuffleBtn"
             onClick={handleReshuffleColors}
@@ -258,12 +243,7 @@ export const PasteChartDialog = ({
             />
           );
         })}
-        {rawText && (
-          <PlainTextPreviewBtn
-            rawText={rawText}
-            onClick={handlePlainTextClick}
-          />
-        )}
+        {rawText && <PlainTextPreviewBtn rawText={rawText} onClick={handlePlainTextClick} />}
       </div>
     </Dialog>
   );

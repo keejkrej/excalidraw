@@ -12,8 +12,4 @@ export {
   canHaveArrowheads,
   canChangeRoundness,
 } from "@excalidraw/element";
-export {
-  getNormalizedZoom,
-  getNormalizedGridSize,
-  getNormalizedGridStep,
-} from "./normalize";
+export { getNormalizedZoom, getNormalizedGridSize, getNormalizedGridStep } from "./normalize";

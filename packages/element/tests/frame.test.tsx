@@ -1,14 +1,8 @@
-import {
-  convertToExcalidrawElements,
-  Excalidraw,
-} from "@excalidraw/excalidraw";
+import { convertToExcalidrawElements, Excalidraw } from "@excalidraw/excalidraw";
 
 import { API } from "@excalidraw/excalidraw/tests/helpers/api";
 import { Keyboard, Pointer } from "@excalidraw/excalidraw/tests/helpers/ui";
-import {
-  getCloneByOrigId,
-  render,
-} from "@excalidraw/excalidraw/tests/test-utils";
+import { getCloneByOrigId, render } from "@excalidraw/excalidraw/tests/test-utils";
 
 import type { ExcalidrawElement } from "../src/types";
 
@@ -17,10 +11,7 @@ const mouse = new Pointer("mouse");
 
 describe("adding elements to frames", () => {
   type ElementType = string;
-  const assertOrder = (
-    els: readonly { type: ElementType }[],
-    order: ElementType[],
-  ) => {
+  const assertOrder = (els: readonly { type: ElementType }[], order: ElementType[]) => {
     expect(els.map((el) => el.type)).toEqual(order);
   };
 
@@ -34,23 +25,14 @@ describe("adding elements to frames", () => {
     }, []);
   };
 
-  function resizeFrameOverElement(
-    frame: ExcalidrawElement,
-    element: ExcalidrawElement,
-  ) {
+  function resizeFrameOverElement(frame: ExcalidrawElement, element: ExcalidrawElement) {
     mouse.clickAt(0, 0);
     mouse.downAt(frame.x + frame.width, frame.y + frame.height);
-    mouse.moveTo(
-      element.x + element.width + 50,
-      element.y + element.height + 50,
-    );
+    mouse.moveTo(element.x + element.width + 50, element.y + element.height + 50);
     mouse.up();
   }
 
-  function dragElementIntoFrame(
-    frame: ExcalidrawElement,
-    element: ExcalidrawElement,
-  ) {
+  function dragElementIntoFrame(frame: ExcalidrawElement, element: ExcalidrawElement) {
     mouse.clickAt(element.x, element.y);
     mouse.downAt(element.x + element.width / 2, element.y + element.height / 2);
     mouse.moveTo(frame.x + frame.width / 2, frame.y + frame.height / 2);
@@ -61,10 +43,7 @@ describe("adding elements to frames", () => {
     element: ExcalidrawElement,
     moveTo: [number, number] = [element.x + 25, element.y + 25],
   ) {
-    const [x, y] = [
-      element.x + element.width / 2,
-      element.y + element.height / 2,
-    ];
+    const [x, y] = [element.x + element.width / 2, element.y + element.height / 2];
 
     Keyboard.withModifierKeys({ alt: true }, () => {
       mouse.downAt(x, y);
@@ -317,21 +296,9 @@ describe("adding elements to frames", () => {
         ["text", "rectangle", "frame"],
         ["rectangle", "text", "frame"],
       );
-      await resizingTest(
-        "arrow",
-        ["frame", "arrow", "text"],
-        ["arrow", "text", "frame"],
-      );
-      await resizingTest(
-        "arrow",
-        ["text", "arrow", "frame"],
-        ["arrow", "text", "frame"],
-      );
-      await resizingTest(
-        "arrow",
-        ["frame", "arrow", "text"],
-        ["arrow", "text", "frame"],
-      );
+      await resizingTest("arrow", ["frame", "arrow", "text"], ["arrow", "text", "frame"]);
+      await resizingTest("arrow", ["text", "arrow", "frame"], ["arrow", "text", "frame"]);
+      await resizingTest("arrow", ["frame", "arrow", "text"], ["arrow", "text", "frame"]);
 
       // FIXME failing in tests (it fails to add elements to frame for some
       // reason) but works in browser. (╯°□°)╯︵ ┻━┻
@@ -500,15 +467,7 @@ describe("adding elements to frames", () => {
         frameId: frame3.id,
       });
 
-      API.setElements([
-        frame1,
-        rectangle4,
-        rectangle1,
-        rectangle3,
-        frame3,
-        rectangle2,
-        frame2,
-      ]);
+      API.setElements([frame1, rectangle4, rectangle1, rectangle3, frame3, rectangle2, frame2]);
 
       API.setSelectedElements([rectangle2]);
 

@@ -7,11 +7,7 @@ import { useSetAtom } from "../editor-jotai";
 import { useCallbackRefState } from "../hooks/useCallbackRefState";
 import { t } from "../i18n";
 
-import {
-  useExcalidrawContainer,
-  useEditorInterface,
-  useExcalidrawSetAppState,
-} from "./App";
+import { useExcalidrawContainer, useEditorInterface, useExcalidrawSetAppState } from "./App";
 import { Island } from "./Island";
 import { isLibraryMenuOpenAtom } from "./LibraryMenu";
 import { Modal } from "./Modal";
@@ -71,17 +67,12 @@ export const Dialog = (props: DialogProps) => {
       if (event.key === KEYS.TAB) {
         const focusableElements = queryFocusableElements(islandNode);
         const { activeElement } = document;
-        const currentIndex = focusableElements.findIndex(
-          (element) => element === activeElement,
-        );
+        const currentIndex = focusableElements.findIndex((element) => element === activeElement);
 
         if (currentIndex === 0 && event.shiftKey) {
           focusableElements[focusableElements.length - 1].focus();
           event.preventDefault();
-        } else if (
-          currentIndex === focusableElements.length - 1 &&
-          !event.shiftKey
-        ) {
+        } else if (currentIndex === focusableElements.length - 1 && !event.shiftKey) {
           focusableElements[0].focus();
           event.preventDefault();
         }

@@ -43,15 +43,13 @@ export const isFirefox =
   navigator.userAgent.indexOf("rv:") > 1 &&
   navigator.userAgent.indexOf("Gecko") > 1;
 export const isChrome = navigator.userAgent.indexOf("Chrome") !== -1;
-export const isSafari =
-  !isChrome && navigator.userAgent.indexOf("Safari") !== -1;
+export const isSafari = !isChrome && navigator.userAgent.indexOf("Safari") !== -1;
 export const isIOS =
   /iPad|iPhone/i.test(navigator.platform) ||
   // iPadOS 13+
   (navigator.userAgent.includes("Mac") && "ontouchend" in document);
 // keeping function so it can be mocked in test
-export const isBrave = () =>
-  (navigator as any).brave?.isBrave?.name === "isBrave";
+export const isBrave = () => (navigator as any).brave?.isBrave?.name === "isBrave";
 
 // export const isMobile =
 //   isIOS ||
@@ -63,15 +61,11 @@ export const isBrave = () =>
 // utilities
 export const isMobileBreakpoint = (width: number, height: number) => {
   return (
-    width <= MQ_MAX_MOBILE ||
-    (height < MQ_MAX_HEIGHT_LANDSCAPE && width < MQ_MAX_WIDTH_LANDSCAPE)
+    width <= MQ_MAX_MOBILE || (height < MQ_MAX_HEIGHT_LANDSCAPE && width < MQ_MAX_WIDTH_LANDSCAPE)
   );
 };
 
-export const isTabletBreakpoint = (
-  editorWidth: number,
-  editorHeight: number,
-) => {
+export const isTabletBreakpoint = (editorWidth: number, editorHeight: number) => {
   const minSide = Math.min(editorWidth, editorHeight);
   const maxSide = Math.max(editorWidth, editorHeight);
 
@@ -89,17 +83,13 @@ const isMobileOrTablet = (): boolean => {
   if (uaData) {
     const plat = (uaData.platform || "").toLowerCase();
     const isDesktopOS =
-      plat === "windows" ||
-      plat === "macos" ||
-      plat === "linux" ||
-      plat === "chrome os";
+      plat === "windows" || plat === "macos" || plat === "linux" || plat === "chrome os";
     if (uaData.mobile === true) {
       return true;
     }
     if (uaData.mobile === false && plat === "android") {
       const looksTouchTablet =
-        matchMedia?.("(hover: none)").matches &&
-        matchMedia?.("(pointer: coarse)").matches;
+        matchMedia?.("(hover: none)").matches && matchMedia?.("(pointer: coarse)").matches;
       return looksTouchTablet;
     }
     if (isDesktopOS) {
@@ -118,16 +108,14 @@ const isMobileOrTablet = (): boolean => {
     const isAndroidTablet = !isAndroidPhone;
     if (isAndroidPhone || isAndroidTablet) {
       const looksTouchTablet =
-        matchMedia?.("(hover: none)").matches &&
-        matchMedia?.("(pointer: coarse)").matches;
+        matchMedia?.("(hover: none)").matches && matchMedia?.("(pointer: coarse)").matches;
       return looksTouchTablet;
     }
   }
 
   // --- 4) last resort desktop exclusion ----------------------------------
   const looksDesktopPlatform =
-    /Win|Linux|CrOS|Mac/.test(platform) ||
-    /Windows NT|X11|CrOS|Macintosh/.test(ua);
+    /Win|Linux|CrOS|Mac/.test(platform) || /Windows NT|X11|CrOS|Macintosh/.test(ua);
   if (looksDesktopPlatform) {
     return false;
   }
@@ -149,9 +137,7 @@ export const getFormFactor = (
   return "desktop";
 };
 
-export const deriveStylesPanelMode = (
-  editorInterface: EditorInterface,
-): StylesPanelMode => {
+export const deriveStylesPanelMode = (editorInterface: EditorInterface): StylesPanelMode => {
   if (editorInterface.formFactor === "phone") {
     return "mobile";
   }

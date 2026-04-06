@@ -71,19 +71,14 @@ const ImageExportModal = ({
   name,
   exportWithDarkMode,
 }: ImageExportModalProps) => {
-  const hasSelection = isSomeElementSelected(
-    elementsSnapshot,
-    appStateSnapshot,
-  );
+  const hasSelection = isSomeElementSelected(elementsSnapshot, appStateSnapshot);
 
   const [projectName, setProjectName] = useState(name);
   const [exportSelectionOnly, setExportSelectionOnly] = useState(hasSelection);
   const [exportWithBackground, setExportWithBackground] = useState(
     appStateSnapshot.exportBackground,
   );
-  const [embedScene, setEmbedScene] = useState(
-    appStateSnapshot.exportEmbedScene,
-  );
+  const [embedScene, setEmbedScene] = useState(appStateSnapshot.exportEmbedScene);
   const [exportScale, setExportScale] = useState(appStateSnapshot.exportScale);
 
   const previewRef = useRef<HTMLDivElement>(null);
@@ -205,11 +200,7 @@ const ImageExportModal = ({
               style={{ width: "30ch" }}
               onChange={(event) => {
                 setProjectName(event.target.value);
-                actionManager.executeAction(
-                  actionChangeProjectName,
-                  "ui",
-                  event.target.value,
-                );
+                actionManager.executeAction(actionChangeProjectName, "ui", event.target.value);
               }}
             />
           )}
@@ -240,27 +231,16 @@ const ImageExportModal = ({
             checked={exportWithBackground}
             onChange={(checked) => {
               setExportWithBackground(checked);
-              actionManager.executeAction(
-                actionChangeExportBackground,
-                "ui",
-                checked,
-              );
+              actionManager.executeAction(actionChangeExportBackground, "ui", checked);
             }}
           />
         </ExportSetting>
-        <ExportSetting
-          label={t("imageExportDialog.label.darkMode")}
-          name="exportDarkModeSwitch"
-        >
+        <ExportSetting label={t("imageExportDialog.label.darkMode")} name="exportDarkModeSwitch">
           <Switch
             name="exportDarkModeSwitch"
             checked={exportWithDarkMode}
             onChange={(checked) => {
-              actionManager.executeAction(
-                actionExportWithDarkMode,
-                "ui",
-                checked,
-              );
+              actionManager.executeAction(actionExportWithDarkMode, "ui", checked);
             }}
           />
         </ExportSetting>
@@ -274,18 +254,11 @@ const ImageExportModal = ({
             checked={embedScene}
             onChange={(checked) => {
               setEmbedScene(checked);
-              actionManager.executeAction(
-                actionChangeExportEmbedScene,
-                "ui",
-                checked,
-              );
+              actionManager.executeAction(actionChangeExportEmbedScene, "ui", checked);
             }}
           />
         </ExportSetting>
-        <ExportSetting
-          label={t("imageExportDialog.label.scale")}
-          name="exportScale"
-        >
+        <ExportSetting label={t("imageExportDialog.label.scale")} name="exportScale">
           <RadioGroup
             name="exportScale"
             value={exportScale}
@@ -331,13 +304,9 @@ const ImageExportModal = ({
               label={t("imageExportDialog.title.copyPngToClipboard")}
               status={copyStatus}
               onClick={async () => {
-                await onExportImage(
-                  EXPORT_IMAGE_TYPES.clipboard,
-                  exportedElements,
-                  {
-                    exportingFrame,
-                  },
-                );
+                await onExportImage(EXPORT_IMAGE_TYPES.clipboard, exportedElements, {
+                  exportingFrame,
+                });
                 onCopy();
               }}
               icon={copyIcon}
@@ -358,18 +327,10 @@ type ExportSettingProps = {
   name?: string;
 };
 
-const ExportSetting = ({
-  label,
-  children,
-  tooltip,
-  name,
-}: ExportSettingProps) => {
+const ExportSetting = ({ label, children, tooltip, name }: ExportSettingProps) => {
   return (
     <div className="ImageExportModal__settings__setting" title={label}>
-      <label
-        htmlFor={name}
-        className="ImageExportModal__settings__setting__label"
-      >
+      <label htmlFor={name} className="ImageExportModal__settings__setting__label">
         {label}
         {tooltip && (
           <Tooltip label={tooltip} long={true}>
@@ -377,9 +338,7 @@ const ExportSetting = ({
           </Tooltip>
         )}
       </label>
-      <div className="ImageExportModal__settings__setting__content">
-        {children}
-      </div>
+      <div className="ImageExportModal__settings__setting__content">{children}</div>
     </div>
   );
 };

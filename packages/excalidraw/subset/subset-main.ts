@@ -22,8 +22,7 @@ export const subsetWoff2GlyphsByCodepoints = async (
   arrayBuffer: ArrayBuffer,
   codePoints: Array<number>,
 ): Promise<string> => {
-  const { Commands, subsetToBase64, toBase64 } =
-    await lazyLoadSharedSubsetChunk();
+  const { Commands, subsetToBase64, toBase64 } = await lazyLoadSharedSubsetChunk();
 
   if (!shouldUseWorkers) {
     return subsetToBase64(arrayBuffer, codePoints);
@@ -54,15 +53,11 @@ export const subsetWoff2GlyphsByCodepoints = async (
         // don't log the expected errors server-side
         !(
           isServerEnv() &&
-          (e instanceof WorkerUrlNotDefinedError ||
-            e instanceof WorkerInTheMainChunkError)
+          (e instanceof WorkerUrlNotDefinedError || e instanceof WorkerInTheMainChunkError)
         )
       ) {
         // eslint-disable-next-line no-console
-        console.error(
-          "Failed to use workers for subsetting, falling back to the main thread.",
-          e,
-        );
+        console.error("Failed to use workers for subsetting, falling back to the main thread.", e);
       }
 
       // fallback to the main thread
@@ -99,8 +94,9 @@ type SubsetWorkerData = {
   codePoints: Array<number>;
 };
 
-type SubsetWorkerResult<T extends SubsetWorkerData["command"]> =
-  T extends typeof Commands.Subset ? ArrayBuffer : never;
+type SubsetWorkerResult<T extends SubsetWorkerData["command"]> = T extends typeof Commands.Subset
+  ? ArrayBuffer
+  : never;
 
 let workerPool: Promise<
   WorkerPool<SubsetWorkerData, SubsetWorkerResult<SubsetWorkerData["command"]>>

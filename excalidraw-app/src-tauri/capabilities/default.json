@@ -3,8 +3,5 @@
   "identifier": "default",
   "description": "Capability for the main Excalidraw desktop window",
   "windows": ["main"],
-  "permissions": [
-    "core:default",
-    "dialog:default"
-  ]
+  "permissions": ["core:default", "dialog:default"]
 }

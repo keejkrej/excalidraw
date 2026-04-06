@@ -18,9 +18,7 @@ describe("laser tool interactions", () => {
 
   it("opens links while using the laser tool", async () => {
     const onLinkOpenSpy = vi.fn();
-    const onLinkOpen: NonNullable<ExcalidrawProps["onLinkOpen"]> = (
-      ...args
-    ) => {
+    const onLinkOpen: NonNullable<ExcalidrawProps["onLinkOpen"]> = (...args) => {
       onLinkOpenSpy(...args);
       args[1].preventDefault();
     };
@@ -54,9 +52,7 @@ describe("laser tool interactions", () => {
     const iconCenterY = linkY + linkHeight / 2;
 
     mouse.moveTo(iconCenterX, iconCenterY);
-    expect(GlobalTestState.interactiveCanvas.style.cursor).toBe(
-      CURSOR_TYPE.POINTER,
-    );
+    expect(GlobalTestState.interactiveCanvas.style.cursor).toBe(CURSOR_TYPE.POINTER);
 
     mouse.clickAt(iconCenterX, iconCenterY);
     expect(onLinkOpenSpy).toHaveBeenCalledTimes(1);
@@ -92,9 +88,7 @@ describe("laser tool interactions", () => {
     const centerY = embeddable.y + embeddable.height / 2;
 
     mouse.moveTo(centerX, centerY);
-    expect(GlobalTestState.interactiveCanvas.style.cursor).toBe(
-      CURSOR_TYPE.POINTER,
-    );
+    expect(GlobalTestState.interactiveCanvas.style.cursor).toBe(CURSOR_TYPE.POINTER);
     mouse.clickAt(centerX, centerY);
 
     expect(handleIframeLikeCenterClickSpy).toHaveBeenCalled();

@@ -104,10 +104,7 @@ const toNativeFileHandle = (path: string): ExcalidrawNativeFileHandle => ({
   name: getFileNameFromPath(path),
 });
 
-const addNativeHandleToFile = (
-  file: File,
-  fileHandle: ExcalidrawNativeFileHandle,
-) => {
+const addNativeHandleToFile = (file: File, fileHandle: ExcalidrawNativeFileHandle) => {
   Object.defineProperty(file, "handle", {
     value: fileHandle,
     configurable: true,
@@ -138,9 +135,7 @@ const toDialogFilters = (extensions?: string[]) => {
     return undefined;
   }
 
-  const normalizedExtensions = extensions.map((extension) =>
-    extension.replace(/^\./, ""),
-  );
+  const normalizedExtensions = extensions.map((extension) => extension.replace(/^\./, ""));
 
   return [
     {
@@ -205,9 +200,7 @@ export const installDesktopRuntime = async () => {
       save: async (blob, opts) => {
         const resolvedBlob = await blob;
 
-        let path = isNativeFileHandle(opts.fileHandle)
-          ? opts.fileHandle.path
-          : null;
+        let path = isNativeFileHandle(opts.fileHandle) ? opts.fileHandle.path : null;
 
         if (!path) {
           path = await dialog.save({

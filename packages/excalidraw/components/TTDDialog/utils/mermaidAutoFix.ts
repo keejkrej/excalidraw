@@ -13,11 +13,7 @@ const getErrorLineIndex = (message: string, sourceText: string) => {
   return lineNumber - 1;
 };
 
-const replaceLineAt = (
-  lines: string[],
-  index: number,
-  transform: (line: string) => string,
-) => {
+const replaceLineAt = (lines: string[], index: number, transform: (line: string) => string) => {
   if (index < 0 || index >= lines.length) {
     return null;
   }
@@ -54,16 +50,10 @@ const removeExtraArrowheadAfterEdgeLabel = (line: string) => {
   return line.replace(/(\|[^|\n]+\|)\s*>\s*(?=[A-Za-z0-9_("[{'`])/g, "$1 ");
 };
 
-const escapeRegExp = (value: string) =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const removeLastDeactivateForParticipant = (
-  sourceText: string,
-  participant: string,
-) => {
-  const pattern = new RegExp(
-    `^\\s*deactivate\\s+${escapeRegExp(participant)}(?:\\s+%%.*)?\\s*$`,
-  );
+const removeLastDeactivateForParticipant = (sourceText: string, participant: string) => {
+  const pattern = new RegExp(`^\\s*deactivate\\s+${escapeRegExp(participant)}(?:\\s+%%.*)?\\s*$`);
   const lines = sourceText.split(/\r?\n/);
 
   for (let index = lines.length - 1; index >= 0; index--) {
@@ -75,13 +65,8 @@ const removeLastDeactivateForParticipant = (
   return null;
 };
 
-const removeAllDeactivateForParticipant = (
-  sourceText: string,
-  participant: string,
-) => {
-  const pattern = new RegExp(
-    `^\\s*deactivate\\s+${escapeRegExp(participant)}(?:\\s+%%.*)?\\s*$`,
-  );
+const removeAllDeactivateForParticipant = (sourceText: string, participant: string) => {
+  const pattern = new RegExp(`^\\s*deactivate\\s+${escapeRegExp(participant)}(?:\\s+%%.*)?\\s*$`);
   const lines = sourceText.split(/\r?\n/);
   let removedAny = false;
   const remainingLines = lines.filter((line) => {
@@ -111,10 +96,7 @@ const appendMissingEnds = (sourceText: string) => {
 const normalizeSmartQuotes = (sourceText: string) =>
   sourceText.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 
-export const getMermaidAutoFixCandidates = (
-  sourceText: string,
-  errorMessage: string,
-) => {
+export const getMermaidAutoFixCandidates = (sourceText: string, errorMessage: string) => {
   if (!isMermaidAutoFixableError(errorMessage) || !sourceText.trim()) {
     return [];
   }
@@ -131,33 +113,21 @@ export const getMermaidAutoFixCandidates = (
 
   const inactiveParticipant = getMermaidInactiveParticipant(errorMessage);
   if (inactiveParticipant) {
-    addCandidate(
-      removeLastDeactivateForParticipant(sourceText, inactiveParticipant),
-    );
+    addCandidate(removeLastDeactivateForParticipant(sourceText, inactiveParticipant));
     // Fallback for repeated invalid inactivations in one diagram.
-    addCandidate(
-      removeAllDeactivateForParticipant(sourceText, inactiveParticipant),
-    );
+    addCandidate(removeAllDeactivateForParticipant(sourceText, inactiveParticipant));
   }
 
   if (isMermaidParseSyntaxError(errorMessage)) {
     const lines = sourceText.split(/\r?\n/);
     const errorLineIndex = getErrorLineIndex(errorMessage, sourceText);
     const lineIndexesToTry =
-      errorLineIndex == null
-        ? []
-        : [errorLineIndex, errorLineIndex - 1, errorLineIndex + 1];
+      errorLineIndex == null ? [] : [errorLineIndex, errorLineIndex - 1, errorLineIndex + 1];
 
     for (const lineIndex of lineIndexesToTry) {
+      addCandidate(replaceLineAt(lines, lineIndex, (line) => stripTrailingTokenAfterShape(line)));
       addCandidate(
-        replaceLineAt(lines, lineIndex, (line) =>
-          stripTrailingTokenAfterShape(line),
-        ),
-      );
-      addCandidate(
-        replaceLineAt(lines, lineIndex, (line) =>
-          removeExtraArrowheadAfterEdgeLabel(line),
-        ),
+        replaceLineAt(lines, lineIndex, (line) => removeExtraArrowheadAfterEdgeLabel(line)),
       );
     }
 

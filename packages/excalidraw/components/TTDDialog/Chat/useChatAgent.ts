@@ -1,9 +1,6 @@
 import { useAtom } from "../../../editor-jotai";
 import { chatHistoryAtom } from "../../TTDDialog/TTDContext";
-import {
-  addMessages,
-  updateAssistantContent,
-} from "../../TTDDialog/utils/chat";
+import { addMessages, updateAssistantContent } from "../../TTDDialog/utils/chat";
 
 export const useChatAgent = () => {
   const [chatHistory, setChatHistory] = useAtom(chatHistoryAtom);
@@ -47,10 +44,7 @@ export const useChatAgent = () => {
     const serializedErrorDetails = errorDetails
       ? JSON.stringify({
           name: errorDetails instanceof Error ? errorDetails.name : "Error",
-          message:
-            errorDetails instanceof Error
-              ? errorDetails.message
-              : String(errorDetails),
+          message: errorDetails instanceof Error ? errorDetails.message : String(errorDetails),
           stack: errorDetails instanceof Error ? errorDetails.stack : undefined,
         })
       : undefined;

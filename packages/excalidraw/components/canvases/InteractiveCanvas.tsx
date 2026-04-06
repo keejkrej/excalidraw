@@ -25,11 +25,7 @@ import { renderInteractiveScene } from "../../renderer/interactiveScene";
 
 import { AnimationController } from "../../renderer/animation";
 
-import type {
-  AppClassProperties,
-  AppState,
-  InteractiveCanvasAppState,
-} from "../../types";
+import type { AppClassProperties, AppState, InteractiveCanvasAppState } from "../../types";
 import type { DOMAttributes } from "react";
 
 type InteractiveCanvasProps = {
@@ -46,39 +42,19 @@ type InteractiveCanvasProps = {
   renderScrollbars: boolean;
   editorInterface: EditorInterface;
   app: AppClassProperties;
-  renderInteractiveSceneCallback: (
-    data: RenderInteractiveSceneCallback,
-  ) => void;
+  renderInteractiveSceneCallback: (data: RenderInteractiveSceneCallback) => void;
   handleCanvasRef: (canvas: HTMLCanvasElement | null) => void;
   onContextMenu: Exclude<
     DOMAttributes<HTMLCanvasElement | HTMLDivElement>["onContextMenu"],
     undefined
   >;
   onClick: Exclude<DOMAttributes<HTMLCanvasElement>["onClick"], undefined>;
-  onPointerMove: Exclude<
-    DOMAttributes<HTMLCanvasElement>["onPointerMove"],
-    undefined
-  >;
-  onPointerUp: Exclude<
-    DOMAttributes<HTMLCanvasElement>["onPointerUp"],
-    undefined
-  >;
-  onPointerCancel: Exclude<
-    DOMAttributes<HTMLCanvasElement>["onPointerCancel"],
-    undefined
-  >;
-  onTouchMove: Exclude<
-    DOMAttributes<HTMLCanvasElement>["onTouchMove"],
-    undefined
-  >;
-  onPointerDown: Exclude<
-    DOMAttributes<HTMLCanvasElement>["onPointerDown"],
-    undefined
-  >;
-  onDoubleClick: Exclude<
-    DOMAttributes<HTMLCanvasElement>["onDoubleClick"],
-    undefined
-  >;
+  onPointerMove: Exclude<DOMAttributes<HTMLCanvasElement>["onPointerMove"], undefined>;
+  onPointerUp: Exclude<DOMAttributes<HTMLCanvasElement>["onPointerUp"], undefined>;
+  onPointerCancel: Exclude<DOMAttributes<HTMLCanvasElement>["onPointerCancel"], undefined>;
+  onTouchMove: Exclude<DOMAttributes<HTMLCanvasElement>["onTouchMove"], undefined>;
+  onPointerDown: Exclude<DOMAttributes<HTMLCanvasElement>["onPointerDown"], undefined>;
+  onDoubleClick: Exclude<DOMAttributes<HTMLCanvasElement>["onDoubleClick"], undefined>;
 };
 
 export const INTERACTIVE_SCENE_ANIMATION_KEY = "animateInteractiveScene";
@@ -93,8 +69,7 @@ const InteractiveCanvas = (props: InteractiveCanvasProps) => {
       return;
     }
 
-    const remotePointerButton: InteractiveCanvasRenderConfig["remotePointerButton"] =
-      new Map();
+    const remotePointerButton: InteractiveCanvasRenderConfig["remotePointerButton"] = new Map();
     const remotePointerViewportCoords: InteractiveCanvasRenderConfig["remotePointerViewportCoords"] =
       new Map();
     const remoteSelectedElementIds: InteractiveCanvasRenderConfig["remoteSelectedElementIds"] =
@@ -137,9 +112,7 @@ const InteractiveCanvas = (props: InteractiveCanvasProps) => {
 
     const selectionColor =
       (props.containerRef?.current &&
-        getComputedStyle(props.containerRef.current).getPropertyValue(
-          "--color-selection",
-        )) ||
+        getComputedStyle(props.containerRef.current).getPropertyValue("--color-selection")) ||
       "#6965db";
 
     rendererParams.current = {
@@ -183,9 +156,7 @@ const InteractiveCanvas = (props: InteractiveCanvasProps) => {
           if (nextAnimationState) {
             for (const key in nextAnimationState) {
               if (
-                nextAnimationState[
-                  key as keyof InteractiveSceneRenderAnimationState
-                ] !== undefined
+                nextAnimationState[key as keyof InteractiveSceneRenderAnimationState] !== undefined
               ) {
                 return nextAnimationState;
               }
@@ -205,8 +176,7 @@ const InteractiveCanvas = (props: InteractiveCanvasProps) => {
         width: props.appState.width,
         height: props.appState.height,
         cursor:
-          props.appState.viewModeEnabled &&
-          props.appState.activeTool.type !== "laser"
+          props.appState.viewModeEnabled && props.appState.activeTool.type !== "laser"
             ? CURSOR_TYPE.GRAB
             : CURSOR_TYPE.AUTO,
       }}
@@ -220,18 +190,14 @@ const InteractiveCanvas = (props: InteractiveCanvasProps) => {
       onPointerCancel={props.onPointerCancel}
       onTouchMove={props.onTouchMove}
       onPointerDown={props.onPointerDown}
-      onDoubleClick={
-        props.appState.viewModeEnabled ? undefined : props.onDoubleClick
-      }
+      onDoubleClick={props.appState.viewModeEnabled ? undefined : props.onDoubleClick}
     >
       {t("labels.drawingCanvas")}
     </canvas>
   );
 };
 
-const getRelevantAppStateProps = (
-  appState: AppState,
-): InteractiveCanvasAppState => ({
+const getRelevantAppStateProps = (appState: AppState): InteractiveCanvasAppState => ({
   zoom: appState.zoom,
   scrollX: appState.scrollX,
   scrollY: appState.scrollY,
@@ -272,10 +238,7 @@ const getRelevantAppStateProps = (
   currentItemArrowType: appState.currentItemArrowType,
 });
 
-const areEqual = (
-  prevProps: InteractiveCanvasProps,
-  nextProps: InteractiveCanvasProps,
-) => {
+const areEqual = (prevProps: InteractiveCanvasProps, nextProps: InteractiveCanvasProps) => {
   // This could be further optimised if needed, as we don't have to render interactive canvas on each scene mutation
   if (
     prevProps.selectionNonce !== nextProps.selectionNonce ||

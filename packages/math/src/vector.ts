@@ -7,12 +7,7 @@ import type { GlobalPoint, LocalPoint, Vector } from "./types";
  * @param y T Y aspect of the vector
  * @returns The constructed vector with X and Y as the coordinates
  */
-export function vector(
-  x: number,
-  y: number,
-  originX: number = 0,
-  originY: number = 0,
-): Vector {
+export function vector(x: number, y: number, originX: number = 0, originY: number = 0): Vector {
   return [x - originX, y - originY] as Vector;
 }
 
@@ -99,10 +94,7 @@ export function vectorAdd(a: Readonly<Vector>, b: Readonly<Vector>): Vector {
  * @param end The other vector to add
  * @returns The sum vector of the two provided vectors
  */
-export function vectorSubtract(
-  start: Readonly<Vector>,
-  end: Readonly<Vector>,
-): Vector {
+export function vectorSubtract(start: Readonly<Vector>, end: Readonly<Vector>): Vector {
   return [start[0] - end[0], start[1] - end[1]] as Vector;
 }
 

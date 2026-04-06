@@ -9,11 +9,7 @@ describe("rotate", () => {
     const x2 = 20;
     const y2 = 30;
     const angle = (Math.PI / 2) as Radians;
-    const [rotatedX, rotatedY] = pointRotateRads(
-      pointFrom(x1, y1),
-      pointFrom(x2, y2),
-      angle,
-    );
+    const [rotatedX, rotatedY] = pointRotateRads(pointFrom(x1, y1), pointFrom(x2, y2), angle);
     expect([rotatedX, rotatedY]).toEqual([30, 20]);
     const res2 = pointRotateRads(
       pointFrom(rotatedX, rotatedY),

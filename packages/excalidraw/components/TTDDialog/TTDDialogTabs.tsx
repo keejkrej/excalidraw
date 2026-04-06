@@ -29,8 +29,7 @@ const TTDDialogTabs = (
         if (!tab) {
           return;
         }
-        const modalContentNode =
-          rootRef.current?.closest<HTMLElement>(".Modal__content");
+        const modalContentNode = rootRef.current?.closest<HTMLElement>(".Modal__content");
         if (modalContentNode) {
           const currHeight = modalContentNode.offsetHeight || 0;
           if (currHeight > minHeightRef.current) {
@@ -38,10 +37,7 @@ const TTDDialogTabs = (
             modalContentNode.style.minHeight = `min(${minHeightRef.current}px, 100%)`;
           }
         }
-        if (
-          props.dialog === "ttd" &&
-          isMemberOf(["text-to-diagram", "mermaid"], tab)
-        ) {
+        if (props.dialog === "ttd" && isMemberOf(["text-to-diagram", "mermaid"], tab)) {
           setAppState({
             openDialog: { name: props.dialog, tab },
           });

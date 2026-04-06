@@ -35,14 +35,9 @@ export class LaserTrails implements Trail {
       sizeMapping: (c) => {
         const DECAY_TIME = 1000;
         const DECAY_LENGTH = 50;
-        const t = Math.max(
-          0,
-          1 - (performance.now() - c.pressure) / DECAY_TIME,
-        );
+        const t = Math.max(0, 1 - (performance.now() - c.pressure) / DECAY_TIME);
         const l =
-          (DECAY_LENGTH -
-            Math.min(DECAY_LENGTH, c.totalLength - c.currentIndex)) /
-          DECAY_LENGTH;
+          (DECAY_LENGTH - Math.min(DECAY_LENGTH, c.totalLength - c.currentIndex)) / DECAY_LENGTH;
 
         return Math.min(easeOut(l), easeOut(t));
       },
@@ -88,9 +83,7 @@ export class LaserTrails implements Trail {
       if (!this.collabTrails.has(key)) {
         trail = new AnimatedTrail(this.animationFrameHandler, this.app, {
           ...this.getTrailOptions(),
-          fill: () =>
-            collaborator.pointer?.laserColor ||
-            getClientColor(key, collaborator),
+          fill: () => collaborator.pointer?.laserColor || getClientColor(key, collaborator),
         });
         trail.start(this.container);
 

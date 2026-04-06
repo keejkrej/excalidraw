@@ -9,7 +9,7 @@ Install the package together with its React peer dependencies.
 ```bash
 npm install react react-dom @excalidraw/excalidraw
 # or
-yarn add react react-dom @excalidraw/excalidraw
+bun add react react-dom @excalidraw/excalidraw
 ```
 
 > **Note**: If you want to try unreleased changes, use `@excalidraw/excalidraw@next`.
@@ -65,18 +65,14 @@ export default function ExcalidrawClient() {
 // app/page.tsx
 import dynamic from "next/dynamic";
 
-const ExcalidrawClient = dynamic(
-  () => import("./components/ExcalidrawClient"),
-  { ssr: false },
-);
+const ExcalidrawClient = dynamic(() => import("./components/ExcalidrawClient"), { ssr: false });
 
 export default function Page() {
   return <ExcalidrawClient />;
 }
 ```
 
-This desktop-focused fork does not ship the old integration examples directory.
-For package embedding examples, refer to the upstream Excalidraw repository.
+This desktop-focused fork does not ship the old integration examples directory. For package embedding examples, refer to the upstream Excalidraw repository.
 
 ## LLM / agent tips
 
@@ -93,13 +89,13 @@ If an LLM or coding agent is setting up Excalidraw, these shortcuts usually save
 
 Version `0.18.x` removes the old `types/`-prefixed deep import paths. If you were importing types from `@excalidraw/excalidraw/types/...`, switch to the new type-only subpaths below.
 
-| Old path | New path |
-| --- | --- |
-| `@excalidraw/excalidraw/types/data/transform.js` | `@excalidraw/excalidraw/element/transform` |
-| `@excalidraw/excalidraw/types/data/types.js` | `@excalidraw/excalidraw/data/types` |
-| `@excalidraw/excalidraw/types/element/types.js` | `@excalidraw/excalidraw/element/types` |
-| `@excalidraw/excalidraw/types/utility-types.js` | `@excalidraw/excalidraw/common/utility-types` |
-| `@excalidraw/excalidraw/types/types.js` | `@excalidraw/excalidraw/types` |
+| Old path                                         | New path                                      |
+| ------------------------------------------------ | --------------------------------------------- |
+| `@excalidraw/excalidraw/types/data/transform.js` | `@excalidraw/excalidraw/element/transform`    |
+| `@excalidraw/excalidraw/types/data/types.js`     | `@excalidraw/excalidraw/data/types`           |
+| `@excalidraw/excalidraw/types/element/types.js`  | `@excalidraw/excalidraw/element/types`        |
+| `@excalidraw/excalidraw/types/utility-types.js`  | `@excalidraw/excalidraw/common/utility-types` |
+| `@excalidraw/excalidraw/types/types.js`          | `@excalidraw/excalidraw/types`                |
 
 Drop the `.js` extension. The new package `exports` map resolves these paths without it.
 

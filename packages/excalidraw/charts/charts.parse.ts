@@ -4,8 +4,7 @@ import { type ParseSpreadsheetResult } from "./charts.types";
  * @private exported for testing
  */
 export const tryParseNumber = (s: string): number | null => {
-  const match =
-    /^([-+]?)[$\u20AC\u00A3\u00A5\u20A9]?([-+]?)([\d.,]+)[%]?$/.exec(s);
+  const match = /^([-+]?)[$\u20AC\u00A3\u00A5\u20A9]?([-+]?)([\d.,]+)[%]?$/.exec(s);
   if (!match) {
     return null;
   }
@@ -47,11 +46,7 @@ export const tryParseCells = (cells: string[][]): ParseSpreadsheetResult => {
         values: row.slice(1).map((v) => tryParseNumber(v)!),
       }));
       const title =
-        series.length === 1
-          ? series[0].title
-          : hasHeader
-          ? cells[0][0].trim() || null
-          : null;
+        series.length === 1 ? series[0].title : hasHeader ? cells[0][0].trim() || null : null;
       return {
         ok: true,
         data: { title, labels, series },
@@ -84,9 +79,7 @@ export const tryParseCells = (cells: string[][]): ParseSpreadsheetResult => {
 
     const hasHeader = tryParseNumber(cells[0][0]) === null;
     const title = hasHeader ? cells[0][0] : null;
-    const values = (hasHeader ? cells.slice(1) : cells).map((line) =>
-      tryParseNumber(line[0]),
-    );
+    const values = (hasHeader ? cells.slice(1) : cells).map((line) => tryParseNumber(line[0]));
 
     if (values.length < 2) {
       return { ok: false, reason: "Less than two rows" };
@@ -109,9 +102,7 @@ export const tryParseCells = (cells: string[][]): ParseSpreadsheetResult => {
     return { ok: false, reason: "Less than 2 rows" };
   }
 
-  const invalidNumericColumn = rows.some(
-    (row) => tryParseNumber(row[1]) === null,
-  );
+  const invalidNumericColumn = rows.some((row) => tryParseNumber(row[1]) === null);
   if (invalidNumericColumn) {
     return { ok: false, reason: "Value is not numeric" };
   }
@@ -142,8 +133,7 @@ export const tryParseSpreadsheet = (text: string): ParseSpreadsheetResult => {
   const candidates = (["\t", ",", ";"] as const).map((delimiter) => {
     const parsed = parseDelimitedLines(delimiter);
     const numCols = parsed[0]?.length ?? 0;
-    const isConsistent =
-      parsed.length > 0 && parsed.every((line) => line.length === numCols);
+    const isConsistent = parsed.length > 0 && parsed.every((line) => line.length === numCols);
     return { delimiter, parsed, numCols, isConsistent };
   });
 

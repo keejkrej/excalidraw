@@ -20,15 +20,8 @@ export const LibraryMenuControlButtons = ({
   className?: string;
 }) => {
   return (
-    <div
-      className={clsx("library-menu-control-buttons", className)}
-      style={style}
-    >
-      <LibraryMenuBrowseButton
-        id={id}
-        libraryReturnUrl={libraryReturnUrl}
-        theme={theme}
-      />
+    <div className={clsx("library-menu-control-buttons", className)} style={style}>
+      <LibraryMenuBrowseButton id={id} libraryReturnUrl={libraryReturnUrl} theme={theme} />
       {children}
     </div>
   );

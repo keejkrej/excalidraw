@@ -29,10 +29,7 @@ const resolveRelativePath = (importPath, sourceFile) => {
       return fullPath;
     }
     // Try with underscore prefix for partials
-    const partialPath = path.join(
-      path.dirname(fullPath),
-      `_${path.basename(fullPath)}`,
-    );
+    const partialPath = path.join(path.dirname(fullPath), `_${path.basename(fullPath)}`);
     if (fs.existsSync(partialPath)) {
       return partialPath;
     }

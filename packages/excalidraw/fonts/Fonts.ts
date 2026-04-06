@@ -22,10 +22,7 @@ import { ShapeCache } from "@excalidraw/element";
 
 import { isTextElement } from "@excalidraw/element";
 
-import type {
-  ExcalidrawElement,
-  ExcalidrawTextElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawElement, ExcalidrawTextElement } from "@excalidraw/element/types";
 
 import type { ValueOf } from "@excalidraw/common/utility-types";
 
@@ -67,10 +64,7 @@ export class Fonts {
     } else if (!Fonts._initialized) {
       // case when host app register fonts before they are lazy loaded
       // don't override whatever has been previously registered
-      Fonts._registered = new Map([
-        ...Fonts.init().entries(),
-        ...Fonts._registered.entries(),
-      ]);
+      Fonts._registered = new Map([...Fonts.init().entries(), ...Fonts._registered.entries()]);
     }
 
     return Fonts._registered;
@@ -150,9 +144,7 @@ export class Fonts {
    */
   public loadSceneFonts = async (): Promise<FontFace[]> => {
     const sceneFamilies = this.getSceneFamilies();
-    const charsPerFamily = Fonts.getCharsPerFamily(
-      this.scene.getNonDeletedElements(),
-    );
+    const charsPerFamily = Fonts.getCharsPerFamily(this.scene.getNonDeletedElements());
 
     return Fonts.loadFontFaces(sceneFamilies, charsPerFamily);
   };
@@ -172,9 +164,7 @@ export class Fonts {
   /**
    * Generate CSS @font-face declarations for the given elements.
    */
-  public static async generateFontFaceDeclarations(
-    elements: readonly ExcalidrawElement[],
-  ) {
+  public static async generateFontFaceDeclarations(elements: readonly ExcalidrawElement[]) {
     const families = Fonts.getUniqueFamilies(elements);
     const charsPerFamily = Fonts.getCharsPerFamily(elements);
 
@@ -327,10 +317,7 @@ export class Fonts {
     this:
       | Fonts
       | {
-          registered: Map<
-            number,
-            { metadata: FontMetadata; fontFaces: ExcalidrawFontFace[] }
-          >;
+          registered: Map<number, { metadata: FontMetadata; fontFaces: ExcalidrawFontFace[] }>;
         },
     family: string,
     metadata: FontMetadata,
@@ -347,8 +334,7 @@ export class Fonts {
       this.registered.set(fontFamily, {
         metadata,
         fontFaces: fontFacesDecriptors.map(
-          ({ uri, descriptors }) =>
-            new ExcalidrawFontFace(family, uri, descriptors),
+          ({ uri, descriptors }) => new ExcalidrawFontFace(family, uri, descriptors),
         ),
       });
     }
@@ -376,8 +362,7 @@ export class Fonts {
         FONT_FAMILY_FALLBACKS[family as keyof typeof FONT_FAMILY_FALLBACKS];
 
       // default to Excalifont metrics
-      const metadata =
-        FONT_METADATA[fontFamily] ?? FONT_METADATA[FONT_FAMILY.Excalifont];
+      const metadata = FONT_METADATA[fontFamily] ?? FONT_METADATA[FONT_FAMILY.Excalifont];
 
       Fonts.register.call(fonts, family, metadata, ...fontFacesDescriptors);
     };
@@ -447,13 +432,8 @@ export class Fonts {
   /**
    * Get characters for a given family.
    */
-  private static getCharacters(
-    charsPerFamily: Record<number, Set<string>>,
-    family: number,
-  ) {
-    return charsPerFamily[family]
-      ? Array.from(charsPerFamily[family]).join("")
-      : "";
+  private static getCharacters(charsPerFamily: Record<number, Set<string>>, family: number) {
+    return charsPerFamily[family] ? Array.from(charsPerFamily[family]).join("") : "";
   }
 
   /**

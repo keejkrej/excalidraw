@@ -131,10 +131,7 @@
       }
 
       &.active {
-        background: var(
-          --color-surface-primary-container,
-          var(--mobile-action-button-bg)
-        );
+        background: var(--color-surface-primary-container, var(--mobile-action-button-bg));
       }
     }
 

@@ -21,8 +21,7 @@ import type {
 import type { RoughCanvas } from "roughjs/bin/canvas";
 import type { Drawable } from "roughjs/bin/core";
 
-export type RenderableElementsMap = NonDeletedElementsMap &
-  MakeBrand<"RenderableElementsMap">;
+export type RenderableElementsMap = NonDeletedElementsMap & MakeBrand<"RenderableElementsMap">;
 
 export type StaticCanvasRenderConfig = {
   canvasBackgroundColor: AppState["viewBackgroundColor"];
@@ -126,12 +125,7 @@ export type SceneScroll = {
   scrollY: number;
 };
 
-export type ExportType =
-  | "png"
-  | "clipboard"
-  | "clipboard-svg"
-  | "backend"
-  | "svg";
+export type ExportType = "png" | "clipboard" | "clipboard-svg" | "backend" | "svg";
 
 export type ScrollBars = {
   horizontal: {
@@ -152,12 +146,7 @@ export type ScrollBars = {
 
 export type SVGPathString = string & { __brand: "SVGPathString" };
 
-export type ElementShape =
-  | Drawable
-  | Drawable[]
-  | Path2D
-  | (Drawable | SVGPathString)[]
-  | null;
+export type ElementShape = Drawable | Drawable[] | Path2D | (Drawable | SVGPathString)[] | null;
 
 export type ElementShapes = {
   rectangle: Drawable;

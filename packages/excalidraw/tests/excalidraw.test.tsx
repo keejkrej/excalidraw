@@ -8,14 +8,7 @@ import { t } from "../i18n";
 import { Excalidraw, Footer, MainMenu } from "../index";
 import { actionExportWithDarkMode } from "../actions/actionExport";
 
-import {
-  act,
-  fireEvent,
-  GlobalTestState,
-  toggleMenu,
-  render,
-  waitFor,
-} from "./test-utils";
+import { act, fireEvent, GlobalTestState, toggleMenu, render, waitFor } from "./test-utils";
 
 const { h } = window;
 
@@ -30,9 +23,7 @@ describe("<Excalidraw/>", () => {
   describe("Test zenModeEnabled prop", () => {
     it('should show exit zen mode button when zen mode is set and zen mode option in context menu when zenModeEnabled is "undefined"', async () => {
       const { container } = await render(<Excalidraw />);
-      expect(
-        container.getElementsByClassName("disable-zen-mode--visible").length,
-      ).toBe(0);
+      expect(container.getElementsByClassName("disable-zen-mode--visible").length).toBe(0);
       expect(h.state.zenModeEnabled).toBe(false);
 
       fireEvent.contextMenu(GlobalTestState.interactiveCanvas, {
@@ -43,16 +34,12 @@ describe("<Excalidraw/>", () => {
       const contextMenu = document.querySelector(".context-menu");
       fireEvent.click(queryByText(contextMenu as HTMLElement, "Zen mode")!);
       expect(h.state.zenModeEnabled).toBe(true);
-      expect(
-        container.getElementsByClassName("disable-zen-mode--visible").length,
-      ).toBe(1);
+      expect(container.getElementsByClassName("disable-zen-mode--visible").length).toBe(1);
     });
 
     it("should not show exit zen mode button and zen mode option in context menu when zenModeEnabled is set", async () => {
       const { container } = await render(<Excalidraw zenModeEnabled={true} />);
-      expect(
-        container.getElementsByClassName("disable-zen-mode--visible").length,
-      ).toBe(0);
+      expect(container.getElementsByClassName("disable-zen-mode--visible").length).toBe(0);
       expect(h.state.zenModeEnabled).toBe(true);
 
       fireEvent.contextMenu(GlobalTestState.interactiveCanvas, {
@@ -63,9 +50,7 @@ describe("<Excalidraw/>", () => {
       const contextMenu = document.querySelector(".context-menu");
       expect(queryByText(contextMenu as HTMLElement, "Zen mode")).toBe(null);
       expect(h.state.zenModeEnabled).toBe(true);
-      expect(
-        container.getElementsByClassName("disable-zen-mode--visible").length,
-      ).toBe(0);
+      expect(container.getElementsByClassName("disable-zen-mode--visible").length).toBe(0);
     });
   });
 
@@ -104,9 +89,7 @@ describe("<Excalidraw/>", () => {
       const { container } = await render(<Excalidraw />);
       expect(h.state.gridModeEnabled).toBe(false);
 
-      expect(
-        container.getElementsByClassName("disable-zen-mode--visible").length,
-      ).toBe(0);
+      expect(container.getElementsByClassName("disable-zen-mode--visible").length).toBe(0);
       fireEvent.contextMenu(GlobalTestState.interactiveCanvas, {
         button: 2,
         clientX: 1,
@@ -118,14 +101,10 @@ describe("<Excalidraw/>", () => {
     });
 
     it('should not show grid mode in context menu when gridModeEnabled is not "undefined"', async () => {
-      const { container } = await render(
-        <Excalidraw gridModeEnabled={false} />,
-      );
+      const { container } = await render(<Excalidraw gridModeEnabled={false} />);
       expect(h.state.gridModeEnabled).toBe(false);
 
-      expect(
-        container.getElementsByClassName("disable-zen-mode--visible").length,
-      ).toBe(0);
+      expect(container.getElementsByClassName("disable-zen-mode--visible").length).toBe(0);
       fireEvent.contextMenu(GlobalTestState.interactiveCanvas, {
         button: 2,
         clientX: 1,
@@ -140,9 +119,7 @@ describe("<Excalidraw/>", () => {
   describe("Test UIOptions prop", () => {
     describe("Test canvasActions", () => {
       it('should render menu with default items when "UIOPtions" is "undefined"', async () => {
-        const { container } = await render(
-          <Excalidraw UIOptions={undefined} />,
-        );
+        const { container } = await render(<Excalidraw UIOptions={undefined} />);
         //open menu
         toggleMenu(container);
         expect(queryByTestId(container, "dropdown-menu")).toMatchSnapshot();
@@ -185,9 +162,7 @@ describe("<Excalidraw/>", () => {
 
       it("should hide save as button when saveFileToDisk is false", async () => {
         const { container } = await render(
-          <Excalidraw
-            UIOptions={{ canvasActions: { export: { saveFileToDisk: false } } }}
-          />,
+          <Excalidraw UIOptions={{ canvasActions: { export: { saveFileToDisk: false } } }} />,
         );
         //open menu
         toggleMenu(container);
@@ -196,9 +171,7 @@ describe("<Excalidraw/>", () => {
 
       it("should hide save button when saveToActiveFile is false", async () => {
         const { container } = await render(
-          <Excalidraw
-            UIOptions={{ canvasActions: { saveToActiveFile: false } }}
-          />,
+          <Excalidraw UIOptions={{ canvasActions: { saveToActiveFile: false } }} />,
         );
         //open menu
         toggleMenu(container);
@@ -207,9 +180,7 @@ describe("<Excalidraw/>", () => {
 
       it("should hide the canvas background picker when changeViewBackgroundColor is false", async () => {
         const { container } = await render(
-          <Excalidraw
-            UIOptions={{ canvasActions: { changeViewBackgroundColor: false } }}
-          />,
+          <Excalidraw UIOptions={{ canvasActions: { changeViewBackgroundColor: false } }} />,
         );
         //open menu
         toggleMenu(container);
@@ -219,9 +190,7 @@ describe("<Excalidraw/>", () => {
 
       it("should hide the canvas background picker even if passed if the `canvasActions.changeViewBackgroundColor` is set to false", async () => {
         const { container } = await render(
-          <Excalidraw
-            UIOptions={{ canvasActions: { changeViewBackgroundColor: false } }}
-          >
+          <Excalidraw UIOptions={{ canvasActions: { changeViewBackgroundColor: false } }}>
             <MainMenu>
               <MainMenu.DefaultItems.ChangeCanvasBackground />
             </MainMenu>
@@ -247,10 +216,7 @@ describe("<Excalidraw/>", () => {
           <Excalidraw UIOptions={{ canvasActions: { loadScene: false } }}>
             <MainMenu>
               <MainMenu.ItemCustom>
-                <button
-                  style={{ height: "2rem" }}
-                  onClick={() => window.alert("custom menu item")}
-                >
+                <button style={{ height: "2rem" }} onClick={() => window.alert("custom menu item")}>
                   custom item
                 </button>
               </MainMenu.ItemCustom>
@@ -287,10 +253,7 @@ describe("<Excalidraw/>", () => {
 
     it("should show theme mode toggle when `UIOptions.canvasActions.toggleTheme` is true", async () => {
       const { container } = await render(
-        <Excalidraw
-          theme={THEME.DARK}
-          UIOptions={{ canvasActions: { toggleTheme: true } }}
-        />,
+        <Excalidraw theme={THEME.DARK} UIOptions={{ canvasActions: { toggleTheme: true } }} />,
       );
       expect(h.state.theme).toBe(THEME.DARK);
       //open menu
@@ -301,10 +264,7 @@ describe("<Excalidraw/>", () => {
 
     it("should not show theme toggle when `UIOptions.canvasActions.toggleTheme` is false", async () => {
       const { container } = await render(
-        <Excalidraw
-          UIOptions={{ canvasActions: { toggleTheme: false } }}
-          theme={THEME.DARK}
-        />,
+        <Excalidraw UIOptions={{ canvasActions: { toggleTheme: false } }} theme={THEME.DARK} />,
       );
       expect(h.state.theme).toBe(THEME.DARK);
       //open menu
@@ -331,11 +291,7 @@ describe("<Excalidraw/>", () => {
       await render(<Excalidraw theme={THEME.LIGHT} />);
 
       act(() => {
-        (h.app as any).actionManager.executeAction(
-          actionExportWithDarkMode,
-          "ui",
-          true,
-        );
+        (h.app as any).actionManager.executeAction(actionExportWithDarkMode, "ui", true);
       });
 
       expect(h.app.sessionExportThemeOverride).toBe(THEME.DARK);
@@ -386,17 +342,13 @@ describe("<Excalidraw/>", () => {
     it("should not focus when autoFocus is false", async () => {
       const { container } = await render(<Excalidraw />);
 
-      expect(
-        container.querySelector(".excalidraw") === document.activeElement,
-      ).toBe(false);
+      expect(container.querySelector(".excalidraw") === document.activeElement).toBe(false);
     });
 
     it("should focus when autoFocus is true", async () => {
       const { container } = await render(<Excalidraw autoFocus={true} />);
 
-      expect(
-        container.querySelector(".excalidraw") === document.activeElement,
-      ).toBe(true);
+      expect(container.querySelector(".excalidraw") === document.activeElement).toBe(true);
     });
   });
 
@@ -405,17 +357,10 @@ describe("<Excalidraw/>", () => {
       const { container } = await render(
         <Excalidraw>
           <MainMenu>
-            <MainMenu.Item onSelect={() => window.alert("Clicked")}>
-              Click me
-            </MainMenu.Item>
-            <MainMenu.ItemLink href="blog.excalidaw.com">
-              Excalidraw blog
-            </MainMenu.ItemLink>
+            <MainMenu.Item onSelect={() => window.alert("Clicked")}>Click me</MainMenu.Item>
+            <MainMenu.ItemLink href="blog.excalidaw.com">Excalidraw blog</MainMenu.ItemLink>
             <MainMenu.ItemCustom>
-              <button
-                style={{ height: "2rem" }}
-                onClick={() => window.alert("custom menu item")}
-              >
+              <button style={{ height: "2rem" }} onClick={() => window.alert("custom menu item")}>
                 custom menu item
               </button>
             </MainMenu.ItemCustom>
@@ -447,15 +392,15 @@ describe("<Excalidraw/>", () => {
 
       expect(h.state.theme).toBe(THEME.LIGHT);
 
-      expect(
-        queryByTestId(container, "toggle-dark-mode")?.textContent,
-      ).toContain(t("buttons.darkMode"));
+      expect(queryByTestId(container, "toggle-dark-mode")?.textContent).toContain(
+        t("buttons.darkMode"),
+      );
 
       fireEvent.click(queryByTestId(container, "toggle-dark-mode")!);
 
-      expect(
-        queryByTestId(container, "toggle-dark-mode")?.textContent,
-      ).toContain(t("buttons.lightMode"));
+      expect(queryByTestId(container, "toggle-dark-mode")?.textContent).toContain(
+        t("buttons.lightMode"),
+      );
     });
   });
 });

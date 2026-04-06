@@ -12,10 +12,8 @@ const getDarkThemeMediaQuery = (): MediaQueryList | undefined =>
 export const useHandleAppTheme = () => {
   const [appTheme, setAppTheme] = useState<Theme | "system">(() => {
     return (
-      (localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_THEME) as
-        | Theme
-        | "system"
-        | null) || THEME.LIGHT
+      (localStorage.getItem(STORAGE_KEYS.LOCAL_STORAGE_THEME) as Theme | "system" | null) ||
+      THEME.LIGHT
     );
   });
   const [editorTheme, setEditorTheme] = useState<Theme>(THEME.LIGHT);
@@ -32,12 +30,7 @@ export const useHandleAppTheme = () => {
     }
 
     const handleKeydown = (event: KeyboardEvent) => {
-      if (
-        !event[KEYS.CTRL_OR_CMD] &&
-        event.altKey &&
-        event.shiftKey &&
-        event.code === CODES.D
-      ) {
+      if (!event[KEYS.CTRL_OR_CMD] && event.altKey && event.shiftKey && event.code === CODES.D) {
         event.preventDefault();
         event.stopImmediatePropagation();
         setAppTheme(editorTheme === THEME.DARK ? THEME.LIGHT : THEME.DARK);
@@ -58,9 +51,7 @@ export const useHandleAppTheme = () => {
     localStorage.setItem(STORAGE_KEYS.LOCAL_STORAGE_THEME, appTheme);
 
     if (appTheme === "system") {
-      setEditorTheme(
-        getDarkThemeMediaQuery()?.matches ? THEME.DARK : THEME.LIGHT,
-      );
+      setEditorTheme(getDarkThemeMediaQuery()?.matches ? THEME.DARK : THEME.LIGHT);
     } else {
       setEditorTheme(appTheme);
     }

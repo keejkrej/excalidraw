@@ -1,25 +1,8 @@
-import {
-  pointFrom,
-  pointDistance,
-  pointFromVector,
-  pointsEqual,
-} from "./point";
+import { pointFrom, pointDistance, pointFromVector, pointsEqual } from "./point";
 import { PRECISION } from "./utils";
-import {
-  vector,
-  vectorAdd,
-  vectorDot,
-  vectorFromPoint,
-  vectorScale,
-} from "./vector";
+import { vector, vectorAdd, vectorDot, vectorFromPoint, vectorScale } from "./vector";
 
-import type {
-  Ellipse,
-  GlobalPoint,
-  Line,
-  LineSegment,
-  LocalPoint,
-} from "./types";
+import type { Ellipse, GlobalPoint, Line, LineSegment, LocalPoint } from "./types";
 
 /**
  * Construct an Ellipse object from the parameters
@@ -85,19 +68,14 @@ export const ellipseTouchesPoint = <Point extends GlobalPoint | LocalPoint>(
  * @param ellipse The ellipse to calculate the distance to
  * @returns The eucledian distance
  */
-export const ellipseDistanceFromPoint = <
-  Point extends GlobalPoint | LocalPoint,
->(
+export const ellipseDistanceFromPoint = <Point extends GlobalPoint | LocalPoint>(
   p: Point,
   ellipse: Ellipse<Point>,
 ): number => {
   const { halfWidth, halfHeight, center } = ellipse;
   const a = halfWidth;
   const b = halfHeight;
-  const translatedPoint = vectorAdd(
-    vectorFromPoint(p),
-    vectorScale(vectorFromPoint(center), -1),
-  );
+  const translatedPoint = vectorAdd(vectorFromPoint(p), vectorScale(vectorFromPoint(center), -1));
 
   const px = Math.abs(translatedPoint[0]);
   const py = Math.abs(translatedPoint[1]);
@@ -140,9 +118,10 @@ export const ellipseDistanceFromPoint = <
  * Calculate a maximum of two intercept points for a line going throug an
  * ellipse.
  */
-export function ellipseSegmentInterceptPoints<
-  Point extends GlobalPoint | LocalPoint,
->(e: Readonly<Ellipse<Point>>, s: Readonly<LineSegment<Point>>): Point[] {
+export function ellipseSegmentInterceptPoints<Point extends GlobalPoint | LocalPoint>(
+  e: Readonly<Ellipse<Point>>,
+  s: Readonly<LineSegment<Point>>,
+): Point[] {
   const rx = e.halfWidth;
   const ry = e.halfHeight;
 
@@ -164,29 +143,20 @@ export function ellipseSegmentInterceptPoints<
 
     if (0 <= t_a && t_a <= 1) {
       intersections.push(
-        pointFrom(
-          s[0][0] + (s[1][0] - s[0][0]) * t_a,
-          s[0][1] + (s[1][1] - s[0][1]) * t_a,
-        ),
+        pointFrom(s[0][0] + (s[1][0] - s[0][0]) * t_a, s[0][1] + (s[1][1] - s[0][1]) * t_a),
       );
     }
 
     if (0 <= t_b && t_b <= 1) {
       intersections.push(
-        pointFrom(
-          s[0][0] + (s[1][0] - s[0][0]) * t_b,
-          s[0][1] + (s[1][1] - s[0][1]) * t_b,
-        ),
+        pointFrom(s[0][0] + (s[1][0] - s[0][0]) * t_b, s[0][1] + (s[1][1] - s[0][1]) * t_b),
       );
     }
   } else if (d === 0) {
     const t = -b / a;
     if (0 <= t && t <= 1) {
       intersections.push(
-        pointFrom(
-          s[0][0] + (s[1][0] - s[0][0]) * t,
-          s[0][1] + (s[1][1] - s[0][1]) * t,
-        ),
+        pointFrom(s[0][0] + (s[1][0] - s[0][0]) * t, s[0][1] + (s[1][1] - s[0][1]) * t),
       );
     }
   }
@@ -194,9 +164,7 @@ export function ellipseSegmentInterceptPoints<
   return intersections;
 }
 
-export function ellipseLineIntersectionPoints<
-  Point extends GlobalPoint | LocalPoint,
->(
+export function ellipseLineIntersectionPoints<Point extends GlobalPoint | LocalPoint>(
   { center, halfWidth, halfHeight }: Ellipse<Point>,
   [g, h]: Line<Point>,
 ): Point[] {
@@ -206,16 +174,11 @@ export function ellipseLineIntersectionPoints<
   const x2 = h[0] - cx;
   const y2 = h[1] - cy;
   const a =
-    Math.pow(x2 - x1, 2) / Math.pow(halfWidth, 2) +
-    Math.pow(y2 - y1, 2) / Math.pow(halfHeight, 2);
+    Math.pow(x2 - x1, 2) / Math.pow(halfWidth, 2) + Math.pow(y2 - y1, 2) / Math.pow(halfHeight, 2);
   const b =
-    2 *
-    ((x1 * (x2 - x1)) / Math.pow(halfWidth, 2) +
-      (y1 * (y2 - y1)) / Math.pow(halfHeight, 2));
+    2 * ((x1 * (x2 - x1)) / Math.pow(halfWidth, 2) + (y1 * (y2 - y1)) / Math.pow(halfHeight, 2));
   const c =
-    Math.pow(x1, 2) / Math.pow(halfWidth, 2) +
-    Math.pow(y1, 2) / Math.pow(halfHeight, 2) -
-    1;
+    Math.pow(x1, 2) / Math.pow(halfWidth, 2) + Math.pow(y1, 2) / Math.pow(halfHeight, 2) - 1;
   const t1 = (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
   const t2 = (-b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
   const candidates = [

@@ -22,13 +22,9 @@ export const renderSnaps = (
   // Don't change if zen mode, because we draw only crosses, we want the
   // colors to be more visible
   const snapColor =
-    appState.theme === THEME.LIGHT || appState.zenModeEnabled
-      ? SNAP_COLOR_LIGHT
-      : SNAP_COLOR_DARK;
+    appState.theme === THEME.LIGHT || appState.zenModeEnabled ? SNAP_COLOR_LIGHT : SNAP_COLOR_DARK;
   // in zen mode make the cross more visible since we don't draw the lines
-  const snapWidth =
-    (appState.zenModeEnabled ? SNAP_WIDTH * 1.5 : SNAP_WIDTH) /
-    appState.zoom.value;
+  const snapWidth = (appState.zenModeEnabled ? SNAP_WIDTH * 1.5 : SNAP_WIDTH) / appState.zoom.value;
 
   context.save();
   context.translate(appState.scrollX, appState.scrollY);
@@ -43,13 +39,7 @@ export const renderSnaps = (
       context.lineWidth = snapWidth;
       context.strokeStyle = snapColor;
 
-      drawGapLine(
-        snapLine.points[0],
-        snapLine.points[1],
-        snapLine.direction,
-        appState,
-        context,
-      );
+      drawGapLine(snapLine.points[0], snapLine.points[1], snapLine.direction, appState, context);
     } else if (snapLine.type === "points") {
       context.lineWidth = snapWidth;
       context.strokeStyle = snapColor;
@@ -95,8 +85,7 @@ const drawCross = <Point extends LocalPoint | GlobalPoint>(
 ) => {
   context.save();
   const size =
-    (appState.zenModeEnabled ? SNAP_CROSS_SIZE * 1.5 : SNAP_CROSS_SIZE) /
-    appState.zoom.value;
+    (appState.zenModeEnabled ? SNAP_CROSS_SIZE * 1.5 : SNAP_CROSS_SIZE) / appState.zoom.value;
   context.beginPath();
 
   context.moveTo(x - size, y - size);
@@ -141,11 +130,7 @@ const drawGapLine = <Point extends LocalPoint | GlobalPoint>(
     const halfPoint = [(from[0] + to[0]) / 2, from[1]];
     // (1)
     if (!appState.zenModeEnabled) {
-      drawLine(
-        pointFrom(from[0], from[1] - FULL),
-        pointFrom(from[0], from[1] + FULL),
-        context,
-      );
+      drawLine(pointFrom(from[0], from[1] - FULL), pointFrom(from[0], from[1] + FULL), context);
     }
 
     // (3)
@@ -162,11 +147,7 @@ const drawGapLine = <Point extends LocalPoint | GlobalPoint>(
 
     if (!appState.zenModeEnabled) {
       // (4)
-      drawLine(
-        pointFrom(to[0], to[1] - FULL),
-        pointFrom(to[0], to[1] + FULL),
-        context,
-      );
+      drawLine(pointFrom(to[0], to[1] - FULL), pointFrom(to[0], to[1] + FULL), context);
 
       // (2)
       drawLine(from, to, context);
@@ -175,11 +156,7 @@ const drawGapLine = <Point extends LocalPoint | GlobalPoint>(
     const halfPoint = [from[0], (from[1] + to[1]) / 2];
     // (1)
     if (!appState.zenModeEnabled) {
-      drawLine(
-        pointFrom(from[0] - FULL, from[1]),
-        pointFrom(from[0] + FULL, from[1]),
-        context,
-      );
+      drawLine(pointFrom(from[0] - FULL, from[1]), pointFrom(from[0] + FULL, from[1]), context);
     }
 
     // (3)
@@ -196,11 +173,7 @@ const drawGapLine = <Point extends LocalPoint | GlobalPoint>(
 
     if (!appState.zenModeEnabled) {
       // (4)
-      drawLine(
-        pointFrom(to[0] - FULL, to[1]),
-        pointFrom(to[0] + FULL, to[1]),
-        context,
-      );
+      drawLine(pointFrom(to[0] - FULL, to[1]), pointFrom(to[0] + FULL, to[1]), context);
 
       // (2)
       drawLine(from, to, context);

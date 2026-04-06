@@ -14,11 +14,7 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 
 import { API } from "@excalidraw/excalidraw/tests/helpers/api";
 import { UI, Pointer, Keyboard } from "@excalidraw/excalidraw/tests/helpers/ui";
-import {
-  act,
-  unmountComponent,
-  render,
-} from "@excalidraw/excalidraw/tests/test-utils";
+import { act, unmountComponent, render } from "@excalidraw/excalidraw/tests/test-utils";
 
 const mouse = new Pointer("mouse");
 

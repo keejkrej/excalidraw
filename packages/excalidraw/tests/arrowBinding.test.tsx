@@ -1,8 +1,5 @@
 import { reseed } from "@excalidraw/common";
-import {
-  isElbowArrow,
-  projectFixedPointOntoDiagonal,
-} from "@excalidraw/element";
+import { isElbowArrow, projectFixedPointOntoDiagonal } from "@excalidraw/element";
 
 import { pointFrom } from "@excalidraw/math";
 
@@ -150,9 +147,7 @@ describe("Arrow binding – non-default case (bindingPreference: disabled)", () 
       mouse.up(700, 200);
 
       await waitFor(() => {
-        const arrow = h.elements.find(
-          (el): el is ExcalidrawArrowElement => el.type === "arrow",
-        );
+        const arrow = h.elements.find((el): el is ExcalidrawArrowElement => el.type === "arrow");
         expect(arrow).toBeDefined();
         expect(arrow!.startBinding).not.toBeNull();
         expect(arrow!.startBinding!.elementId).toBe("baselineRect");
@@ -182,9 +177,7 @@ describe("Arrow binding – non-default case (bindingPreference: disabled)", () 
       mouse.up(700, 200);
 
       await waitFor(() => {
-        const arrow = h.elements.find(
-          (el): el is ExcalidrawArrowElement => el.type === "arrow",
-        );
+        const arrow = h.elements.find((el): el is ExcalidrawArrowElement => el.type === "arrow");
         expect(arrow).toBeDefined();
         expect(arrow!.startBinding).toBeNull();
       });
@@ -213,9 +206,7 @@ describe("Arrow binding – non-default case (bindingPreference: disabled)", () 
       mouse.up(600, 200);
 
       await waitFor(() => {
-        const arrow = h.elements.find(
-          (el): el is ExcalidrawArrowElement => el.type === "arrow",
-        );
+        const arrow = h.elements.find((el): el is ExcalidrawArrowElement => el.type === "arrow");
         expect(arrow).toBeDefined();
         expect(arrow!.endBinding).toBeNull();
       });
@@ -243,9 +234,7 @@ describe("Arrow binding – non-default case (bindingPreference: disabled)", () 
       mouse.up(700, 200);
 
       await waitFor(() => {
-        const arrow = h.elements.find(
-          (el): el is ExcalidrawArrowElement => el.type === "arrow",
-        );
+        const arrow = h.elements.find((el): el is ExcalidrawArrowElement => el.type === "arrow");
         expect(arrow).toBeDefined();
         expect(arrow!.startBinding).not.toBeNull();
       });

@@ -15,9 +15,7 @@ import { Commands, subsetToBinary } from "./subset-shared.chunk";
  *
  * `import.meta.url` is undefined in nodejs
  */
-export const WorkerUrl: URL | undefined = import.meta.url
-  ? new URL(import.meta.url)
-  : undefined;
+export const WorkerUrl: URL | undefined = import.meta.url ? new URL(import.meta.url) : undefined;
 
 // run only in the worker context
 if (typeof window === "undefined" && typeof self !== "undefined") {
@@ -30,10 +28,7 @@ if (typeof window === "undefined" && typeof self !== "undefined") {
   }) => {
     switch (e.data.command) {
       case Commands.Subset:
-        const buffer = await subsetToBinary(
-          e.data.arrayBuffer,
-          e.data.codePoints,
-        );
+        const buffer = await subsetToBinary(e.data.arrayBuffer, e.data.codePoints);
 
         self.postMessage(buffer, { transfer: [buffer] });
         break;

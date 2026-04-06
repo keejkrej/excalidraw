@@ -17,13 +17,9 @@ export const ElementCanvasButton = (props: {
 }) => {
   return (
     <label
-      className={clsx(
-        "ToolIcon ToolIcon__MagicButton",
-        `ToolIcon_size_${DEFAULT_SIZE}`,
-        {
-          "is-mobile": props.isMobile,
-        },
-      )}
+      className={clsx("ToolIcon ToolIcon__MagicButton", `ToolIcon_size_${DEFAULT_SIZE}`, {
+        "is-mobile": props.isMobile,
+      })}
       title={`${props.title}`}
     >
       <input

@@ -1,13 +1,9 @@
-import type {
-  ExcalidrawElement,
-  FontFamilyValues,
-} from "@excalidraw/element/types";
+import type { ExcalidrawElement, FontFamilyValues } from "@excalidraw/element/types";
 import type { AppProps, AppState } from "@excalidraw/excalidraw/types";
 
 import { COLOR_PALETTE } from "./colors";
 
-export const supportsResizeObserver =
-  typeof window !== "undefined" && "ResizeObserver" in window;
+export const supportsResizeObserver = typeof window !== "undefined" && "ResizeObserver" in window;
 
 export const APP_NAME = "Excalidraw";
 
@@ -176,11 +172,7 @@ export const getFontFamilyFallbacks = (
 
   switch (fontFamily) {
     case FONT_FAMILY.Excalifont:
-      return [
-        CJK_HAND_DRAWN_FALLBACK_FONT,
-        genericFallbackFont,
-        WINDOWS_EMOJI_FALLBACK_FONT,
-      ];
+      return [CJK_HAND_DRAWN_FALLBACK_FONT, genericFallbackFont, WINDOWS_EMOJI_FALLBACK_FONT];
     default:
       return [genericFallbackFont, WINDOWS_EMOJI_FALLBACK_FONT];
   }
@@ -221,8 +213,7 @@ export const SIDE_RESIZING_THRESHOLD = 2 * DEFAULT_TRANSFORM_HANDLE_SPACING;
 // a small epsilon to make side resizing always take precedence
 // (avoids an increase in renders and changes to tests)
 export const EPSILON = 0.00001;
-export const DEFAULT_COLLISION_THRESHOLD =
-  2 * SIDE_RESIZING_THRESHOLD - EPSILON;
+export const DEFAULT_COLLISION_THRESHOLD = 2 * SIDE_RESIZING_THRESHOLD - EPSILON;
 
 export const COLOR_WHITE = "#ffffff";
 export const COLOR_CHARCOAL_BLACK = "#1e1e1e";
@@ -289,8 +280,7 @@ export const EXPORT_DATA_TYPES = {
   excalidrawClipboardWithAPI: "excalidraw-api/clipboard",
 } as const;
 
-export const getExportSource = () =>
-  window.EXCALIDRAW_EXPORT_SOURCE || window.location.origin;
+export const getExportSource = () => window.EXCALIDRAW_EXPORT_SOURCE || window.location.origin;
 
 // time in milliseconds
 export const IMAGE_RENDER_TIMEOUT = 500;
@@ -437,11 +427,7 @@ export const DEFAULT_SIDEBAR = {
   defaultTab: LIBRARY_SIDEBAR_TAB,
 } as const;
 
-export const LIBRARY_DISABLED_TYPES = new Set([
-  "iframe",
-  "embeddable",
-  "image",
-] as const);
+export const LIBRARY_DISABLED_TYPES = new Set(["iframe", "embeddable", "image"] as const);
 
 // use these constants to easily identify reference sites
 export const TOOL_TYPE = {

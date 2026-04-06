@@ -9,31 +9,18 @@ import React, {
 
 import { type FontFamilyValues } from "@excalidraw/element/types";
 
-import {
-  arrayToList,
-  debounce,
-  FONT_FAMILY,
-  getFontFamilyString,
-} from "@excalidraw/common";
+import { arrayToList, debounce, FONT_FAMILY, getFontFamilyString } from "@excalidraw/common";
 
 import type { ValueOf } from "@excalidraw/common/utility-types";
 
 import { Fonts } from "../../fonts";
 import { t } from "../../i18n";
-import {
-  useApp,
-  useAppProps,
-  useExcalidrawContainer,
-  useStylesPanelMode,
-} from "../App";
+import { useApp, useAppProps, useExcalidrawContainer, useStylesPanelMode } from "../App";
 import { PropertiesPopover } from "../PropertiesPopover";
 import { QuickSearch } from "../QuickSearch";
 import { ScrollableList } from "../ScrollableList";
 import DropdownMenuGroup from "../dropdownMenu/DropdownMenuGroup";
-import {
-  DropDownMenuItemBadgeType,
-  DropDownMenuItemBadge,
-} from "../dropdownMenu/DropdownMenuItem";
+import { DropDownMenuItemBadgeType, DropDownMenuItemBadge } from "../dropdownMenu/DropdownMenuItem";
 import MenuItemContent from "../dropdownMenu/DropdownMenuItemContent";
 import { getDropdownMenuItemClassName } from "../dropdownMenu/common";
 import {
@@ -87,10 +74,7 @@ const getFontFamilyIcon = (fontFamily: FontFamilyValues): JSX.Element => {
   }
 };
 
-const getFontFamilyLabel = (
-  fontFamily: FontFamilyValues,
-  fontFaces: ExcalidrawFontFace[],
-) =>
+const getFontFamilyLabel = (fontFamily: FontFamilyValues, fontFaces: ExcalidrawFontFace[]) =>
   // prefer our config as the browser resolved names may be wrapped in quotes and such
   Object.entries(FONT_FAMILY).find(([, id]) => id === fontFamily)?.[0] ??
   fontFaces[0]?.fontFace?.family ??
@@ -117,9 +101,7 @@ export const FontPickerList = React.memo(
     const allFonts = useMemo(
       () =>
         Array.from(Fonts.registered.entries())
-          .filter(
-            ([_, { metadata }]) => !metadata.private && !metadata.fallback,
-          )
+          .filter(([_, { metadata }]) => !metadata.private && !metadata.fallback)
           .map(([familyId, { metadata, fontFaces }]) => {
             const fontDescriptor = {
               value: familyId,
@@ -139,9 +121,7 @@ export const FontPickerList = React.memo(
 
             return fontDescriptor as FontDescriptor;
           })
-          .sort((a, b) =>
-            a.text.toLowerCase() > b.text.toLowerCase() ? 1 : -1,
-          ),
+          .sort((a, b) => (a.text.toLowerCase() > b.text.toLowerCase() ? 1 : -1)),
       [],
     );
 
@@ -160,9 +140,7 @@ export const FontPickerList = React.memo(
     const availableFonts = useMemo(
       () =>
         allFonts.filter(
-          (font) =>
-            !sceneFamilies.has(font.value) &&
-            (showDeprecatedFonts || !font.deprecated), // skip deprecated fonts
+          (font) => !sceneFamilies.has(font.value) && (showDeprecatedFonts || !font.deprecated), // skip deprecated fonts
         ),
       [allFonts, sceneFamilies, showDeprecatedFonts],
     );
@@ -197,14 +175,7 @@ export const FontPickerList = React.memo(
       }
 
       return font;
-    }, [
-      hoveredFontFamily,
-      selectedFontFamily,
-      searchTerm,
-      filteredFonts,
-      onHover,
-      onLeave,
-    ]);
+    }, [hoveredFontFamily, selectedFontFamily, searchTerm, filteredFonts, onHover, onLeave]);
 
     // Create a wrapped onSelect function that preserves caret position
     const wrappedOnSelect = useCallback(
@@ -212,9 +183,7 @@ export const FontPickerList = React.memo(
         // Save caret position before font selection if editing text
         let savedSelection: { start: number; end: number } | null = null;
         if (app.state.editingTextElement) {
-          const textEditor = document.querySelector(
-            ".excalidraw-wysiwyg",
-          ) as HTMLTextAreaElement;
+          const textEditor = document.querySelector(".excalidraw-wysiwyg") as HTMLTextAreaElement;
           if (textEditor) {
             savedSelection = {
               start: textEditor.selectionStart,
@@ -228,9 +197,7 @@ export const FontPickerList = React.memo(
         // Restore caret position after font selection if editing text
         if (app.state.editingTextElement && savedSelection) {
           setTimeout(() => {
-            const textEditor = document.querySelector(
-              ".excalidraw-wysiwyg",
-            ) as HTMLTextAreaElement;
+            const textEditor = document.querySelector(".excalidraw-wysiwyg") as HTMLTextAreaElement;
             if (textEditor && savedSelection) {
               textEditor.focus();
               textEditor.selectionStart = savedSelection.start;
@@ -281,13 +248,7 @@ export const FontPickerList = React.memo(
       [filteredFonts, sceneFamilies],
     );
 
-    const FontPickerListItem = ({
-      font,
-      order,
-    }: {
-      font: FontDescriptor;
-      order: number;
-    }) => {
+    const FontPickerListItem = ({ font, order }: { font: FontDescriptor; order: number }) => {
       const ref = useRef<HTMLButtonElement>(null);
       const isHovered = font.value === hoveredFont?.value;
       const isSelected = font.value === selectedFontFamily;

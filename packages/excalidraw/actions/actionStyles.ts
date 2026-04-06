@@ -19,10 +19,7 @@ import {
   isTextElement,
 } from "@excalidraw/element";
 
-import {
-  getBoundTextElement,
-  redrawTextBoundingBox,
-} from "@excalidraw/element";
+import { getBoundTextElement, redrawTextBoundingBox } from "@excalidraw/element";
 
 import { CaptureUpdateAction } from "@excalidraw/element";
 
@@ -48,10 +45,7 @@ export const actionCopyStyles = register({
     const element = elements.find((el) => appState.selectedElementIds[el.id]);
     elementsCopied.push(element);
     if (element && hasBoundTextElement(element)) {
-      const boundTextElement = getBoundTextElement(
-        element,
-        app.scene.getNonDeletedElementsMap(),
-      );
+      const boundTextElement = getBoundTextElement(element, app.scene.getNonDeletedElementsMap());
       elementsCopied.push(boundTextElement);
     }
     if (element) {
@@ -65,8 +59,7 @@ export const actionCopyStyles = register({
       captureUpdate: CaptureUpdateAction.EVENTUALLY,
     };
   },
-  keyTest: (event) =>
-    event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.C,
+  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.C,
 });
 
 export const actionPasteStyles = register({
@@ -105,10 +98,7 @@ export const actionPasteStyles = register({
             opacity: elementStylesToCopyFrom?.opacity,
             roughness: elementStylesToCopyFrom?.roughness,
             roundness: elementStylesToCopyFrom.roundness
-              ? canApplyRoundnessTypeToElement(
-                  elementStylesToCopyFrom.roundness.type,
-                  element,
-                )
+              ? canApplyRoundnessTypeToElement(elementStylesToCopyFrom.roundness.type, element)
                 ? elementStylesToCopyFrom.roundness
                 : getDefaultRoundnessTypeForElement(element)
               : null,
@@ -116,17 +106,14 @@ export const actionPasteStyles = register({
 
           if (isTextElement(newElement)) {
             const fontSize =
-              (elementStylesToCopyFrom as ExcalidrawTextElement).fontSize ||
-              DEFAULT_FONT_SIZE;
+              (elementStylesToCopyFrom as ExcalidrawTextElement).fontSize || DEFAULT_FONT_SIZE;
             const fontFamily =
-              (elementStylesToCopyFrom as ExcalidrawTextElement).fontFamily ||
-              DEFAULT_FONT_FAMILY;
+              (elementStylesToCopyFrom as ExcalidrawTextElement).fontFamily || DEFAULT_FONT_FAMILY;
             newElement = newElementWith(newElement, {
               fontSize,
               fontFamily,
               textAlign:
-                (elementStylesToCopyFrom as ExcalidrawTextElement).textAlign ||
-                DEFAULT_TEXT_ALIGN,
+                (elementStylesToCopyFrom as ExcalidrawTextElement).textAlign || DEFAULT_TEXT_ALIGN,
               lineHeight:
                 (elementStylesToCopyFrom as ExcalidrawTextElement).lineHeight ||
                 getLineHeight(fontFamily),
@@ -135,19 +122,14 @@ export const actionPasteStyles = register({
             if (newElement.containerId) {
               container =
                 selectedElements.find(
-                  (element) =>
-                    isTextElement(newElement) &&
-                    element.id === newElement.containerId,
+                  (element) => isTextElement(newElement) && element.id === newElement.containerId,
                 ) || null;
             }
 
             redrawTextBoundingBox(newElement, container, app.scene);
           }
 
-          if (
-            newElement.type === "arrow" &&
-            isArrowElement(elementStylesToCopyFrom)
-          ) {
+          if (newElement.type === "arrow" && isArrowElement(elementStylesToCopyFrom)) {
             newElement = newElementWith(newElement, {
               startArrowhead: elementStylesToCopyFrom.startArrowhead,
               endArrowhead: elementStylesToCopyFrom.endArrowhead,
@@ -168,6 +150,5 @@ export const actionPasteStyles = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  keyTest: (event) =>
-    event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.V,
+  keyTest: (event) => event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.V,
 });

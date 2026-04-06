@@ -1,25 +1,14 @@
-import {
-  DEFAULT_TRANSFORM_HANDLE_SPACING,
-  type EditorInterface,
-} from "@excalidraw/common";
+import { DEFAULT_TRANSFORM_HANDLE_SPACING, type EditorInterface } from "@excalidraw/common";
 
 import { pointFrom, pointRotateRads } from "@excalidraw/math";
 
 import type { Radians } from "@excalidraw/math";
 
-import type {
-  InteractiveCanvasAppState,
-  Zoom,
-} from "@excalidraw/excalidraw/types";
+import type { InteractiveCanvasAppState, Zoom } from "@excalidraw/excalidraw/types";
 import type { Bounds } from "@excalidraw/common";
 
 import { getElementAbsoluteCoords } from "./bounds";
-import {
-  isElbowArrow,
-  isFrameLikeElement,
-  isImageElement,
-  isLinearElement,
-} from "./typeChecks";
+import { isElbowArrow, isFrameLikeElement, isImageElement, isLinearElement } from "./typeChecks";
 
 import type {
   ElementsMap,
@@ -28,15 +17,7 @@ import type {
   PointerType,
 } from "./types";
 
-export type TransformHandleDirection =
-  | "n"
-  | "s"
-  | "w"
-  | "e"
-  | "nw"
-  | "ne"
-  | "sw"
-  | "se";
+export type TransformHandleDirection = "n" | "s" | "w" | "e" | "nw" | "ne" | "sw" | "se";
 
 export type TransformHandleType = TransformHandleDirection | "rotation";
 
@@ -110,19 +91,14 @@ const generateTransformHandle = (
 };
 
 export const canResizeFromSides = (editorInterface: EditorInterface) => {
-  if (
-    editorInterface.formFactor === "phone" &&
-    editorInterface.userAgent.isMobileDevice
-  ) {
+  if (editorInterface.formFactor === "phone" && editorInterface.userAgent.isMobileDevice) {
     return false;
   }
 
   return true;
 };
 
-export const getOmitSidesForEditorInterface = (
-  editorInterface: EditorInterface,
-) => {
+export const getOmitSidesForEditorInterface = (editorInterface: EditorInterface) => {
   if (canResizeFromSides(editorInterface)) {
     return DEFAULT_OMIT_SIDES;
   }
@@ -215,8 +191,7 @@ export const getTransformHandlesFromCoords = (
 
   // We only want to show height handles (all cardinal directions)  above a certain size
   // Note: we render using "mouse" size so we should also use "mouse" size for this check
-  const minimumSizeForEightHandles =
-    (5 * transformHandleSizes.mouse) / zoom.value;
+  const minimumSizeForEightHandles = (5 * transformHandleSizes.mouse) / zoom.value;
   if (Math.abs(width) > minimumSizeForEightHandles) {
     if (!omitSides.n) {
       transformHandles.n = generateTransformHandle(
@@ -312,8 +287,8 @@ export const getTransformHandles = (
   const margin = isLinearElement(element)
     ? DEFAULT_TRANSFORM_HANDLE_SPACING + 8
     : isImageElement(element)
-    ? 0
-    : DEFAULT_TRANSFORM_HANDLE_SPACING;
+      ? 0
+      : DEFAULT_TRANSFORM_HANDLE_SPACING;
   return getTransformHandlesFromCoords(
     getElementAbsoluteCoords(element, elementsMap, true),
     element.angle,
@@ -330,10 +305,7 @@ export const hasBoundingBox = (
   appState: InteractiveCanvasAppState,
   editorInterface: EditorInterface,
 ) => {
-  if (
-    appState.selectedLinearElement?.isEditing ||
-    appState.selectedLinearElement?.isDragging
-  ) {
+  if (appState.selectedLinearElement?.isEditing || appState.selectedLinearElement?.isDragging) {
     return false;
   }
   if (elements.length > 1) {

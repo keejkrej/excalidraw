@@ -64,16 +64,14 @@ export const getMostUsedCustomColors = (
       return false;
     }
 
-    const color =
-      element[elementColorTypeMap[type] as "backgroundColor" | "strokeColor"];
+    const color = element[elementColorTypeMap[type] as "backgroundColor" | "strokeColor"];
 
     return isCustomColor({ color, palette });
   });
 
   const colorCountMap = new Map<string, number>();
   colors.forEach((element) => {
-    const color =
-      element[elementColorTypeMap[type] as "backgroundColor" | "strokeColor"];
+    const color = element[elementColorTypeMap[type] as "backgroundColor" | "strokeColor"];
     if (colorCountMap.has(color)) {
       colorCountMap.set(color, colorCountMap.get(color)! + 1);
     } else {
@@ -87,16 +85,7 @@ export const getMostUsedCustomColors = (
     .slice(0, MAX_CUSTOM_COLORS_USED_IN_CANVAS);
 };
 
-export type ActiveColorPickerSectionAtomType =
-  | "custom"
-  | "baseColors"
-  | "shades"
-  | "hex"
-  | null;
-export const activeColorPickerSectionAtom =
-  atom<ActiveColorPickerSectionAtomType>(null);
+export type ActiveColorPickerSectionAtomType = "custom" | "baseColors" | "shades" | "hex" | null;
+export const activeColorPickerSectionAtom = atom<ActiveColorPickerSectionAtomType>(null);
 
-export type ColorPickerType =
-  | "canvasBackground"
-  | "elementBackground"
-  | "elementStroke";
+export type ColorPickerType = "canvasBackground" | "elementBackground" | "elementStroke";

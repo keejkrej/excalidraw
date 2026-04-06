@@ -133,24 +133,14 @@ export const actionCopyAsSvg = register({
       };
     }
 
-    const { exportedElements, exportingFrame } = prepareElementsForExport(
-      elements,
-      appState,
-      true,
-    );
+    const { exportedElements, exportingFrame } = prepareElementsForExport(elements, appState, true);
 
     try {
-      await exportCanvas(
-        "clipboard-svg",
-        exportedElements,
-        appState,
-        app.files,
-        {
-          ...appState,
-          exportingFrame,
-          name: app.getName(),
-        },
-      );
+      await exportCanvas("clipboard-svg", exportedElements, appState, app.files, {
+        ...appState,
+        exportingFrame,
+        name: app.getName(),
+      });
 
       const selectedElements = app.scene.getSelectedElements({
         selectedElementIds: appState.selectedElementIds,
@@ -162,9 +152,7 @@ export const actionCopyAsSvg = register({
         appState: {
           toast: {
             message: t("toast.copyToClipboardAsSvg", {
-              exportSelection: selectedElements.length
-                ? t("toast.selection")
-                : t("toast.canvas"),
+              exportSelection: selectedElements.length ? t("toast.selection") : t("toast.canvas"),
               exportColorScheme: appState.exportWithDarkMode
                 ? t("buttons.darkMode")
                 : t("buttons.lightMode"),
@@ -206,11 +194,7 @@ export const actionCopyAsPng = register({
       includeElementsInFrames: true,
     });
 
-    const { exportedElements, exportingFrame } = prepareElementsForExport(
-      elements,
-      appState,
-      true,
-    );
+    const { exportedElements, exportingFrame } = prepareElementsForExport(elements, appState, true);
     try {
       await exportCanvas("clipboard", exportedElements, appState, app.files, {
         ...appState,
@@ -222,9 +206,7 @@ export const actionCopyAsPng = register({
           ...appState,
           toast: {
             message: t("toast.copyToClipboardAsPng", {
-              exportSelection: selectedElements.length
-                ? t("toast.selection")
-                : t("toast.canvas"),
+              exportSelection: selectedElements.length ? t("toast.selection") : t("toast.canvas"),
               exportColorScheme: appState.exportWithDarkMode
                 ? t("buttons.darkMode")
                 : t("buttons.lightMode"),

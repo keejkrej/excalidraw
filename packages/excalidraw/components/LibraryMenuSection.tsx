@@ -28,11 +28,7 @@ interface Props {
   itemsRenderedPerBatch: number;
 }
 
-export const LibraryMenuSectionGrid = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
+export const LibraryMenuSectionGrid = ({ children }: { children: ReactNode }) => {
   return <div className="library-menu-items-container__grid">{children}</div>;
 };
 

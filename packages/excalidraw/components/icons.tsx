@@ -15,8 +15,7 @@ import type { Theme } from "@excalidraw/element/types";
 
 export const iconFillColor = (theme: Theme) => "var(--icon-fill-color)";
 
-const handlerColor = (theme: Theme) =>
-  theme === THEME.LIGHT ? "#fff" : "#1e1e1e";
+const handlerColor = (theme: Theme) => (theme === THEME.LIGHT ? "#fff" : "#1e1e1e");
 
 type Opts = {
   width?: number;
@@ -24,10 +23,7 @@ type Opts = {
   mirror?: true;
 } & React.SVGProps<SVGSVGElement>;
 
-export const createIcon = (
-  d: string | React.ReactNode,
-  opts: number | Opts = 512,
-) => {
+export const createIcon = (d: string | React.ReactNode, opts: number | Opts = 512) => {
   const {
     width = 512,
     height = width,
@@ -315,12 +311,7 @@ export const SelectionIcon = createIcon(
 );
 
 export const LassoIcon = createIcon(
-  <g
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth={1.5}
-  >
+  <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}>
     <path d="M4.028 13.252c-.657 -.972 -1.028 -2.078 -1.028 -3.252c0 -3.866 4.03 -7 9 -7s9 3.134 9 7s-4.03 7 -9 7c-1.913 0 -3.686 -.464 -5.144 -1.255" />
     <path d="M5 15m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
     <path d="M5 17c0 1.42 .316 2.805 1 4" />
@@ -798,11 +789,7 @@ export const SendToBackIcon = createIcon(arrowBarToTopJSX, {
 export const AlignTopIcon = createIcon(
   <>
     <g clipPath="url(#a)" stroke="currentColor" strokeWidth="1.25">
-      <path
-        d="M3.333 3.333h13.334"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M3.333 3.333h13.334" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M13.542 6.458h-.417c-.92 0-1.667.747-1.667 1.667v7.083c0 .92.746 1.667 1.667 1.667h.417c.92 0 1.666-.746 1.666-1.667V8.125c0-.92-.746-1.667-1.666-1.667ZM6.875 6.458h-.417c-.92 0-1.666.747-1.666 1.667v3.75c0 .92.746 1.667 1.666 1.667h.417c.92 0 1.667-.746 1.667-1.667v-3.75c0-.92-.747-1.667-1.667-1.667Z" />
     </g>
     <defs>
@@ -817,11 +804,7 @@ export const AlignTopIcon = createIcon(
 export const AlignBottomIcon = createIcon(
   <>
     <g clipPath="url(#a)" stroke="currentColor" strokeWidth="1.25">
-      <path
-        d="M3.333 16.667h13.334"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M3.333 16.667h13.334" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M6.875 3.125h-.417c-.92 0-1.666.746-1.666 1.667v7.083c0 .92.746 1.667 1.666 1.667h.417c.92 0 1.667-.746 1.667-1.667V4.792c0-.92-.747-1.667-1.667-1.667ZM13.542 5.817h-.417c-.92 0-1.667.747-1.667 1.667v4.391c0 .92.746 1.667 1.667 1.667h.417c.92 0 1.666-.746 1.666-1.667V7.484c0-.92-.746-1.667-1.666-1.667Z" />
     </g>
     <defs>
@@ -836,11 +819,7 @@ export const AlignBottomIcon = createIcon(
 export const AlignLeftIcon = createIcon(
   <>
     <g clipPath="url(#a)" stroke="currentColor" strokeWidth="1.25">
-      <path
-        d="M3.333 3.333v13.334"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M3.333 3.333v13.334" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M15.208 4.792H8.125c-.92 0-1.667.746-1.667 1.666v.417c0 .92.747 1.667 1.667 1.667h7.083c.92 0 1.667-.747 1.667-1.667v-.417c0-.92-.746-1.666-1.667-1.666ZM12.516 11.458H8.125c-.92 0-1.667.746-1.667 1.667v.417c0 .92.747 1.666 1.667 1.666h4.391c.92 0 1.667-.746 1.667-1.666v-.417c0-.92-.746-1.667-1.667-1.667Z" />
     </g>
     <defs>
@@ -855,11 +834,7 @@ export const AlignLeftIcon = createIcon(
 export const AlignRightIcon = createIcon(
   <>
     <g clipPath="url(#a)" stroke="currentColor" strokeWidth="1.25">
-      <path
-        d="M16.667 3.333v13.334"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M16.667 3.333v13.334" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M11.875 4.792H4.792c-.92 0-1.667.746-1.667 1.666v.417c0 .92.746 1.667 1.667 1.667h7.083c.92 0 1.667-.747 1.667-1.667v-.417c0-.92-.746-1.666-1.667-1.666ZM11.683 11.458H7.292c-.92 0-1.667.746-1.667 1.667v.417c0 .92.746 1.666 1.667 1.666h4.39c.921 0 1.667-.746 1.667-1.666v-.417c0-.92-.746-1.667-1.666-1.667Z" />
     </g>
     <defs>
@@ -1002,11 +977,7 @@ export const GroupIcon = React.memo(({ theme }: { theme: Theme }) =>
         stroke={iconFillColor(theme)}
         strokeWidth="2"
       />
-      <g
-        fill={handlerColor(theme)}
-        stroke={iconFillColor(theme)}
-        strokeWidth="6"
-      >
+      <g fill={handlerColor(theme)} stroke={iconFillColor(theme)} strokeWidth="6">
         <rect x="2.5" y="2.5" width="30" height="30" />
         <rect x="2.5" y="149.5" width="30" height="30" />
         <rect x="147.5" y="149.5" width="30" height="30" />
@@ -1032,11 +1003,7 @@ export const UngroupIcon = React.memo(({ theme }: { theme: Theme }) =>
         stroke={iconFillColor(theme)}
         strokeWidth="2"
       />
-      <g
-        fill={handlerColor(theme)}
-        stroke={iconFillColor(theme)}
-        strokeWidth="6"
-      >
+      <g fill={handlerColor(theme)} stroke={iconFillColor(theme)} strokeWidth="6">
         <rect x="2.5" y="2.5" width="30" height="30" />
         <rect x="78.5" y="149.5" width="30" height="30" />
         <rect x="147.5" y="149.5" width="30" height="30" />
@@ -1269,12 +1236,7 @@ export const EdgeSharpIcon = createIcon(
 
 // tabler-icons: border-radius
 export const EdgeRoundIcon = createIcon(
-  <g
-    strokeWidth="1.5"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <g strokeWidth="1.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
     <path d="M4 12v-4a4 4 0 0 1 4 -4h4" />
     <line x1="16" y1="4" x2="16" y2="4.01" />
@@ -1292,186 +1254,175 @@ export const EdgeRoundIcon = createIcon(
   tablerIconProps,
 );
 
-export const ArrowheadNoneIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
-        stroke="currentColor"
-        opacity={0.3}
-        strokeWidth={2}
-        fill="none"
-        strokeLinecap="round"
-      >
-        <path d="M7,11 H19" />
-        <path d="M25,6 L33,16 M33,6 L25,16" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadNoneIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
+      stroke="currentColor"
+      opacity={0.3}
+      strokeWidth={2}
+      fill="none"
+      strokeLinecap="round"
+    >
+      <path d="M7,11 H19" />
+      <path d="M25,6 L33,16 M33,6 L25,16" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadArrowIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
-        stroke="currentColor"
-        strokeWidth={2}
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M7,11 H33 M23,5 L33,11 L23,17" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadArrowIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
+      stroke="currentColor"
+      strokeWidth={2}
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M7,11 H33 M23,5 L33,11 L23,17" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadTriangleIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        stroke="currentColor"
-        fill="currentColor"
-        transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
-        strokeLinejoin="round"
-      >
-        <path d="M7,11 H23" strokeWidth={2} strokeLinecap="round" />
-        <path d="M23,5 L35,11 L23,17 Z" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadTriangleIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      stroke="currentColor"
+      fill="currentColor"
+      transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
+      strokeLinejoin="round"
+    >
+      <path d="M7,11 H23" strokeWidth={2} strokeLinecap="round" />
+      <path d="M23,5 L35,11 L23,17 Z" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadTriangleOutlineIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        stroke="currentColor"
-        fill="none"
-        transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
-        strokeWidth={2}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      >
-        <path d="M7,11 H23" />
-        <path d="M23,5 L35,11 L23,17 Z" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadTriangleOutlineIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      stroke="currentColor"
+      fill="none"
+      transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
+      strokeWidth={2}
+      strokeLinejoin="round"
+      strokeLinecap="round"
+    >
+      <path d="M7,11 H23" />
+      <path d="M23,5 L35,11 L23,17 Z" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadCircleIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        stroke="currentColor"
-        fill="currentColor"
-        transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
-      >
-        <path d="M7,11 H25" strokeWidth={2} strokeLinecap="round" />
-        <circle cx="29" cy="11" r="4" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadCircleIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      stroke="currentColor"
+      fill="currentColor"
+      transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
+    >
+      <path d="M7,11 H25" strokeWidth={2} strokeLinecap="round" />
+      <circle cx="29" cy="11" r="4" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadCircleOutlineIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        stroke="currentColor"
-        fill="none"
-        transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
-        strokeWidth={2}
-      >
-        <path d="M7,11 H25" strokeLinecap="round" />
-        <circle cx="29" cy="11" r="4" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadCircleOutlineIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      stroke="currentColor"
+      fill="none"
+      transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
+      strokeWidth={2}
+    >
+      <path d="M7,11 H25" strokeLinecap="round" />
+      <circle cx="29" cy="11" r="4" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadDiamondIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        stroke="currentColor"
-        fill="currentColor"
-        transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
-        strokeLinejoin="round"
-      >
-        <path d="M7,11 H21" strokeWidth={2} strokeLinecap="round" />
-        <path d="M21,11 L28,5 L35,11 L28,17 Z" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadDiamondIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      stroke="currentColor"
+      fill="currentColor"
+      transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
+      strokeLinejoin="round"
+    >
+      <path d="M7,11 H21" strokeWidth={2} strokeLinecap="round" />
+      <path d="M21,11 L28,5 L35,11 L28,17 Z" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadDiamondOutlineIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        stroke="currentColor"
-        fill="none"
-        transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
-        strokeLinejoin="round"
-        strokeWidth={2}
-        strokeLinecap="round"
-      >
-        <path d="M7,11 H21" />
-        <path d="M21,11 L28,5 L35,11 L28,17 Z" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadDiamondOutlineIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      stroke="currentColor"
+      fill="none"
+      transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
+      strokeLinejoin="round"
+      strokeWidth={2}
+      strokeLinecap="round"
+    >
+      <path d="M7,11 H21" />
+      <path d="M21,11 L28,5 L35,11 L28,17 Z" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadBarIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
-        stroke="currentColor"
-        strokeWidth={2}
-        fill="none"
-        strokeLinecap="round"
-      >
-        <path d="M11,11 H31 M31,5 V17" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadBarIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      transform={flip ? "translate(40, 0) scale(-1, 1)" : ""}
+      stroke="currentColor"
+      strokeWidth={2}
+      fill="none"
+      strokeLinecap="round"
+    >
+      <path d="M11,11 H31 M31,5 V17" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadCardinalityOneIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        stroke="currentColor"
-        fill="none"
-        transform={flip ? "" : "translate(40, 0) scale(-1, 1)"}
-        strokeLinejoin="round"
-        strokeWidth={2}
-      >
-        <path d="M35,11 H7 M15,5 V17" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadCardinalityOneIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      stroke="currentColor"
+      fill="none"
+      transform={flip ? "" : "translate(40, 0) scale(-1, 1)"}
+      strokeLinejoin="round"
+      strokeWidth={2}
+    >
+      <path d="M35,11 H7 M15,5 V17" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
-export const ArrowheadCardinalityManyIcon = React.memo(
-  ({ flip = false }: { flip?: boolean }) =>
-    createIcon(
-      <g
-        stroke="currentColor"
-        fill="none"
-        transform={flip ? "" : "translate(40, 0) scale(-1, 1)"}
-        strokeLinejoin="round"
-        strokeWidth={2}
-      >
-        <path d="M35,11 H7 M15,11 L7,5 M15,11 L7,17" />
-      </g>,
-      arrowheadPreviewIconProps,
-    ),
+export const ArrowheadCardinalityManyIcon = React.memo(({ flip = false }: { flip?: boolean }) =>
+  createIcon(
+    <g
+      stroke="currentColor"
+      fill="none"
+      transform={flip ? "" : "translate(40, 0) scale(-1, 1)"}
+      strokeLinejoin="round"
+      strokeWidth={2}
+    >
+      <path d="M35,11 H7 M15,11 L7,5 M15,11 L7,17" />
+    </g>,
+    arrowheadPreviewIconProps,
+  ),
 );
 
 export const ArrowheadCardinalityOneOrManyIcon = React.memo(
@@ -1628,12 +1579,7 @@ export const fontSizeIcon = createIcon(
 
 export const FontFamilyHeadingIcon = createIcon(
   <>
-    <g
-      stroke="currentColor"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <g stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M7 12h10" />
       <path d="M7 5v14" />
@@ -1649,12 +1595,7 @@ export const FontFamilyHeadingIcon = createIcon(
 
 export const FontFamilyNormalIcon = createIcon(
   <>
-    <g
-      stroke="currentColor"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <g stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5.833 16.667v-10a3.333 3.333 0 0 1 3.334-3.334h1.666a3.333 3.333 0 0 1 3.334 3.334v10M5.833 10.833h8.334" />
     </g>
   </>,
@@ -1674,13 +1615,7 @@ export const codeIcon = createIcon(
 export const FontFamilyCodeIcon = codeIcon;
 
 export const TextAlignLeftIcon = createIcon(
-  <g
-    stroke="currentColor"
-    fill="none"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth={2}
-  >
+  <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}>
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
     <line x1="4" y1="8" x2="20" y2="8" />
     <line x1="4" y1="12" x2="12" y2="12" />
@@ -1690,12 +1625,7 @@ export const TextAlignLeftIcon = createIcon(
 );
 
 export const TextAlignCenterIcon = createIcon(
-  <g
-    stroke="currentColor"
-    fill="none"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
     <line x1="4" y1="8" x2="20" y2="8" />
     <line x1="8" y1="12" x2="16" y2="12" />
@@ -1705,12 +1635,7 @@ export const TextAlignCenterIcon = createIcon(
 );
 
 export const TextAlignRightIcon = createIcon(
-  <g
-    stroke="currentColor"
-    fill="none"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
+  <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
     <line x1="4" y1="8" x2="20" y2="8" />
     <line x1="10" y1="12" x2="20" y2="12" />

@@ -40,12 +40,7 @@ export const ContextMenu = React.memo(
         item &&
         (item === CONTEXT_MENU_SEPARATOR ||
           !item.predicate ||
-          item.predicate(
-            elements,
-            appState,
-            actionManager.app.props,
-            actionManager.app,
-          ))
+          item.predicate(elements, appState, actionManager.app.props, actionManager.app))
       ) {
         acc.push(item);
       }
@@ -66,16 +61,10 @@ export const ContextMenu = React.memo(
         viewportHeight={appState.height}
         className="context-menu-popover"
       >
-        <ul
-          className="context-menu"
-          onContextMenu={(event) => event.preventDefault()}
-        >
+        <ul className="context-menu" onContextMenu={(event) => event.preventDefault()}>
           {filteredItems.map((item, idx) => {
             if (item === CONTEXT_MENU_SEPARATOR) {
-              if (
-                !filteredItems[idx - 1] ||
-                filteredItems[idx - 1] === CONTEXT_MENU_SEPARATOR
-              ) {
+              if (!filteredItems[idx - 1] || filteredItems[idx - 1] === CONTEXT_MENU_SEPARATOR) {
                 return null;
               }
               return <hr key={idx} className="context-menu-item-separator" />;
@@ -86,11 +75,7 @@ export const ContextMenu = React.memo(
             if (item.label) {
               if (typeof item.label === "function") {
                 label = t(
-                  item.label(
-                    elements,
-                    appState,
-                    actionManager.app,
-                  ) as unknown as TranslationKeys,
+                  item.label(elements, appState, actionManager.app) as unknown as TranslationKeys,
                 );
               } else {
                 label = t(item.label as unknown as TranslationKeys);
@@ -119,9 +104,7 @@ export const ContextMenu = React.memo(
                 >
                   <div className="context-menu-item__label">{label}</div>
                   <kbd className="context-menu-item__shortcut">
-                    {actionName
-                      ? getShortcutFromShortcutName(actionName as ShortcutName)
-                      : ""}
+                    {actionName ? getShortcutFromShortcutName(actionName as ShortcutName) : ""}
                   </kbd>
                 </button>
               </li>

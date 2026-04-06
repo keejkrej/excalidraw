@@ -59,16 +59,14 @@ const handleDegreeChange: DragInputCallbackType<AngleProps["property"]> = ({
       return;
     }
 
-    const originalAngleInDegrees =
-      Math.round(radiansToDegrees(origElement.angle) * 100) / 100;
+    const originalAngleInDegrees = Math.round(radiansToDegrees(origElement.angle) * 100) / 100;
     const changeInDegrees = Math.round(accumulatedChange);
     let nextAngleInDegrees = (originalAngleInDegrees + changeInDegrees) % 360;
     if (shouldChangeByStepSize) {
       nextAngleInDegrees = getStepSizedValue(nextAngleInDegrees, STEP_SIZE);
     }
 
-    nextAngleInDegrees =
-      nextAngleInDegrees < 0 ? nextAngleInDegrees + 360 : nextAngleInDegrees;
+    nextAngleInDegrees = nextAngleInDegrees < 0 ? nextAngleInDegrees + 360 : nextAngleInDegrees;
 
     const nextAngle = degreesToRadians(nextAngleInDegrees as Degrees);
 

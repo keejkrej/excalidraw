@@ -34,7 +34,7 @@ export namespace TChat {
     lastAttemptAt?: number;
     type: "user" | "assistant" | "warning";
     warningType?: /* daily rate limit */
-    "messageLimitExceeded" | /* general 429 */ "rateLimitExceeded";
+      "messageLimitExceeded" | /* general 429 */ "rateLimitExceeded";
     content?: string;
   };
 
@@ -82,10 +82,7 @@ export interface MermaidToExcalidrawLibProps {
 }
 
 export namespace TTTDDialog {
-  export type OnGenerate = (opts: {
-    prompt: string;
-    isRepairFlow?: boolean;
-  }) => Promise<void>;
+  export type OnGenerate = (opts: { prompt: string; isRepairFlow?: boolean }) => Promise<void>;
 
   export type OnTextSubmitProps = {
     messages: LLMMessage[];
@@ -106,16 +103,12 @@ export namespace TTTDDialog {
   );
 
   // TTDDialog props
-  export type onTextSubmit = (
-    props: OnTextSubmitProps,
-  ) => Promise<OnTextSubmitRetValue>;
+  export type onTextSubmit = (props: OnTextSubmitProps) => Promise<OnTextSubmitRetValue>;
 
   /**
    * return undefined to use default rendering
    */
-  export type renderWarning = (
-    chatMessage: TChat.ChatMessage,
-  ) => React.ReactNode | undefined;
+  export type renderWarning = (chatMessage: TChat.ChatMessage) => React.ReactNode | undefined;
 
   export type renderWelcomeScreen = (props: {
     /** null if not rate limit data currently available */

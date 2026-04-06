@@ -8,10 +8,7 @@ import {
   replaceAllElementsInFrame,
   updateBoundElements,
 } from "@excalidraw/element";
-import {
-  rescalePointsInElement,
-  resizeSingleElement,
-} from "@excalidraw/element";
+import { rescalePointsInElement, resizeSingleElement } from "@excalidraw/element";
 import { getBoundTextElement, handleBindTextResize } from "@excalidraw/element";
 
 import { isTextElement } from "@excalidraw/element";
@@ -30,10 +27,7 @@ import DragInput from "./DragInput";
 import { getAtomicUnits, getStepSizedValue, isPropertyEditable } from "./utils";
 import { getElementsInAtomicUnit } from "./utils";
 
-import type {
-  DragFinishedCallbackType,
-  DragInputCallbackType,
-} from "./DragInput";
+import type { DragFinishedCallbackType, DragInputCallbackType } from "./DragInput";
 import type { AtomicUnit } from "./utils";
 import type { AppState } from "../../types";
 
@@ -67,9 +61,7 @@ const getResizedUpdates = (
     x,
     y,
     ...rescalePointsInElement(origElement, nextWidth, nextHeight, false),
-    ...(isTextElement(origElement)
-      ? { fontSize: origElement.fontSize * scale }
-      : {}),
+    ...(isTextElement(origElement) ? { fontSize: origElement.fontSize * scale } : {}),
   };
 };
 
@@ -88,10 +80,7 @@ const resizeElementInGroup = (
 
   scene.mutateElement(latestElement, updates);
 
-  const boundTextElement = getBoundTextElement(
-    origElement,
-    originalElementsMap,
-  );
+  const boundTextElement = getBoundTextElement(origElement, originalElementsMap);
   if (boundTextElement) {
     const newFontSize = boundTextElement.fontSize * scale;
     updateBoundElements(latestElement, scene);
@@ -100,12 +89,7 @@ const resizeElementInGroup = (
       scene.mutateElement(latestBoundTextElement, {
         fontSize: newFontSize,
       });
-      handleBindTextResize(
-        latestElement,
-        scene,
-        property === "width" ? "e" : "s",
-        true,
-      );
+      handleBindTextResize(latestElement, scene, property === "width" ? "e" : "s", true);
     }
   }
 };
@@ -148,9 +132,7 @@ const resizeGroup = (
   }
 };
 
-const handleDimensionChange: DragInputCallbackType<
-  MultiDimensionProps["property"]
-> = ({
+const handleDimensionChange: DragInputCallbackType<MultiDimensionProps["property"]> = ({
   accumulatedChange,
   originalElements,
   originalElementsMap,
@@ -166,11 +148,7 @@ const handleDimensionChange: DragInputCallbackType<
   const atomicUnits = getAtomicUnits(originalElements, originalAppState);
   if (nextValue !== undefined) {
     for (const atomicUnit of atomicUnits) {
-      const elementsInUnit = getElementsInAtomicUnit(
-        atomicUnit,
-        elementsMap,
-        originalElementsMap,
-      );
+      const elementsInUnit = getElementsInAtomicUnit(atomicUnit, elementsMap, originalElementsMap);
 
       if (elementsInUnit.length > 1) {
         const latestElements = elementsInUnit.map((el) => el.latest!);
@@ -205,13 +183,8 @@ const handleDimensionChange: DragInputCallbackType<
         const latestElement = el?.latest;
         const origElement = el?.original;
 
-        if (
-          latestElement &&
-          origElement &&
-          isPropertyEditable(latestElement, property)
-        ) {
-          let nextWidth =
-            property === "width" ? Math.max(0, nextValue) : latestElement.width;
+        if (latestElement && origElement && isPropertyEditable(latestElement, property)) {
+          let nextWidth = property === "width" ? Math.max(0, nextValue) : latestElement.width;
           if (property === "width") {
             if (shouldChangeByStepSize) {
               nextWidth = getStepSizedValue(nextWidth, STEP_SIZE);
@@ -220,10 +193,7 @@ const handleDimensionChange: DragInputCallbackType<
             }
           }
 
-          let nextHeight =
-            property === "height"
-              ? Math.max(0, nextValue)
-              : latestElement.height;
+          let nextHeight = property === "height" ? Math.max(0, nextValue) : latestElement.height;
           if (property === "height") {
             if (shouldChangeByStepSize) {
               nextHeight = getStepSizedValue(nextHeight, STEP_SIZE);
@@ -280,11 +250,7 @@ const handleDimensionChange: DragInputCallbackType<
   const elementsToHighlight: ExcalidrawElement[] = [];
 
   for (const atomicUnit of atomicUnits) {
-    const elementsInUnit = getElementsInAtomicUnit(
-      atomicUnit,
-      elementsMap,
-      originalElementsMap,
-    );
+    const elementsInUnit = getElementsInAtomicUnit(atomicUnit, elementsMap, originalElementsMap);
 
     if (elementsInUnit.length > 1) {
       const latestElements = elementsInUnit.map((el) => el.latest!);
@@ -332,11 +298,7 @@ const handleDimensionChange: DragInputCallbackType<
       const latestElement = el?.latest;
       const origElement = el?.original;
 
-      if (
-        latestElement &&
-        origElement &&
-        isPropertyEditable(latestElement, property)
-      ) {
+      if (latestElement && origElement && isPropertyEditable(latestElement, property)) {
         let nextWidth = Math.max(0, origElement.width + changeInWidth);
         if (property === "width") {
           if (shouldChangeByStepSize) {
@@ -441,26 +403,17 @@ const MultiDimension = ({
         const elementsInUnit = getElementsInAtomicUnit(atomicUnit, elementsMap);
 
         if (elementsInUnit.length > 1) {
-          const [x1, y1, x2, y2] = getCommonBounds(
-            elementsInUnit.map((el) => el.latest),
-          );
-          return (
-            Math.round((property === "width" ? x2 - x1 : y2 - y1) * 100) / 100
-          );
+          const [x1, y1, x2, y2] = getCommonBounds(elementsInUnit.map((el) => el.latest));
+          return Math.round((property === "width" ? x2 - x1 : y2 - y1) * 100) / 100;
         }
         const [el] = elementsInUnit;
 
-        return (
-          Math.round(
-            (property === "width" ? el.latest.width : el.latest.height) * 100,
-          ) / 100
-        );
+        return Math.round((property === "width" ? el.latest.width : el.latest.height) * 100) / 100;
       }),
     [elementsMap, atomicUnits, property],
   );
 
-  const value =
-    new Set(sizes).size === 1 ? Math.round(sizes[0] * 100) / 100 : "Mixed";
+  const value = new Set(sizes).size === 1 ? Math.round(sizes[0] * 100) / 100 : "Mixed";
 
   const editable = sizes.length > 0;
 

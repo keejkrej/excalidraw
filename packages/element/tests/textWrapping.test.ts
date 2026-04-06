@@ -1,8 +1,4 @@
-import {
-  getWrappedTextLines,
-  parseTokens,
-  wrapText,
-} from "../src/textWrapping";
+import { getWrappedTextLines, parseTokens, wrapText } from "../src/textWrapping";
 
 import type { FontString } from "../src/types";
 
@@ -177,9 +173,7 @@ describe("Test wrapText", () => {
       const text = "안녕하세요こんにちは世界ｺﾝﾆﾁハ你好";
       const maxWidth = 10;
       const res = wrapText(text, font, maxWidth);
-      expect(res).toBe(
-        "안\n녕\n하\n세\n요\nこ\nん\nに\nち\nは\n世\n界\nｺ\nﾝ\nﾆ\nﾁ\nハ\n你\n好",
-      );
+      expect(res).toBe("안\n녕\n하\n세\n요\nこ\nん\nに\nち\nは\n世\n界\nｺ\nﾝ\nﾆ\nﾁ\nハ\n你\n好");
     });
 
     it("should break CJK text into longer segments when width is larger", () => {

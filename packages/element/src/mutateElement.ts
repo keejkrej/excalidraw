@@ -1,8 +1,4 @@
-import {
-  getSizeFromPoints,
-  randomInteger,
-  getUpdatedTimestamp,
-} from "@excalidraw/common";
+import { getSizeFromPoints, randomInteger, getUpdatedTimestamp } from "@excalidraw/common";
 
 import type { Radians } from "@excalidraw/math";
 
@@ -81,10 +77,7 @@ export const mutateElement = <TElement extends Mutable<ExcalidrawElement>>(
         (element as any)[key] === value &&
         // if object, always update because its attrs could have changed
         // (except for specific keys we handle below)
-        (typeof value !== "object" ||
-          value === null ||
-          key === "groupIds" ||
-          key === "scale")
+        (typeof value !== "object" || value === null || key === "groupIds" || key === "scale")
       ) {
         continue;
       }
@@ -104,10 +97,7 @@ export const mutateElement = <TElement extends Mutable<ExcalidrawElement>>(
           while (--index) {
             const prevPoint = prevPoints[index];
             const nextPoint = nextPoints[index];
-            if (
-              prevPoint[0] !== nextPoint[0] ||
-              prevPoint[1] !== nextPoint[1]
-            ) {
+            if (prevPoint[0] !== nextPoint[0] || prevPoint[1] !== nextPoint[1]) {
               didChangePoints = true;
               break;
             }

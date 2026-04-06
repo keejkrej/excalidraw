@@ -29,6 +29,5 @@ export const actionToggleObjectsSnapMode = register({
   predicate: (elements, appState, appProps) => {
     return typeof appProps.objectsSnapModeEnabled === "undefined";
   },
-  keyTest: (event) =>
-    !event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.S,
+  keyTest: (event) => !event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.S,
 });

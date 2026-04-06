@@ -8,10 +8,7 @@ export const updateAssistantContent = (
 ) => {
   const { messages } = chatHistory;
 
-  const lastAssistantIndex = findLastIndex(
-    messages,
-    (msg) => msg.type === "assistant",
-  );
+  const lastAssistantIndex = findLastIndex(messages, (msg) => msg.type === "assistant");
 
   if (lastAssistantIndex === -1) {
     return chatHistory;
@@ -35,10 +32,7 @@ export const updateAssistantContent = (
 export const getLastAssistantMessage = (chatHistory: TChat.ChatHistory) => {
   const { messages } = chatHistory;
 
-  const lastAssistantIndex = findLastIndex(
-    messages,
-    (msg) => msg.type === "assistant",
-  );
+  const lastAssistantIndex = findLastIndex(messages, (msg) => msg.type === "assistant");
 
   return messages[lastAssistantIndex];
 };
@@ -60,10 +54,7 @@ export const addMessages = (
 };
 
 export const removeLastAssistantMessage = (chatHistory: TChat.ChatHistory) => {
-  const lastMsgIdx = findLastIndex(
-    chatHistory.messages ?? [],
-    (msg) => msg.type === "assistant",
-  );
+  const lastMsgIdx = findLastIndex(chatHistory.messages ?? [], (msg) => msg.type === "assistant");
 
   if (lastMsgIdx !== -1) {
     return {
@@ -74,9 +65,7 @@ export const removeLastAssistantMessage = (chatHistory: TChat.ChatHistory) => {
   return chatHistory;
 };
 
-export const getMessagesForLLM = (
-  chatHistory: TChat.ChatHistory,
-): LLMMessage[] => {
+export const getMessagesForLLM = (chatHistory: TChat.ChatHistory): LLMMessage[] => {
   const messages: LLMMessage[] = [];
 
   for (const msg of chatHistory.messages) {

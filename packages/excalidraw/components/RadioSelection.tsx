@@ -20,10 +20,7 @@ export const RadioSelection = <T extends Object>(
     | { type?: "radio"; group: string; onChange: (value: T) => void }
     | {
         type: "button";
-        onClick: (
-          value: T,
-          event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-        ) => void;
+        onClick: (value: T, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
       }
   ),
 ) => (

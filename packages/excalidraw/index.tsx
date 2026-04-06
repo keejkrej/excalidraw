@@ -1,17 +1,8 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import { DEFAULT_UI_OPTIONS, isShallowEqual } from "@excalidraw/common";
 
-import App, {
-  ExcalidrawAPIContext,
-  ExcalidrawAPISetContext,
-} from "./components/App";
+import App, { ExcalidrawAPIContext, ExcalidrawAPISetContext } from "./components/App";
 import { InitializeApp } from "./components/InitializeApp";
 import Footer from "./components/footer/FooterCenter";
 import LiveCollaborationTrigger from "./components/live-collaboration/LiveCollaborationTrigger";
@@ -29,12 +20,7 @@ import "./css/app.scss";
 import "./css/styles.scss";
 import "./fonts/fonts.css";
 
-import type {
-  AppProps,
-  AppState,
-  ExcalidrawImperativeAPI,
-  ExcalidrawProps,
-} from "./types";
+import type { AppProps, AppState, ExcalidrawImperativeAPI, ExcalidrawProps } from "./types";
 
 polyfill();
 
@@ -43,17 +29,11 @@ polyfill();
  * on it, such as `useAppStateValue()` and `useOnAppStateChange()`) to work
  * outside the <Excalidraw> component tree.
  */
-export const ExcalidrawAPIProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const ExcalidrawAPIProvider = ({ children }: { children: React.ReactNode }) => {
   const [api, setApi] = useState<ExcalidrawImperativeAPI | null>(null);
   return (
     <ExcalidrawAPIContext.Provider value={api}>
-      <ExcalidrawAPISetContext.Provider value={setApi}>
-        {children}
-      </ExcalidrawAPISetContext.Provider>
+      <ExcalidrawAPISetContext.Provider value={setApi}>{children}</ExcalidrawAPISetContext.Provider>
     </ExcalidrawAPIContext.Provider>
   );
 };
@@ -121,10 +101,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
       DEFAULT_UI_OPTIONS.canvasActions.export.saveFileToDisk;
   }
 
-  if (
-    UIOptions.canvasActions.toggleTheme === null &&
-    typeof theme === "undefined"
-  ) {
+  if (UIOptions.canvasActions.toggleTheme === null && typeof theme === "undefined") {
     UIOptions.canvasActions.toggleTheme = true;
   }
 
@@ -222,16 +199,8 @@ const areEqual = (prevProps: ExcalidrawProps, nextProps: ExcalidrawProps) => {
     return false;
   }
 
-  const {
-    initialData: prevInitialData,
-    UIOptions: prevUIOptions = {},
-    ...prev
-  } = prevProps;
-  const {
-    initialData: nextInitialData,
-    UIOptions: nextUIOptions = {},
-    ...next
-  } = nextProps;
+  const { initialData: prevInitialData, UIOptions: prevUIOptions = {}, ...prev } = prevProps;
+  const { initialData: nextInitialData, UIOptions: nextUIOptions = {}, ...next } = nextProps;
 
   // comparing UIOptions
   const prevUIOptionsKeys = Object.keys(prevUIOptions) as (keyof Partial<
@@ -250,9 +219,9 @@ const areEqual = (prevProps: ExcalidrawProps, nextProps: ExcalidrawProps) => {
       return true;
     }
     if (key === "canvasActions") {
-      const canvasOptionKeys = Object.keys(
-        prevUIOptions.canvasActions!,
-      ) as (keyof Partial<typeof DEFAULT_UI_OPTIONS.canvasActions>)[];
+      const canvasOptionKeys = Object.keys(prevUIOptions.canvasActions!) as (keyof Partial<
+        typeof DEFAULT_UI_OPTIONS.canvasActions
+      >)[];
       return canvasOptionKeys.every((key) => {
         if (
           key === "export" &&
@@ -264,10 +233,7 @@ const areEqual = (prevProps: ExcalidrawProps, nextProps: ExcalidrawProps) => {
             nextUIOptions.canvasActions.export.saveFileToDisk
           );
         }
-        return (
-          prevUIOptions?.canvasActions?.[key] ===
-          nextUIOptions?.canvasActions?.[key]
-        );
+        return prevUIOptions?.canvasActions?.[key] === nextUIOptions?.canvasActions?.[key];
       });
     }
     return prevUIOptions[key] === nextUIOptions[key];
@@ -307,11 +273,7 @@ export {
 } from "@excalidraw/utils/export";
 
 export { serializeAsJSON, serializeLibraryAsJSON } from "./data/json";
-export {
-  loadFromBlob,
-  loadSceneOrLibraryFromBlob,
-  loadLibraryFromBlob,
-} from "./data/blob";
+export { loadFromBlob, loadSceneOrLibraryFromBlob, loadLibraryFromBlob } from "./data/blob";
 export { mergeLibraryItems, getLibraryItemsHash } from "./data/library";
 export { isLinearElement } from "@excalidraw/element";
 
@@ -329,11 +291,7 @@ export {
   throttleRAF,
 } from "@excalidraw/common";
 
-export {
-  mutateElement,
-  newElementWith,
-  bumpVersion,
-} from "@excalidraw/element";
+export { mutateElement, newElementWith, bumpVersion } from "@excalidraw/element";
 
 export { CaptureUpdateAction } from "@excalidraw/element";
 
@@ -359,11 +317,7 @@ export { DefaultSidebar } from "./components/DefaultSidebar";
 export { TTDDialog } from "./components/TTDDialog/TTDDialog";
 export { TTDDialogTrigger } from "./components/TTDDialog/TTDDialogTrigger";
 export { TTDStreamFetch } from "./components/TTDDialog/utils/TTDStreamFetch";
-export type {
-  TTDPersistenceAdapter,
-  SavedChat,
-  SavedChats,
-} from "./components/TTDDialog/types";
+export type { TTDPersistenceAdapter, SavedChat, SavedChats } from "./components/TTDDialog/types";
 
 export { zoomToFitBounds } from "./actions/actionCanvas";
 export {
@@ -388,11 +342,7 @@ export { setCustomTextMetricsProvider } from "@excalidraw/element";
 
 export { CommandPalette } from "./components/CommandPalette/CommandPalette";
 
-export {
-  renderSpreadsheet,
-  tryParseSpreadsheet,
-  isSpreadsheetValidForChartType,
-} from "./charts";
+export { renderSpreadsheet, tryParseSpreadsheet, isSpreadsheetValidForChartType } from "./charts";
 
 // -----------------------------------------------------------------------------
 // useExcalidrawStateValue() wrapper for host apps for the return type to reflect the
@@ -405,20 +355,11 @@ export {
  * @param prop - appState prop(s) to subscribe to, or a selector function.
  * NOTE `prop/selector` is memoized and will not change after initial render
  */
-export function useExcalidrawStateValue<K extends keyof AppState>(
-  prop: K,
-): AppState[K] | undefined;
-export function useExcalidrawStateValue<T extends keyof AppState>(
-  props: T[],
-): AppState | undefined;
-export function useExcalidrawStateValue<T>(
-  selector: (appState: AppState) => T,
-): T | undefined;
+export function useExcalidrawStateValue<K extends keyof AppState>(prop: K): AppState[K] | undefined;
+export function useExcalidrawStateValue<T extends keyof AppState>(props: T[]): AppState | undefined;
+export function useExcalidrawStateValue<T>(selector: (appState: AppState) => T): T | undefined;
 export function useExcalidrawStateValue(
-  selector:
-    | keyof AppState
-    | (keyof AppState)[]
-    | ((appState: AppState) => unknown),
+  selector: keyof AppState | (keyof AppState)[] | ((appState: AppState) => unknown),
 ) {
   return _useAppStateValue(selector as any, false);
 }

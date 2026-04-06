@@ -1,16 +1,8 @@
 import React from "react";
 
-import {
-  CANVAS_SEARCH_TAB,
-  CLASSES,
-  DEFAULT_SIDEBAR,
-  KEYS,
-} from "@excalidraw/common";
+import { CANVAS_SEARCH_TAB, CLASSES, DEFAULT_SIDEBAR, KEYS } from "@excalidraw/common";
 
-import type {
-  ExcalidrawFrameLikeElement,
-  ExcalidrawTextElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawFrameLikeElement, ExcalidrawTextElement } from "@excalidraw/element/types";
 
 import { Excalidraw } from "../index";
 
@@ -22,10 +14,9 @@ import { act, render, waitFor } from "./test-utils";
 const { h } = window;
 
 const querySearchInput = async () => {
-  const input =
-    h.app.excalidrawContainerValue.container?.querySelector<HTMLInputElement>(
-      `.${CLASSES.SEARCH_MENU_INPUT_WRAPPER} input`,
-    )!;
+  const input = h.app.excalidrawContainerValue.container?.querySelector<HTMLInputElement>(
+    `.${CLASSES.SEARCH_MENU_INPUT_WRAPPER} input`,
+  )!;
   await waitFor(() => expect(input).not.toBeNull());
   return input;
 };
@@ -57,10 +48,9 @@ describe("search", () => {
       Keyboard.keyPress(KEYS.F);
     });
 
-    const searchInput =
-      h.app.excalidrawContainerValue.container?.querySelector<HTMLInputElement>(
-        `.${CLASSES.SEARCH_MENU_INPUT_WRAPPER} input`,
-      );
+    const searchInput = h.app.excalidrawContainerValue.container?.querySelector<HTMLInputElement>(
+      `.${CLASSES.SEARCH_MENU_INPUT_WRAPPER} input`,
+    );
 
     act(() => {
       searchInput?.blur();
@@ -146,18 +136,14 @@ describe("search", () => {
 
     await waitFor(() => {
       expect(h.app.state.searchMatches?.matches.length).toBe(1);
-      expect(h.app.state.searchMatches?.matches[0]?.matchedLines?.length).toBe(
-        4,
-      );
+      expect(h.app.state.searchMatches?.matches[0]?.matchedLines?.length).toBe(4);
     });
 
     updateTextEditor(searchInput, "ext spli");
 
     await waitFor(() => {
       expect(h.app.state.searchMatches?.matches.length).toBe(1);
-      expect(h.app.state.searchMatches?.matches[0]?.matchedLines?.length).toBe(
-        6,
-      );
+      expect(h.app.state.searchMatches?.matches[0]?.matchedLines?.length).toBe(6);
     });
   });
 

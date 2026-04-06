@@ -81,10 +81,7 @@ export const renderLineChart = (
   );
 
   const guideValues = series[0].values.map((_, valueIndex) =>
-    Math.max(
-      0,
-      ...series.map((seriesData) => seriesData.values[valueIndex] ?? 0),
-    ),
+    Math.max(0, ...series.map((seriesData) => seriesData.values[valueIndex] ?? 0)),
   );
   const guides = guideValues.map((value, valueIndex) => {
     const cx = valueIndex * (layout.slotWidth + layout.gap) + layout.gap / 2;

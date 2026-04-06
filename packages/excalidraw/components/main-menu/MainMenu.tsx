@@ -57,17 +57,16 @@ const MainMenu = Object.assign(
               align="start"
             >
               {children}
-              {editorInterface.formFactor === "phone" &&
-                appState.collaborators.size > 0 && (
-                  <fieldset className="UserList-Wrapper">
-                    <legend>{t("labels.collaborators")}</legend>
-                    <UserList
-                      mobile={true}
-                      collaborators={appState.collaborators}
-                      userToFollow={appState.userToFollow?.socketId || null}
-                    />
-                  </fieldset>
-                )}
+              {editorInterface.formFactor === "phone" && appState.collaborators.size > 0 && (
+                <fieldset className="UserList-Wrapper">
+                  <legend>{t("labels.collaborators")}</legend>
+                  <UserList
+                    mobile={true}
+                    collaborators={appState.collaborators}
+                    userToFollow={appState.userToFollow?.socketId || null}
+                  />
+                </fieldset>
+              )}
             </DropdownMenu.Content>
           </DropdownMenu>
         </MainMenuTunnel.In>

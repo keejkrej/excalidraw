@@ -7,9 +7,7 @@
     align-items: center;
 
     @include isMobile {
-      max-width: calc(
-        2rem + 4 * var(--default-button-size)
-      ); // 4 gaps + 4 buttons
+      max-width: calc(2rem + 4 * var(--default-button-size)); // 4 gaps + 4 buttons
     }
 
     &--compact {

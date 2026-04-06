@@ -1,11 +1,6 @@
 import { nanoid } from "nanoid";
 
-import {
-  IMAGE_MIME_TYPES,
-  MIME_TYPES,
-  bytesToHexString,
-  isPromiseLike,
-} from "@excalidraw/common";
+import { IMAGE_MIME_TYPES, MIME_TYPES, bytesToHexString, isPromiseLike } from "@excalidraw/common";
 
 import type { ValueOf } from "@excalidraw/common/utility-types";
 import type { ExcalidrawElement, FileId } from "@excalidraw/element/types";
@@ -19,18 +14,9 @@ import { decodeSvgBase64Payload } from "../scene/export";
 import { base64ToString, stringToBase64, toByteString } from "./encode";
 import { nativeFileSystemSupported } from "./filesystem";
 import { isValidExcalidrawData, isValidLibrary } from "./json";
-import {
-  restoreAppState,
-  restoreElements,
-  restoreLibraryItems,
-} from "./restore";
+import { restoreAppState, restoreElements, restoreLibraryItems } from "./restore";
 
-import type {
-  AppState,
-  DataURL,
-  ExcalidrawFileHandle,
-  LibraryItem,
-} from "../types";
+import type { AppState, DataURL, ExcalidrawFileHandle, LibraryItem } from "../types";
 
 import type { ImportedLibraryData } from "./types";
 
@@ -122,9 +108,7 @@ export const getFileHandleType = (handle: ExcalidrawFileHandle | null) => {
   return handle.name.match(/\.(json|excalidraw|png|svg)$/)?.[1] || null;
 };
 
-export const isImageFileHandleType = (
-  type: string | null,
-): type is "png" | "svg" => {
+export const isImageFileHandleType = (type: string | null): type is "png" | "svg" => {
   return type === "png" || type === "svg";
 };
 
@@ -181,9 +165,7 @@ export const loadSceneOrLibraryFromBlob = async (
               theme: localAppState?.theme,
               fileHandle: fileHandle || blob.handle || null,
               ...cleanAppStateForExport(data.appState || {}),
-              ...(localAppState
-                ? calculateScrollCenter(data.elements || [], localAppState)
-                : {}),
+              ...(localAppState ? calculateScrollCenter(data.elements || [], localAppState) : {}),
             },
             localAppState,
           ),
@@ -213,12 +195,7 @@ export const loadFromBlob = async (
   /** FileSystemFileHandle. Defaults to `blob.handle` if defined, otherwise null. */
   fileHandle?: ExcalidrawFileHandle | null,
 ) => {
-  const ret = await loadSceneOrLibraryFromBlob(
-    blob,
-    localAppState,
-    localElements,
-    fileHandle,
-  );
+  const ret = await loadSceneOrLibraryFromBlob(blob, localAppState, localElements, fileHandle);
   if (ret.type !== MIME_TYPES.excalidraw) {
     throw new Error("Error: invalid file");
   }
@@ -254,9 +231,7 @@ export const canvasToBlob = async (
       }
       canvas.toBlob((blob) => {
         if (!blob) {
-          return reject(
-            new CanvasError("Error: Canvas too big", "CANVAS_POSSIBLY_TOO_BIG"),
-          );
+          return reject(new CanvasError("Error: Canvas too big", "CANVAS_POSSIBLY_TOO_BIG"));
         }
         resolve(blob);
       });
@@ -270,10 +245,7 @@ export const canvasToBlob = async (
     to a 40-char base64 random id) */
 export const generateIdFromFile = async (file: File): Promise<FileId> => {
   try {
-    const hashBuffer = await window.crypto.subtle.digest(
-      "SHA-1",
-      await blobToArrayBuffer(file),
-    );
+    const hashBuffer = await window.crypto.subtle.digest("SHA-1", await blobToArrayBuffer(file));
     return bytesToHexString(new Uint8Array(hashBuffer)) as FileId;
   } catch (error: any) {
     console.error(error);
@@ -299,10 +271,7 @@ export const getDataURL_sync = (
   data: string | Uint8Array | ArrayBuffer,
   mimeType: ValueOf<typeof MIME_TYPES>,
 ): DataURL => {
-  return `data:${mimeType};base64,${stringToBase64(
-    toByteString(data),
-    true,
-  )}` as DataURL;
+  return `data:${mimeType};base64,${stringToBase64(toByteString(data), true)}` as DataURL;
 };
 
 export const dataURLToFile = (dataURL: DataURL, filename = "") => {
@@ -326,7 +295,7 @@ export const resizeImageFile = async (
   file: File,
   opts: {
     /** undefined indicates auto */
-    outputType?: typeof MIME_TYPES["jpg"];
+    outputType?: (typeof MIME_TYPES)["jpg"];
     maxWidthOrHeight: number;
   },
 ): Promise<File> => {
@@ -408,9 +377,7 @@ export const getFileHandle = async (
   if (nativeFileSystemSupported) {
     try {
       const dataTransferItem =
-        event instanceof DataTransferItem
-          ? event
-          : (event as DragEvent).dataTransfer?.items?.[0];
+        event instanceof DataTransferItem ? event : (event as DragEvent).dataTransfer?.items?.[0];
 
       const handle: FileSystemFileHandle | null =
         (await (dataTransferItem as any).getAsFileSystemHandle()) || null;
@@ -428,13 +395,9 @@ export const getFileHandle = async (
  * attempts to detect if a buffer is a valid image by checking its leading bytes
  */
 const getActualMimeTypeFromImage = async (file: Blob | File) => {
-  let mimeType: ValueOf<
-    Pick<typeof MIME_TYPES, "png" | "jpg" | "gif" | "webp">
-  > | null = null;
+  let mimeType: ValueOf<Pick<typeof MIME_TYPES, "png" | "jpg" | "gif" | "webp">> | null = null;
 
-  const leadingBytes = [
-    ...new Uint8Array(await blobToArrayBuffer(file.slice(0, 15))),
-  ].join(" ");
+  const leadingBytes = [...new Uint8Array(await blobToArrayBuffer(file.slice(0, 15)))].join(" ");
 
   // uint8 leading bytes
   const bytes = {

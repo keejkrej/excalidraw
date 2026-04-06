@@ -45,12 +45,9 @@ export const getDateTime = () => {
   return `${year}-${month}-${day}-${hr}${min}`;
 };
 
-export const capitalizeString = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1);
+export const capitalizeString = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
-export const isToolIcon = (
-  target: Element | EventTarget | null,
-): target is HTMLElement =>
+export const isToolIcon = (target: Element | EventTarget | null): target is HTMLElement =>
   target instanceof HTMLElement && target.className.includes("ToolIcon");
 
 export const isInputLike = (
@@ -68,19 +65,12 @@ export const isInputLike = (
   target instanceof HTMLSelectElement;
 
 export const isInteractive = (target: Element | EventTarget | null) => {
-  return (
-    isInputLike(target) ||
-    (target instanceof Element && !!target.closest("label, button"))
-  );
+  return isInputLike(target) || (target instanceof Element && !!target.closest("label, button"));
 };
 
 export const isWritableElement = (
   target: Element | EventTarget | null,
-): target is
-  | HTMLInputElement
-  | HTMLTextAreaElement
-  | HTMLBRElement
-  | HTMLDivElement =>
+): target is HTMLInputElement | HTMLTextAreaElement | HTMLBRElement | HTMLDivElement =>
   (target instanceof HTMLElement && target.dataset.type === "wysiwyg") ||
   target instanceof HTMLBRElement || // newline in wysiwyg
   target instanceof HTMLTextAreaElement ||
@@ -91,11 +81,7 @@ export const isWritableElement = (
       target.type === "search")) ||
   (target instanceof HTMLElement && target.closest(".cm-editor") !== null);
 
-export const getFontFamilyString = ({
-  fontFamily,
-}: {
-  fontFamily: FontFamilyValues;
-}) => {
+export const getFontFamilyString = ({ fontFamily }: { fontFamily: FontFamilyValues }) => {
   for (const [fontFamilyString, id] of Object.entries(FONT_FAMILY)) {
     if (id === fontFamily) {
       return `${fontFamilyString}${getFontFamilyFallbacks(id)
@@ -122,10 +108,7 @@ export const nextAnimationFrame = async (cb: () => any) => {
   requestAnimationFrame(() => requestAnimationFrame(cb));
 };
 
-export const debounce = <T extends any[]>(
-  fn: (...args: T) => void,
-  timeout: number,
-) => {
+export const debounce = <T extends any[]>(fn: (...args: T) => void, timeout: number) => {
   let handle = 0;
   let lastArgs: T | null = null;
   const ret = (...args: T) => {
@@ -234,10 +217,7 @@ const easeOutInterpolate = (from: number, to: number, progress: number) => {
  * // To cancel the animation:
  * cancelAnimation();
  */
-export const easeToValuesRAF = <
-  T extends Record<keyof T, number>,
-  K extends keyof T,
->({
+export const easeToValuesRAF = <T extends Record<keyof T, number>, K extends keyof T>({
   fromValues,
   toValues,
   onStep,
@@ -334,10 +314,7 @@ export const easeToValuesRAF = <
 };
 
 // https://github.com/lodash/lodash/blob/es/chunk.js
-export const chunk = <T extends any>(
-  array: readonly T[],
-  size: number,
-): T[][] => {
+export const chunk = <T extends any>(array: readonly T[], size: number): T[][] => {
   if (!array.length || size < 1) {
     return [];
   }
@@ -406,11 +383,9 @@ export const updateActiveTool = (
   };
 };
 
-export const isFullScreen = () =>
-  document.fullscreenElement?.nodeName === "HTML";
+export const isFullScreen = () => document.fullscreenElement?.nodeName === "HTML";
 
-export const allowFullScreen = () =>
-  document.documentElement.requestFullscreen();
+export const allowFullScreen = () => document.documentElement.requestFullscreen();
 
 export const exitFullScreen = () => document.exitFullscreen();
 
@@ -473,9 +448,7 @@ const RE_RTL_CHECK = new RegExp(`^[^${RS_LTR_CHARS}]*[${RS_RTL_CHARS}]`);
  */
 export const isRTL = (text: string) => RE_RTL_CHECK.test(text);
 
-export const tupleToCoors = (
-  xyTuple: readonly [number, number],
-): { x: number; y: number } => {
+export const tupleToCoors = (xyTuple: readonly [number, number]): { x: number; y: number } => {
   const [x, y] = xyTuple;
   return { x, y };
 };
@@ -572,15 +545,12 @@ export const nFormatter = (num: number, digits: number): string => {
       break;
     }
   }
-  return (
-    (num / si[index].value).toFixed(digits).replace(rx, "$1") + si[index].symbol
-  );
+  return (num / si[index].value).toFixed(digits).replace(rx, "$1") + si[index].symbol;
 };
 
 export const getVersion = () => {
   return (
-    document.querySelector<HTMLMetaElement>('meta[name="version"]')?.content ||
-    DEFAULT_VERSION
+    document.querySelector<HTMLMetaElement>('meta[name="version"]')?.content || DEFAULT_VERSION
   );
 };
 
@@ -601,9 +571,7 @@ export const supportsEmoji = () => {
   return ctx.getImageData(offset, offset, 1, 1).data[0] !== 0;
 };
 
-export const getNearestScrollableContainer = (
-  element: HTMLElement,
-): HTMLElement | Document => {
+export const getNearestScrollableContainer = (element: HTMLElement): HTMLElement | Document => {
   let parent = element.parentElement;
   while (parent) {
     if (parent === document.body) {
@@ -613,9 +581,7 @@ export const getNearestScrollableContainer = (
     const hasScrollableContent = parent.scrollHeight > parent.clientHeight;
     if (
       hasScrollableContent &&
-      (overflowY === "auto" ||
-        overflowY === "scroll" ||
-        overflowY === "overlay")
+      (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay")
     ) {
       return parent;
     }
@@ -659,15 +625,16 @@ export const arrayToMap = <T extends { id: string } | string>(
   if (items instanceof Map) {
     return items;
   }
-  return items.reduce((acc: Map<string, T>, element) => {
-    acc.set(typeof element === "string" ? element : element.id, element);
-    return acc;
-  }, new Map() as Map<string, T>);
+  return items.reduce(
+    (acc: Map<string, T>, element) => {
+      acc.set(typeof element === "string" ? element : element.id, element);
+      return acc;
+    },
+    new Map() as Map<string, T>,
+  );
 };
 
-export const arrayToMapWithIndex = <T extends { id: string }>(
-  elements: readonly T[],
-) =>
+export const arrayToMapWithIndex = <T extends { id: string }>(elements: readonly T[]) =>
   elements.reduce((acc, element: T, idx) => {
     acc.set(element.id, [element, idx]);
     return acc;
@@ -676,14 +643,14 @@ export const arrayToMapWithIndex = <T extends { id: string }>(
 /**
  * Transform array into an object, use only when array order is irrelevant.
  */
-export const arrayToObject = <T>(
-  array: readonly T[],
-  groupBy?: (value: T) => string | number,
-) =>
-  array.reduce((acc, value, idx) => {
-    acc[groupBy ? groupBy(value) : idx] = value;
-    return acc;
-  }, {} as { [key: string]: T });
+export const arrayToObject = <T>(array: readonly T[], groupBy?: (value: T) => string | number) =>
+  array.reduce(
+    (acc, value, idx) => {
+      acc[groupBy ? groupBy(value) : idx] = value;
+      return acc;
+    },
+    {} as { [key: string]: T },
+  );
 
 /** Doubly linked node */
 export type Node<T> = T & {
@@ -721,18 +688,14 @@ export const arrayToList = <T>(array: readonly T[]): Node<T>[] =>
  * Converts a readonly array or map into an iterable.
  * Useful for avoiding entry allocations when iterating object / map on each iteration.
  */
-export const toIterable = <T>(
-  values: readonly T[] | ReadonlyMap<string, T>,
-): Iterable<T> => {
+export const toIterable = <T>(values: readonly T[] | ReadonlyMap<string, T>): Iterable<T> => {
   return Array.isArray(values) ? values : values.values();
 };
 
 /**
  * Converts a readonly array or map into an array.
  */
-export const toArray = <T>(
-  values: readonly T[] | ReadonlyMap<string, T>,
-): T[] => {
+export const toArray = <T>(values: readonly T[] | ReadonlyMap<string, T>): T[] => {
   return Array.isArray(values) ? values : Array.from(toIterable(values));
 };
 
@@ -742,8 +705,7 @@ export const isDevEnv = () => import.meta.env.MODE === ENV.DEVELOPMENT;
 
 export const isProdEnv = () => import.meta.env.MODE === ENV.PRODUCTION;
 
-export const isServerEnv = () =>
-  typeof process !== "undefined" && !!process?.env?.NODE_ENV;
+export const isServerEnv = () => typeof process !== "undefined" && !!process?.env?.NODE_ENV;
 
 export const wrapEvent = <T extends Event>(name: EVENT, nativeEvent: T) => {
   return new CustomEvent(name, {
@@ -754,10 +716,7 @@ export const wrapEvent = <T extends Event>(name: EVENT, nativeEvent: T) => {
   });
 };
 
-export const updateObject = <T extends Record<string, any>>(
-  obj: T,
-  updates: Partial<T>,
-): T => {
+export const updateObject = <T extends Record<string, any>>(obj: T, updates: Partial<T>): T => {
   let didChange = false;
   for (const key in updates) {
     const value = (updates as any)[key];
@@ -798,9 +757,7 @@ export const getFrame = () => {
 
 export const isRunningInIframe = () => getFrame() === "iframe";
 
-export const isPromiseLike = (
-  value: any,
-): value is Promise<ResolutionType<typeof value>> => {
+export const isPromiseLike = (value: any): value is Promise<ResolutionType<typeof value>> => {
   return (
     !!value &&
     typeof value === "object" &&
@@ -817,8 +774,7 @@ export const queryFocusableElements = (container: HTMLElement | null) => {
 
   return focusableElements
     ? Array.from(focusableElements).filter(
-        (element) =>
-          element.tabIndex > -1 && !(element as HTMLInputElement).disabled,
+        (element) => element.tabIndex > -1 && !(element as HTMLInputElement).disabled,
       )
     : [];
 };
@@ -826,12 +782,7 @@ export const queryFocusableElements = (container: HTMLElement | null) => {
 /** use as a fallback after identity check (for perf reasons) */
 const _defaultIsShallowComparatorFallback = (a: any, b: any): boolean => {
   // consider two empty arrays equal
-  if (
-    Array.isArray(a) &&
-    Array.isArray(b) &&
-    a.length === 0 &&
-    b.length === 0
-  ) {
+  if (Array.isArray(a) && Array.isArray(b) && a.length === 0 && b.length === 0) {
     return true;
   }
   return a === b;
@@ -841,10 +792,7 @@ const _defaultIsShallowComparatorFallback = (a: any, b: any): boolean => {
  * Returns whether object/array is shallow equal.
  * Considers empty object/arrays as equal (whether top-level or second-level).
  */
-export const isShallowEqual = <
-  T extends Record<string, any>,
-  K extends readonly unknown[],
->(
+export const isShallowEqual = <T extends Record<string, any>, K extends readonly unknown[]>(
   objA: T,
   objB: T,
   comparators?:
@@ -877,8 +825,7 @@ export const isShallowEqual = <
   if (comparators && Array.isArray(comparators)) {
     for (const key of comparators) {
       const ret =
-        objA[key] === objB[key] ||
-        _defaultIsShallowComparatorFallback(objA[key], objB[key]);
+        objA[key] === objB[key] || _defaultIsShallowComparatorFallback(objA[key], objB[key]);
       if (!ret) {
         if (debug) {
           console.warn(
@@ -895,21 +842,15 @@ export const isShallowEqual = <
   }
 
   return aKeys.every((key) => {
-    const comparator = (
-      comparators as { [key in keyof T]?: (a: T[key], b: T[key]) => boolean }
-    )?.[key as keyof T];
+    const comparator = (comparators as { [key in keyof T]?: (a: T[key], b: T[key]) => boolean })?.[
+      key as keyof T
+    ];
     const ret = comparator
       ? comparator(objA[key], objB[key])
-      : objA[key] === objB[key] ||
-        _defaultIsShallowComparatorFallback(objA[key], objB[key]);
+      : objA[key] === objB[key] || _defaultIsShallowComparatorFallback(objA[key], objB[key]);
 
     if (!ret && debug) {
-      console.warn(
-        `%cisShallowEqual: ${key} not equal ->`,
-        "color: #8B4000",
-        objA[key],
-        objB[key],
-      );
+      console.warn(`%cisShallowEqual: ${key} not equal ->`, "color: #8B4000", objA[key], objB[key]);
     }
     return ret;
   });
@@ -925,10 +866,7 @@ export const composeEventHandlers = <E>(
   return function handleEvent(event: E) {
     originalEventHandler?.(event);
 
-    if (
-      !checkForDefaultPrevented ||
-      !(event as unknown as Event)?.defaultPrevented
-    ) {
+    if (!checkForDefaultPrevented || !(event as unknown as Event)?.defaultPrevented) {
       return ourEventHandler?.(event);
     }
   };
@@ -938,11 +876,7 @@ export const composeEventHandlers = <E>(
  * supply `null` as message if non-never value is valid, you just need to
  * typecheck against it
  */
-export const assertNever = (
-  value: never,
-  message: string | null,
-  softAssert?: boolean,
-): never => {
+export const assertNever = (value: never, message: string | null, softAssert?: boolean): never => {
   if (!message) {
     return value;
   }
@@ -963,9 +897,7 @@ export function invariant(condition: any, message: string): asserts condition {
 /**
  * Memoizes on values of `opts` object (strict equality).
  */
-export const memoize = <T extends Record<string, any>, R extends any>(
-  func: (opts: T) => R,
-) => {
+export const memoize = <T extends Record<string, any>, R extends any>(func: (opts: T) => R) => {
   let lastArgs: Map<string, any> | undefined;
   let lastResult: R | undefined;
 
@@ -1011,16 +943,13 @@ export const isMemberOf = <T extends string>(
   return collection instanceof Set || collection instanceof Map
     ? collection.has(value as T)
     : "includes" in collection
-    ? collection.includes(value as T)
-    : collection.hasOwnProperty(value);
+      ? collection.includes(value as T)
+      : collection.hasOwnProperty(value);
 };
 
 export const cloneJSON = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
-export const updateStable = <T extends any[] | Record<string, any>>(
-  prevValue: T,
-  nextValue: T,
-) => {
+export const updateStable = <T extends any[] | Record<string, any>>(prevValue: T, nextValue: T) => {
   if (isShallowEqual(prevValue, nextValue)) {
     return prevValue;
   }
@@ -1062,13 +991,7 @@ export function addEventListener<K extends keyof FontFaceSetEventMap>(
 ): UnsubscribeCallback;
 // HTMLElement / mix
 export function addEventListener<K extends keyof HTMLElementEventMap>(
-  target:
-    | Document
-    | (Window & typeof globalThis)
-    | HTMLElement
-    | undefined
-    | null
-    | false,
+  target: Document | (Window & typeof globalThis) | HTMLElement | undefined | null | false,
   type: K,
   listener: (this: HTMLDivElement, ev: HTMLElementEventMap[K]) => any,
   options?: boolean | AddEventListenerOptions,
@@ -1113,17 +1036,12 @@ export function getSvgPathFromStroke(points: number[][], closed = true) {
 
   let result = `M${a[0].toFixed(2)},${a[1].toFixed(2)} Q${b[0].toFixed(
     2,
-  )},${b[1].toFixed(2)} ${average(b[0], c[0]).toFixed(2)},${average(
-    b[1],
-    c[1],
-  ).toFixed(2)} T`;
+  )},${b[1].toFixed(2)} ${average(b[0], c[0]).toFixed(2)},${average(b[1], c[1]).toFixed(2)} T`;
 
   for (let i = 2, max = len - 1; i < max; i++) {
     a = points[i];
     b = points[i + 1];
-    result += `${average(a[0], b[0]).toFixed(2)},${average(a[1], b[1]).toFixed(
-      2,
-    )} `;
+    result += `${average(a[0], b[0]).toFixed(2)},${average(a[1], b[1]).toFixed(2)} `;
   }
 
   if (closed) {
@@ -1143,48 +1061,48 @@ export type HasBrand<T> = {
   [K in keyof T]: K extends `~brand${infer _}` | "_brand" ? true : never;
 }[keyof T];
 
-type RemoveAllBrands<T> = HasBrand<T> extends true
-  ? {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      [K in keyof T as K extends `~brand~${infer _}` | "_brand"
-        ? never
-        : K]: T[K];
-    }
-  : T;
+type RemoveAllBrands<T> =
+  HasBrand<T> extends true
+    ? {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        [K in keyof T as K extends `~brand~${infer _}` | "_brand" ? never : K]: T[K];
+      }
+    : T;
 
 // For accepting values - uses loose matching for branded types
 // Preserves readonly modifier: mutable array requires mutable input
-type UnbrandForValue<T> = T extends Map<infer E, infer F>
-  ? Map<UnbrandForValue<E>, UnbrandForValue<F>>
-  : T extends Set<infer E>
-  ? Set<UnbrandForValue<E>>
-  : T extends readonly any[]
-  ? T extends any[]
-    ? unknown[] // mutable array - require mutable input
-    : readonly unknown[] // readonly array - accept readonly input
-  : RemoveAllBrands<T>;
+type UnbrandForValue<T> =
+  T extends Map<infer E, infer F>
+    ? Map<UnbrandForValue<E>, UnbrandForValue<F>>
+    : T extends Set<infer E>
+      ? Set<UnbrandForValue<E>>
+      : T extends readonly any[]
+        ? T extends any[]
+          ? unknown[] // mutable array - require mutable input
+          : readonly unknown[] // readonly array - accept readonly input
+        : RemoveAllBrands<T>;
 
 // For return types - preserves array element unbranding
-export type Unbrand<T> = T extends Map<infer E, infer F>
-  ? Map<Unbrand<E>, Unbrand<F>>
-  : T extends Set<infer E>
-  ? Set<Unbrand<E>>
-  : T extends readonly (infer E)[]
-  ? Array<Unbrand<E>>
-  : RemoveAllBrands<T>;
+export type Unbrand<T> =
+  T extends Map<infer E, infer F>
+    ? Map<Unbrand<E>, Unbrand<F>>
+    : T extends Set<infer E>
+      ? Set<Unbrand<E>>
+      : T extends readonly (infer E)[]
+        ? Array<Unbrand<E>>
+        : RemoveAllBrands<T>;
 
-export type CombineBrands<BrandedType, CurrentType> =
-  BrandedType extends readonly (infer BE)[]
-    ? CurrentType extends readonly (infer CE)[]
-      ? Array<CE & BE>
-      : CurrentType & BrandedType
-    : CurrentType & BrandedType;
+export type CombineBrands<BrandedType, CurrentType> = BrandedType extends readonly (infer BE)[]
+  ? CurrentType extends readonly (infer CE)[]
+    ? Array<CE & BE>
+    : CurrentType & BrandedType
+  : CurrentType & BrandedType;
 
 export type CombineBrandsIfNeeded<T, Required> = [T] extends [Required]
   ? T[]
   : HasBrand<T> extends true
-  ? CombineBrands<T, Required>[]
-  : Required[];
+    ? CombineBrands<T, Required>[]
+    : Required[];
 
 /**
  * Makes type into a branded type, ensuring that value is assignable to
@@ -1192,9 +1110,7 @@ export type CombineBrandsIfNeeded<T, Required> = [T] extends [Required]
  * type to combine both (useful for composite branded types. Make sure you
  * compose branded types which are not composite themselves.)
  */
-export function toBrandedType<BrandedType>(
-  value: UnbrandForValue<BrandedType>,
-): BrandedType;
+export function toBrandedType<BrandedType>(value: UnbrandForValue<BrandedType>): BrandedType;
 export function toBrandedType<BrandedType, CurrentType>(
   value: CurrentType,
 ): CombineBrands<BrandedType, CurrentType>;
@@ -1233,8 +1149,7 @@ export const escapeDoubleQuotes = (str: string) => {
   return str.replace(/"/g, "&quot;");
 };
 
-export const castArray = <T>(value: T | T[]): T[] =>
-  Array.isArray(value) ? value : [value];
+export const castArray = <T>(value: T | T[]): T[] => (Array.isArray(value) ? value : [value]);
 
 /** hack for Array.isArray type guard not working with readonly value[] */
 export const isReadonlyArray = (value?: any): value is readonly any[] => {
@@ -1251,8 +1166,8 @@ export const sizeOf = (
   return isReadonlyArray(value)
     ? value.length
     : value instanceof Map || value instanceof Set
-    ? value.size
-    : Object.keys(value).length;
+      ? value.size
+      : Object.keys(value).length;
 };
 
 export const reduceToCommonValue = <T, R = T>(
@@ -1289,9 +1204,7 @@ const DEFAULT_FEATURE_FLAGS: FEATURE_FLAGS = {
 };
 let featureFlags: FEATURE_FLAGS | null = null;
 
-export const getFeatureFlag = <F extends keyof FEATURE_FLAGS>(
-  flag: F,
-): FEATURE_FLAGS[F] => {
+export const getFeatureFlag = <F extends keyof FEATURE_FLAGS>(flag: F): FEATURE_FLAGS[F] => {
   if (!featureFlags) {
     try {
       const serializedFlags = localStorage.getItem(FEATURE_FLAGS_STORAGE_KEY);
@@ -1305,19 +1218,13 @@ export const getFeatureFlag = <F extends keyof FEATURE_FLAGS>(
   return (featureFlags || DEFAULT_FEATURE_FLAGS)[flag];
 };
 
-export const setFeatureFlag = <F extends keyof FEATURE_FLAGS>(
-  flag: F,
-  value: FEATURE_FLAGS[F],
-) => {
+export const setFeatureFlag = <F extends keyof FEATURE_FLAGS>(flag: F, value: FEATURE_FLAGS[F]) => {
   try {
     featureFlags = {
       ...(featureFlags || DEFAULT_FEATURE_FLAGS),
       [flag]: value,
     };
-    localStorage.setItem(
-      FEATURE_FLAGS_STORAGE_KEY,
-      JSON.stringify(featureFlags),
-    );
+    localStorage.setItem(FEATURE_FLAGS_STORAGE_KEY, JSON.stringify(featureFlags));
   } catch (e) {
     console.error("unable to set feature flag", e);
   }

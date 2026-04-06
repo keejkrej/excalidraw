@@ -64,10 +64,8 @@ const Module = (function () {
       typeof process === "object" &&
       typeof process.versions === "object" &&
       typeof process.versions.node === "string";
-    ENVIRONMENT_IS_NODE =
-      ENVIRONMENT_HAS_NODE && !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_WORKER;
-    ENVIRONMENT_IS_SHELL =
-      !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
+    ENVIRONMENT_IS_NODE = ENVIRONMENT_HAS_NODE && !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_WORKER;
+    ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
     if (Module.ENVIRONMENT) {
       throw new Error(
         "Module.ENVIRONMENT has been deprecated. To force the environment, use the ENVIRONMENT compile-time option (for example, -s ENVIRONMENT=web or -s ENVIRONMENT=node)",
@@ -154,8 +152,7 @@ const Module = (function () {
           console = {};
         }
         console.log = print;
-        console.warn = console.error =
-          typeof printErr !== "undefined" ? printErr : print;
+        console.warn = console.error = typeof printErr !== "undefined" ? printErr : print;
       }
     } else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
       if (ENVIRONMENT_IS_WORKER) {
@@ -167,10 +164,7 @@ const Module = (function () {
         scriptDirectory = _scriptDir;
       }
       if (scriptDirectory.indexOf("blob:") !== 0) {
-        scriptDirectory = scriptDirectory.substr(
-          0,
-          scriptDirectory.lastIndexOf("/") + 1,
-        );
+        scriptDirectory = scriptDirectory.substr(0, scriptDirectory.lastIndexOf("/") + 1);
       } else {
         scriptDirectory = "";
       }
@@ -356,16 +350,12 @@ const Module = (function () {
       Object.defineProperty(Module, "noExitRuntime", {
         configurable: true,
         get() {
-          abort(
-            "Module.noExitRuntime has been replaced with plain noExitRuntime",
-          );
+          abort("Module.noExitRuntime has been replaced with plain noExitRuntime");
         },
       });
     }
     if (typeof WebAssembly !== "object") {
-      abort(
-        "No WebAssembly support found. Build with -s WASM=0 to target JavaScript instead.",
-      );
+      abort("No WebAssembly support found. Build with -s WASM=0 to target JavaScript instead.");
     }
     let wasmMemory;
     const wasmTable = new WebAssembly.Table({
@@ -382,10 +372,7 @@ const Module = (function () {
     }
     function getCFunc(ident) {
       const func = Module[`_${ident}`];
-      assert(
-        func,
-        `Cannot call unknown function ${ident}, make sure it is exported`,
-      );
+      assert(func, `Cannot call unknown function ${ident}, make sure it is exported`);
       return func;
     }
     function ccall(ident, returnType, argTypes, args, opts) {
@@ -443,8 +430,7 @@ const Module = (function () {
         return ccall(ident, returnType, argTypes, arguments, opts);
       };
     }
-    const UTF8Decoder =
-      typeof TextDecoder !== "undefined" ? new TextDecoder("utf8") : undefined;
+    const UTF8Decoder = typeof TextDecoder !== "undefined" ? new TextDecoder("utf8") : undefined;
     function UTF8ArrayToString(u8Array, idx, maxBytesToRead) {
       const endIdx = idx + maxBytesToRead;
       let endPtr = idx;
@@ -477,8 +463,7 @@ const Module = (function () {
               )} encountered when deserializing a UTF-8 string on the asm.js/wasm heap to a JS string!`,
             );
           }
-          u0 =
-            ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (u8Array[idx++] & 63);
+          u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (u8Array[idx++] & 63);
         }
         if (u0 < 65536) {
           str += String.fromCharCode(u0);
@@ -570,9 +555,7 @@ const Module = (function () {
       return len;
     }
     const UTF16Decoder =
-      typeof TextDecoder !== "undefined"
-        ? new TextDecoder("utf-16le")
-        : undefined;
+      typeof TextDecoder !== "undefined" ? new TextDecoder("utf-16le") : undefined;
     function writeArrayToMemory(array, buffer) {
       assert(
         array.length >= 0,
@@ -625,9 +608,7 @@ const Module = (function () {
       Object.defineProperty(Module, "TOTAL_MEMORY", {
         configurable: true,
         get() {
-          abort(
-            "Module.TOTAL_MEMORY has been replaced with plain INITIAL_TOTAL_MEMORY",
-          );
+          abort("Module.TOTAL_MEMORY has been replaced with plain INITIAL_TOTAL_MEMORY");
         },
       });
     }
@@ -673,9 +654,7 @@ const Module = (function () {
         );
       }
       if (HEAP32[0] !== 1668509029) {
-        abort(
-          "Runtime error: The application has corrupted its heap memory area (address zero)!",
-        );
+        abort("Runtime error: The application has corrupted its heap memory area (address zero)!");
       }
     }
     function abortStackOverflow(allocSize) {
@@ -794,10 +773,7 @@ const Module = (function () {
       if (id) {
         assert(!runDependencyTracking[id]);
         runDependencyTracking[id] = 1;
-        if (
-          runDependencyWatcher === null &&
-          typeof setInterval !== "undefined"
-        ) {
+        if (runDependencyWatcher === null && typeof setInterval !== "undefined") {
           runDependencyWatcher = setInterval(() => {
             if (ABORT) {
               clearInterval(runDependencyWatcher);
@@ -986,16 +962,14 @@ const Module = (function () {
           process.versions.node &&
           +process.versions.node.split(".")[0] < 17
         ) {
-          fetch(wasmBinaryFile, { credentials: "same-origin" }).then(
-            (response) => {
-              const result = WebAssembly.instantiateStreaming(response, info);
-              return result.then(receiveInstantiatedSource, (reason) => {
-                err(`wasm streaming compile failed: ${reason}`);
-                err("falling back to ArrayBuffer instantiation");
-                instantiateArrayBuffer(receiveInstantiatedSource);
-              });
-            },
-          );
+          fetch(wasmBinaryFile, { credentials: "same-origin" }).then((response) => {
+            const result = WebAssembly.instantiateStreaming(response, info);
+            return result.then(receiveInstantiatedSource, (reason) => {
+              err(`wasm streaming compile failed: ${reason}`);
+              err("falling back to ArrayBuffer instantiation");
+              instantiateArrayBuffer(receiveInstantiatedSource);
+            });
+          });
         } else {
           return instantiateArrayBuffer(receiveInstantiatedSource);
         }
@@ -1021,8 +995,7 @@ const Module = (function () {
     const tempDoublePtr = 434096;
     assert(tempDoublePtr % 8 == 0);
     function demangle(func) {
-      const __cxa_demangle_func =
-        Module.___cxa_demangle || Module.__cxa_demangle;
+      const __cxa_demangle_func = Module.___cxa_demangle || Module.__cxa_demangle;
       assert(__cxa_demangle_func);
       try {
         let s = func;
@@ -1115,8 +1088,7 @@ const Module = (function () {
     function ___unlock() {}
     var PATH = {
       splitPath(filename) {
-        const splitPathRe =
-          /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+        const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
         return splitPathRe.exec(filename).slice(1);
       },
       normalizeArray(parts, allowAboveRoot) {
@@ -1228,9 +1200,7 @@ const Module = (function () {
     };
     function _fd_close(fd) {
       try {
-        abort(
-          "it should not be possible to operate on streams when !SYSCALLS_REQUIRE_FILESYSTEM",
-        );
+        abort("it should not be possible to operate on streams when !SYSCALLS_REQUIRE_FILESYSTEM");
         return 0;
       } catch (e) {
         if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) {
@@ -1244,9 +1214,7 @@ const Module = (function () {
     }
     function _fd_seek(fd, offset_low, offset_high, whence, newOffset) {
       try {
-        abort(
-          "it should not be possible to operate on streams when !SYSCALLS_REQUIRE_FILESYSTEM",
-        );
+        abort("it should not be possible to operate on streams when !SYSCALLS_REQUIRE_FILESYSTEM");
         return 0;
       } catch (e) {
         if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) {
@@ -1356,10 +1324,7 @@ const Module = (function () {
         this.message = message;
         const stack = new Error(message).stack;
         if (stack !== undefined) {
-          this.stack = `${this.toString()}\n${stack.replace(
-            /^Error(:[^\n]*)?\n/,
-            "",
-          )}`;
+          this.stack = `${this.toString()}\n${stack.replace(/^Error(:[^\n]*)?\n/, "")}`;
         }
       });
       errorClass.prototype = Object.create(baseErrorType.prototype);
@@ -1380,11 +1345,7 @@ const Module = (function () {
     function throwInternalError(message) {
       throw new InternalError(message);
     }
-    function whenDependentTypesAreResolved(
-      myTypes,
-      dependentTypes,
-      getTypeConverters,
-    ) {
+    function whenDependentTypesAreResolved(myTypes, dependentTypes, getTypeConverters) {
       myTypes.forEach((type) => {
         typeDependencies[type] = dependentTypes;
       });
@@ -1424,15 +1385,11 @@ const Module = (function () {
     function registerType(rawType, registeredInstance, options) {
       options = options || {};
       if (!("argPackAdvance" in registeredInstance)) {
-        throw new TypeError(
-          "registerType registeredInstance requires argPackAdvance",
-        );
+        throw new TypeError("registerType registeredInstance requires argPackAdvance");
       }
       const name = registeredInstance.name;
       if (!rawType) {
-        throwBindingError(
-          `type "${name}" must have a positive integer typeid pointer`,
-        );
+        throwBindingError(`type "${name}" must have a positive integer typeid pointer`);
       }
       if (registeredTypes.hasOwnProperty(rawType)) {
         if (options.ignoreDuplicateRegistrations) {
@@ -1450,13 +1407,7 @@ const Module = (function () {
         });
       }
     }
-    function __embind_register_bool(
-      rawType,
-      name,
-      size,
-      trueValue,
-      falseValue,
-    ) {
+    function __embind_register_bool(rawType, name, size, trueValue, falseValue) {
       const shift = getShiftFromSize(size);
       name = readLatin1String(name);
       registerType(rawType, {
@@ -1634,17 +1585,12 @@ const Module = (function () {
       if (undefined === proto[methodName].overloadTable) {
         const prevFunc = proto[methodName];
         proto[methodName] = function () {
-          if (
-            !proto[methodName].overloadTable.hasOwnProperty(arguments.length)
-          ) {
+          if (!proto[methodName].overloadTable.hasOwnProperty(arguments.length)) {
             throwBindingError(
               `Function '${humanName}' called with an invalid number of arguments (${arguments.length}) - expects one of (${proto[methodName].overloadTable})!`,
             );
           }
-          return proto[methodName].overloadTable[arguments.length].apply(
-            this,
-            arguments,
-          );
+          return proto[methodName].overloadTable[arguments.length].apply(this, arguments);
         };
         proto[methodName].overloadTable = [];
         proto[methodName].overloadTable[prevFunc.argCount] = prevFunc;
@@ -1713,21 +1659,13 @@ const Module = (function () {
         return 0;
       }
       if (!handle.$$) {
-        throwBindingError(
-          `Cannot pass "${_embind_repr(handle)}" as a ${this.name}`,
-        );
+        throwBindingError(`Cannot pass "${_embind_repr(handle)}" as a ${this.name}`);
       }
       if (!handle.$$.ptr) {
-        throwBindingError(
-          `Cannot pass deleted object as a pointer of type ${this.name}`,
-        );
+        throwBindingError(`Cannot pass deleted object as a pointer of type ${this.name}`);
       }
       const handleClass = handle.$$.ptrType.registeredClass;
-      const ptr = upcastPointer(
-        handle.$$.ptr,
-        handleClass,
-        this.registeredClass,
-      );
+      const ptr = upcastPointer(handle.$$.ptr, handleClass, this.registeredClass);
       return ptr;
     }
     function genericPointerToWireType(destructors, handle) {
@@ -1746,21 +1684,15 @@ const Module = (function () {
         return 0;
       }
       if (!handle.$$) {
-        throwBindingError(
-          `Cannot pass "${_embind_repr(handle)}" as a ${this.name}`,
-        );
+        throwBindingError(`Cannot pass "${_embind_repr(handle)}" as a ${this.name}`);
       }
       if (!handle.$$.ptr) {
-        throwBindingError(
-          `Cannot pass deleted object as a pointer of type ${this.name}`,
-        );
+        throwBindingError(`Cannot pass deleted object as a pointer of type ${this.name}`);
       }
       if (!this.isConst && handle.$$.ptrType.isConst) {
         throwBindingError(
           `Cannot convert argument of type ${
-            handle.$$.smartPtrType
-              ? handle.$$.smartPtrType.name
-              : handle.$$.ptrType.name
+            handle.$$.smartPtrType ? handle.$$.smartPtrType.name : handle.$$.ptrType.name
           } to parameter type ${this.name}`,
         );
       }
@@ -1777,9 +1709,7 @@ const Module = (function () {
             } else {
               throwBindingError(
                 `Cannot convert argument of type ${
-                  handle.$$.smartPtrType
-                    ? handle.$$.smartPtrType.name
-                    : handle.$$.ptrType.name
+                  handle.$$.smartPtrType ? handle.$$.smartPtrType.name : handle.$$.ptrType.name
                 } to parameter type ${this.name}`,
               );
             }
@@ -1817,14 +1747,10 @@ const Module = (function () {
         return 0;
       }
       if (!handle.$$) {
-        throwBindingError(
-          `Cannot pass "${_embind_repr(handle)}" as a ${this.name}`,
-        );
+        throwBindingError(`Cannot pass "${_embind_repr(handle)}" as a ${this.name}`);
       }
       if (!handle.$$.ptr) {
-        throwBindingError(
-          `Cannot pass deleted object as a pointer of type ${this.name}`,
-        );
+        throwBindingError(`Cannot pass deleted object as a pointer of type ${this.name}`);
       }
       if (handle.$$.ptrType.isConst) {
         throwBindingError(
@@ -1832,11 +1758,7 @@ const Module = (function () {
         );
       }
       const handleClass = handle.$$.ptrType.registeredClass;
-      const ptr = upcastPointer(
-        handle.$$.ptr,
-        handleClass,
-        this.registeredClass,
-      );
+      const ptr = upcastPointer(handle.$$.ptr, handleClass, this.registeredClass);
       return ptr;
     }
     function simpleReadValueFromPointer(pointer) {
@@ -1920,9 +1842,7 @@ const Module = (function () {
         throwInternalError("Both smartPtrType and smartPtr must be specified");
       }
       record.count = { value: 1 };
-      return attachFinalizer(
-        Object.create(prototype, { $$: { value: record } }),
-      );
+      return attachFinalizer(Object.create(prototype, { $$: { value: record } }));
     }
     function RegisteredPointer_fromWireType(ptr) {
       const rawPointer = this.getPointee(ptr);
@@ -1930,10 +1850,7 @@ const Module = (function () {
         this.destructor(ptr);
         return null;
       }
-      const registeredInstance = getInheritedInstance(
-        this.registeredClass,
-        rawPointer,
-      );
+      const registeredInstance = getInheritedInstance(this.registeredClass, rawPointer);
       if (undefined !== registeredInstance) {
         if (0 === registeredInstance.$$.count.value) {
           registeredInstance.$$.ptr = rawPointer;
@@ -1969,11 +1886,7 @@ const Module = (function () {
       } else {
         toType = registeredPointerRecord.pointerType;
       }
-      const dp = downcastPointer(
-        rawPointer,
-        this.registeredClass,
-        toType.registeredClass,
-      );
+      const dp = downcastPointer(rawPointer, this.registeredClass, toType.registeredClass);
       if (dp === null) {
         return makeDefaultHandle.call(this);
       }
@@ -1994,8 +1907,7 @@ const Module = (function () {
       RegisteredPointer.prototype.getPointee = RegisteredPointer_getPointee;
       RegisteredPointer.prototype.destructor = RegisteredPointer_destructor;
       RegisteredPointer.prototype.argPackAdvance = 8;
-      RegisteredPointer.prototype.readValueFromPointer =
-        simpleReadValueFromPointer;
+      RegisteredPointer.prototype.readValueFromPointer = simpleReadValueFromPointer;
       RegisteredPointer.prototype.deleteObject = RegisteredPointer_deleteObject;
       RegisteredPointer.prototype.fromWireType = RegisteredPointer_fromWireType;
     }
@@ -2039,10 +1951,7 @@ const Module = (function () {
       if (!Module.hasOwnProperty(name)) {
         throwInternalError("Replacing nonexistant public symbol");
       }
-      if (
-        undefined !== Module[name].overloadTable &&
-        undefined !== numArguments
-      ) {
+      if (undefined !== Module[name].overloadTable && undefined !== numArguments) {
         Module[name].overloadTable[numArguments] = value;
       } else {
         Module[name] = value;
@@ -2058,14 +1967,9 @@ const Module = (function () {
         }
         const name = `dynCall_${signature}_${rawFunction}`;
         let body = `return function ${name}(${args.join(", ")}) {\n`;
-        body += `    return dynCall(rawFunction${
-          args.length ? ", " : ""
-        }${args.join(", ")});\n`;
+        body += `    return dynCall(rawFunction${args.length ? ", " : ""}${args.join(", ")});\n`;
         body += "};\n";
-        return new Function("dynCall", "rawFunction", body)(
-          dynCall,
-          rawFunction,
-        );
+        return new Function("dynCall", "rawFunction", body)(dynCall, rawFunction);
       }
       let fp;
       if (Module[`FUNCTION_TABLE_${signature}`] !== undefined) {
@@ -2083,9 +1987,7 @@ const Module = (function () {
         fp = makeDynCaller(dc);
       }
       if (typeof fp !== "function") {
-        throwBindingError(
-          `unknown function pointer with signature ${signature}: ${rawFunction}`,
-        );
+        throwBindingError(`unknown function pointer with signature ${signature}: ${rawFunction}`);
       }
       return fp;
     }
@@ -2114,9 +2016,7 @@ const Module = (function () {
         seen[type] = true;
       }
       types.forEach(visit);
-      throw new UnboundTypeError(
-        `${message}: ${unboundTypes.map(getTypeName).join([", "])}`,
-      );
+      throw new UnboundTypeError(`${message}: ${unboundTypes.map(getTypeName).join([", "])}`);
     }
     function __embind_register_class(
       rawType,
@@ -2134,25 +2034,17 @@ const Module = (function () {
       rawDestructor,
     ) {
       name = readLatin1String(name);
-      getActualType = embind__requireFunction(
-        getActualTypeSignature,
-        getActualType,
-      );
+      getActualType = embind__requireFunction(getActualTypeSignature, getActualType);
       if (upcast) {
         upcast = embind__requireFunction(upcastSignature, upcast);
       }
       if (downcast) {
         downcast = embind__requireFunction(downcastSignature, downcast);
       }
-      rawDestructor = embind__requireFunction(
-        destructorSignature,
-        rawDestructor,
-      );
+      rawDestructor = embind__requireFunction(destructorSignature, rawDestructor);
       const legalFunctionName = makeLegalFunctionName(name);
       exposePublicSymbol(legalFunctionName, () => {
-        throwUnboundTypeError(`Cannot construct ${name} due to unbound types`, [
-          baseClassRawType,
-        ]);
+        throwUnboundTypeError(`Cannot construct ${name} due to unbound types`, [baseClassRawType]);
       });
       whenDependentTypesAreResolved(
         [rawType, rawPointerType, rawConstPointerType],
@@ -2167,28 +2059,25 @@ const Module = (function () {
           } else {
             basePrototype = ClassHandle.prototype;
           }
-          const constructor = createNamedFunction(
-            legalFunctionName,
-            function () {
-              if (Object.getPrototypeOf(this) !== instancePrototype) {
-                throw new BindingError(`Use 'new' to construct ${name}`);
-              }
-              if (undefined === registeredClass.constructor_body) {
-                throw new BindingError(`${name} has no accessible constructor`);
-              }
-              const body = registeredClass.constructor_body[arguments.length];
-              if (undefined === body) {
-                throw new BindingError(
-                  `Tried to invoke ctor of ${name} with invalid number of parameters (${
-                    arguments.length
-                  }) - expected (${Object.keys(
-                    registeredClass.constructor_body,
-                  ).toString()}) parameters instead!`,
-                );
-              }
-              return body.apply(this, arguments);
-            },
-          );
+          const constructor = createNamedFunction(legalFunctionName, function () {
+            if (Object.getPrototypeOf(this) !== instancePrototype) {
+              throw new BindingError(`Use 'new' to construct ${name}`);
+            }
+            if (undefined === registeredClass.constructor_body) {
+              throw new BindingError(`${name} has no accessible constructor`);
+            }
+            const body = registeredClass.constructor_body[arguments.length];
+            if (undefined === body) {
+              throw new BindingError(
+                `Tried to invoke ctor of ${name} with invalid number of parameters (${
+                  arguments.length
+                }) - expected (${Object.keys(
+                  registeredClass.constructor_body,
+                ).toString()}) parameters instead!`,
+              );
+            }
+            return body.apply(this, arguments);
+          });
           var instancePrototype = Object.create(basePrototype, {
             constructor: { value: constructor },
           });
@@ -2263,9 +2152,7 @@ const Module = (function () {
         if (undefined === classType.registeredClass.constructor_body) {
           classType.registeredClass.constructor_body = [];
         }
-        if (
-          undefined !== classType.registeredClass.constructor_body[argCount - 1]
-        ) {
+        if (undefined !== classType.registeredClass.constructor_body[argCount - 1]) {
           throw new BindingError(
             `Cannot register multiple constructors with identical number of parameters (${
               argCount - 1
@@ -2274,33 +2161,29 @@ const Module = (function () {
             }'! Overload resolution is currently only performed using the parameter count, not actual type info!`,
           );
         }
-        classType.registeredClass.constructor_body[argCount - 1] =
-          function unboundTypeHandler() {
-            throwUnboundTypeError(
-              `Cannot construct ${classType.name} due to unbound types`,
-              rawArgTypes,
-            );
-          };
+        classType.registeredClass.constructor_body[argCount - 1] = function unboundTypeHandler() {
+          throwUnboundTypeError(
+            `Cannot construct ${classType.name} due to unbound types`,
+            rawArgTypes,
+          );
+        };
         whenDependentTypesAreResolved([], rawArgTypes, (argTypes) => {
-          classType.registeredClass.constructor_body[argCount - 1] =
-            function constructor_body() {
-              if (arguments.length !== argCount - 1) {
-                throwBindingError(
-                  `${humanName} called with ${
-                    arguments.length
-                  } arguments, expected ${argCount - 1}`,
-                );
-              }
-              const destructors = [];
-              const args = new Array(argCount);
-              args[0] = rawConstructor;
-              for (let i = 1; i < argCount; ++i) {
-                args[i] = argTypes[i].toWireType(destructors, arguments[i - 1]);
-              }
-              const ptr = invoker.apply(null, args);
-              runDestructors(destructors);
-              return argTypes[0].fromWireType(ptr);
-            };
+          classType.registeredClass.constructor_body[argCount - 1] = function constructor_body() {
+            if (arguments.length !== argCount - 1) {
+              throwBindingError(
+                `${humanName} called with ${arguments.length} arguments, expected ${argCount - 1}`,
+              );
+            }
+            const destructors = [];
+            const args = new Array(argCount);
+            args[0] = rawConstructor;
+            for (let i = 1; i < argCount; ++i) {
+              args[i] = argTypes[i].toWireType(destructors, arguments[i - 1]);
+            }
+            const ptr = invoker.apply(null, args);
+            runDestructors(destructors);
+            return argTypes[0].fromWireType(ptr);
+          };
           return [];
         });
         return [];
@@ -2312,22 +2195,13 @@ const Module = (function () {
           `new_ called with constructor type ${typeof constructor} which is not a function`,
         );
       }
-      const dummy = createNamedFunction(
-        constructor.name || "unknownFunctionName",
-        () => {},
-      );
+      const dummy = createNamedFunction(constructor.name || "unknownFunctionName", () => {});
       dummy.prototype = constructor.prototype;
       const obj = new dummy();
       const r = constructor.apply(obj, argumentList);
       return r instanceof Object ? r : obj;
     }
-    function craftInvokerFunction(
-      humanName,
-      argTypes,
-      classType,
-      cppInvokerFunc,
-      cppTargetFunc,
-    ) {
+    function craftInvokerFunction(humanName, argTypes, classType, cppInvokerFunc, cppTargetFunc) {
       const argCount = argTypes.length;
       if (argCount < 2) {
         throwBindingError(
@@ -2337,10 +2211,7 @@ const Module = (function () {
       const isClassMethodFunc = argTypes[1] !== null && classType !== null;
       let needsDestructorStack = false;
       for (var i = 1; i < argTypes.length; ++i) {
-        if (
-          argTypes[i] !== null &&
-          argTypes[i].destructorFunction === undefined
-        ) {
+        if (argTypes[i] !== null && argTypes[i].destructorFunction === undefined) {
           needsDestructorStack = true;
           break;
         }
@@ -2390,9 +2261,7 @@ const Module = (function () {
         args2.push(argTypes[i + 2]);
       }
       if (isClassMethodFunc) {
-        argsListWired = `thisWired${
-          argsListWired.length > 0 ? ", " : ""
-        }${argsListWired}`;
+        argsListWired = `thisWired${argsListWired.length > 0 ? ", " : ""}${argsListWired}`;
       }
       invokerFnBody += `${returns ? "var rv = " : ""}invoker(fn${
         argsListWired.length > 0 ? ", " : ""
@@ -2410,8 +2279,7 @@ const Module = (function () {
         }
       }
       if (returns) {
-        invokerFnBody +=
-          "var ret = retType.fromWireType(rv);\n" + "return ret;\n";
+        invokerFnBody += "var ret = retType.fromWireType(rv);\n" + "return ret;\n";
       } else {
       }
       invokerFnBody += "}\n";
@@ -2439,10 +2307,7 @@ const Module = (function () {
           classType.registeredClass.pureVirtualFunctions.push(methodName);
         }
         function unboundTypesHandler() {
-          throwUnboundTypeError(
-            `Cannot call ${humanName} due to unbound types`,
-            rawArgTypes,
-          );
+          throwUnboundTypeError(`Cannot call ${humanName} due to unbound types`, rawArgTypes);
         }
         const proto = classType.registeredClass.instancePrototype;
         const method = proto[methodName];
@@ -2528,9 +2393,7 @@ const Module = (function () {
           return 4;
         }
         default: {
-          const handle = emval_free_list.length
-            ? emval_free_list.pop()
-            : emval_handle_array.length;
+          const handle = emval_free_list.length ? emval_free_list.pop() : emval_handle_array.length;
           emval_handle_array[handle] = { refcount: 1, value };
           return handle;
         }
@@ -2587,9 +2450,7 @@ const Module = (function () {
         },
         toWireType(destructors, value) {
           if (typeof value !== "number" && typeof value !== "boolean") {
-            throw new TypeError(
-              `Cannot convert "${_embind_repr(value)}" to ${this.name}`,
-            );
+            throw new TypeError(`Cannot convert "${_embind_repr(value)}" to ${this.name}`);
           }
           return value;
         },
@@ -2612,10 +2473,7 @@ const Module = (function () {
       exposePublicSymbol(
         name,
         () => {
-          throwUnboundTypeError(
-            `Cannot call ${name} due to unbound types`,
-            argTypes,
-          );
+          throwUnboundTypeError(`Cannot call ${name} due to unbound types`, argTypes);
         },
         argCount - 1,
       );
@@ -2659,13 +2517,7 @@ const Module = (function () {
           throw new TypeError(`Unknown integer type: ${name}`);
       }
     }
-    function __embind_register_integer(
-      primitiveType,
-      name,
-      size,
-      minRange,
-      maxRange,
-    ) {
+    function __embind_register_integer(primitiveType, name, size, minRange, maxRange) {
       name = readLatin1String(name);
       if (maxRange === -1) {
         maxRange = 4294967295;
@@ -2686,9 +2538,7 @@ const Module = (function () {
         fromWireType,
         toWireType(destructors, value) {
           if (typeof value !== "number" && typeof value !== "boolean") {
-            throw new TypeError(
-              `Cannot convert "${_embind_repr(value)}" to ${this.name}`,
-            );
+            throw new TypeError(`Cannot convert "${_embind_repr(value)}" to ${this.name}`);
           }
           if (value < minRange || value > maxRange) {
             throw new TypeError(
@@ -2700,11 +2550,7 @@ const Module = (function () {
           return isUnsignedType ? value >>> 0 : value | 0;
         },
         argPackAdvance: 8,
-        readValueFromPointer: integerReadValueFromPointer(
-          name,
-          shift,
-          minRange !== 0,
-        ),
+        readValueFromPointer: integerReadValueFromPointer(name, shift, minRange !== 0),
         destructorFunction: null,
       });
     }
@@ -2816,9 +2662,7 @@ const Module = (function () {
               const charCode = value.charCodeAt(i);
               if (charCode > 255) {
                 _free(ptr);
-                throwBindingError(
-                  "String has UTF-16 code units that do not fit in 8 bits",
-                );
+                throwBindingError("String has UTF-16 code units that do not fit in 8 bits");
               }
               HEAPU8[ptr + 4 + i] = charCode;
             }
@@ -2910,9 +2754,7 @@ const Module = (function () {
     function requireRegisteredType(rawType, humanName) {
       const impl = registeredTypes[rawType];
       if (undefined === impl) {
-        throwBindingError(
-          `${humanName} has unknown type ${getTypeName(rawType)}`,
-        );
+        throwBindingError(`${humanName} has unknown type ${getTypeName(rawType)}`);
       }
       return impl;
     }
@@ -2955,10 +2797,7 @@ const Module = (function () {
         if (newSize <= 536870912) {
           newSize = alignUp(2 * newSize, PAGE_MULTIPLE);
         } else {
-          newSize = Math.min(
-            alignUp((3 * newSize + 2147483648) / 4, PAGE_MULTIPLE),
-            LIMIT,
-          );
+          newSize = Math.min(alignUp((3 * newSize + 2147483648) / 4, PAGE_MULTIPLE), LIMIT);
         }
         if (newSize === oldSize) {
           warnOnce(
@@ -2996,10 +2835,7 @@ const Module = (function () {
     init_ClassHandle();
     init_RegisteredPointer();
     init_embind();
-    UnboundTypeError = Module.UnboundTypeError = extendError(
-      Error,
-      "UnboundTypeError",
-    );
+    UnboundTypeError = Module.UnboundTypeError = extendError(Error, "UnboundTypeError");
     init_emval();
     function nullFunc_i(x) {
       abortFnPtrError(x, "i");
@@ -3098,18 +2934,17 @@ const Module = (function () {
     };
     const asm = Module.asm(asmGlobalArg, asmLibraryArg, buffer);
     Module.asm = asm;
-    var __ZSt18uncaught_exceptionv = (Module.__ZSt18uncaught_exceptionv =
-      function () {
-        assert(
-          runtimeInitialized,
-          "you need to wait for the runtime to be ready (e.g. wait for main() to be called)",
-        );
-        assert(
-          !runtimeExited,
-          "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)",
-        );
-        return Module.asm.__ZSt18uncaught_exceptionv.apply(null, arguments);
-      });
+    var __ZSt18uncaught_exceptionv = (Module.__ZSt18uncaught_exceptionv = function () {
+      assert(
+        runtimeInitialized,
+        "you need to wait for the runtime to be ready (e.g. wait for main() to be called)",
+      );
+      assert(
+        !runtimeExited,
+        "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)",
+      );
+      return Module.asm.__ZSt18uncaught_exceptionv.apply(null, arguments);
+    });
     const ___cxa_demangle = (Module.___cxa_demangle = function () {
       assert(
         runtimeInitialized,
@@ -3131,10 +2966,7 @@ const Module = (function () {
           !runtimeExited,
           "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)",
         );
-        return Module.asm.___embind_register_native_and_builtin_types.apply(
-          null,
-          arguments,
-        );
+        return Module.asm.___embind_register_native_and_builtin_types.apply(null, arguments);
       });
     var ___getTypeName = (Module.___getTypeName = function () {
       assert(
@@ -3605,16 +3437,12 @@ const Module = (function () {
     }
     if (!Object.getOwnPropertyDescriptor(Module, "ENV")) {
       Module.ENV = function () {
-        abort(
-          "'ENV' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)",
-        );
+        abort("'ENV' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
       };
     }
     if (!Object.getOwnPropertyDescriptor(Module, "FS")) {
       Module.FS = function () {
-        abort(
-          "'FS' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)",
-        );
+        abort("'FS' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
       };
     }
     if (!Object.getOwnPropertyDescriptor(Module, "FS_createFolder")) {
@@ -3675,9 +3503,7 @@ const Module = (function () {
     }
     if (!Object.getOwnPropertyDescriptor(Module, "GL")) {
       Module.GL = function () {
-        abort(
-          "'GL' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)",
-        );
+        abort("'GL' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
       };
     }
     if (!Object.getOwnPropertyDescriptor(Module, "dynamicAlloc")) {
@@ -3703,9 +3529,7 @@ const Module = (function () {
     }
     if (!Object.getOwnPropertyDescriptor(Module, "getLEB")) {
       Module.getLEB = function () {
-        abort(
-          "'getLEB' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)",
-        );
+        abort("'getLEB' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
       };
     }
     if (!Object.getOwnPropertyDescriptor(Module, "getFunctionTables")) {
@@ -3766,9 +3590,7 @@ const Module = (function () {
     }
     if (!Object.getOwnPropertyDescriptor(Module, "dynCall")) {
       Module.dynCall = function () {
-        abort(
-          "'dynCall' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)",
-        );
+        abort("'dynCall' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
       };
     }
     if (!Object.getOwnPropertyDescriptor(Module, "getCompilerSetting")) {
@@ -3808,9 +3630,7 @@ const Module = (function () {
     }
     if (!Object.getOwnPropertyDescriptor(Module, "print")) {
       Module.print = function () {
-        abort(
-          "'print' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)",
-        );
+        abort("'print' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
       };
     }
     if (!Object.getOwnPropertyDescriptor(Module, "printErr")) {
@@ -3843,9 +3663,7 @@ const Module = (function () {
     }
     if (!Object.getOwnPropertyDescriptor(Module, "abort")) {
       Module.abort = function () {
-        abort(
-          "'abort' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)",
-        );
+        abort("'abort' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
       };
     }
     if (!Object.getOwnPropertyDescriptor(Module, "Pointer_stringify")) {
@@ -4047,5 +3865,3 @@ const Module = (function () {
 })();
 
 export default Module;
-
-

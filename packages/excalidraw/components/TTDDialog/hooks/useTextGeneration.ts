@@ -26,16 +26,13 @@ const MAX_PROMPT_LENGTH = 10000;
 export const useTextGeneration = ({
   onTextSubmit,
 }: {
-  onTextSubmit: (
-    props: TTTDDialog.OnTextSubmitProps,
-  ) => Promise<TTTDDialog.OnTextSubmitRetValue>;
+  onTextSubmit: (props: TTTDDialog.OnTextSubmitProps) => Promise<TTTDDialog.OnTextSubmitRetValue>;
 }) => {
   const [, setError] = useAtom(errorAtom);
   const [rateLimits, setRateLimits] = useAtom(rateLimitsAtom);
   const [chatHistory, setChatHistory] = useAtom(chatHistoryAtom);
 
-  const { addUserMessage, addAssistantMessage, setAssistantError } =
-    useChatAgent();
+  const { addUserMessage, addAssistantMessage, setAssistantError } = useChatAgent();
 
   const streamingAbortControllerRef = useRef<AbortController | null>(null);
 
@@ -46,16 +43,10 @@ export const useTextGeneration = ({
       rateLimits?.rateLimitRemaining === 0
     ) {
       if (prompt.length < MIN_PROMPT_LENGTH) {
-        setError(
-          new Error(
-            t("chat.errors.promptTooShort", { min: MIN_PROMPT_LENGTH }),
-          ),
-        );
+        setError(new Error(t("chat.errors.promptTooShort", { min: MIN_PROMPT_LENGTH })));
       }
       if (prompt.length > MAX_PROMPT_LENGTH) {
-        setError(
-          new Error(t("chat.errors.promptTooLong", { max: MAX_PROMPT_LENGTH })),
-        );
+        setError(new Error(t("chat.errors.promptTooLong", { max: MAX_PROMPT_LENGTH })));
       }
 
       return false;
@@ -63,10 +54,7 @@ export const useTextGeneration = ({
     return true;
   };
 
-  const onGenerate: TTTDDialog.OnGenerate = async ({
-    prompt,
-    isRepairFlow = false,
-  }) => {
+  const onGenerate: TTTDDialog.OnGenerate = async ({ prompt, isRepairFlow = false }) => {
     if (!validatePrompt(prompt)) {
       return;
     }
@@ -105,30 +93,29 @@ export const useTextGeneration = ({
         { role: "user", content: prompt },
       ];
 
-      const { generatedResponse, error, rateLimit, rateLimitRemaining } =
-        await onTextSubmit({
-          messages,
-          onStreamCreated: () => {
-            if (isRepairFlow) {
-              setChatHistory((prev) =>
-                updateAssistantContent(prev, {
-                  content: "",
-                  error: "",
-                  isGenerating: true,
-                }),
-              );
-            }
-          },
-          onChunk: (chunk: string) => {
-            setChatHistory((prev) => {
-              const lastAssistantMessage = getLastAssistantMessage(prev);
-              return updateAssistantContent(prev, {
-                content: lastAssistantMessage.content + chunk,
-              });
+      const { generatedResponse, error, rateLimit, rateLimitRemaining } = await onTextSubmit({
+        messages,
+        onStreamCreated: () => {
+          if (isRepairFlow) {
+            setChatHistory((prev) =>
+              updateAssistantContent(prev, {
+                content: "",
+                error: "",
+                isGenerating: true,
+              }),
+            );
+          }
+        },
+        onChunk: (chunk: string) => {
+          setChatHistory((prev) => {
+            const lastAssistantMessage = getLastAssistantMessage(prev);
+            return updateAssistantContent(prev, {
+              content: lastAssistantMessage.content + chunk,
             });
-          },
-          signal: abortController.signal,
-        });
+          });
+        },
+        signal: abortController.signal,
+      });
 
       setChatHistory((prev) =>
         updateAssistantContent(prev, {
@@ -158,10 +145,7 @@ export const useTextGeneration = ({
           const messages = addMessages(chatHistory, [
             {
               type: "warning",
-              warningType:
-                rateLimitRemaining === 0
-                  ? "messageLimitExceeded"
-                  : "rateLimitExceeded",
+              warningType: rateLimitRemaining === 0 ? "messageLimitExceeded" : "rateLimitExceeded",
             },
           ]);
           return messages;
@@ -179,9 +163,7 @@ export const useTextGeneration = ({
           return;
         }
 
-        const _error = new Error(
-          error.message || t("chat.errors.requestFailed"),
-        );
+        const _error = new Error(error.message || t("chat.errors.requestFailed"));
         if (error.status !== 429) {
           setAssistantError(_error.message, "network");
         }
@@ -195,16 +177,12 @@ export const useTextGeneration = ({
         trackEvent("ai", "mermaid parse success", "ttd");
       } catch (error: any) {
         trackEvent("ai", "mermaid parse failed", "ttd");
-        const _error = new Error(
-          error.message || t("chat.errors.mermaidParseError"),
-        );
+        const _error = new Error(error.message || t("chat.errors.mermaidParseError"));
         setAssistantError(_error.message, "parse");
         setError(_error);
       }
     } catch (error: any) {
-      const _error = new Error(
-        error.message || t("chat.errors.generationFailed"),
-      );
+      const _error = new Error(error.message || t("chat.errors.generationFailed"));
       setAssistantError(_error.message, "other");
       setError(_error);
     } finally {

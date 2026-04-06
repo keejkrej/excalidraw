@@ -22,9 +22,7 @@ const DropdownMenuSubTrigger = ({
 }) => {
   return (
     <DropdownMenuPrimitive.SubTrigger
-      className={`${getDropdownMenuItemClassName(
-        className,
-      )} dropdown-menu__submenu-trigger`}
+      className={`${getDropdownMenuItemClassName(className)} dropdown-menu__submenu-trigger`}
     >
       <MenuItemContent icon={icon} shortcut={shortcut}>
         {children}

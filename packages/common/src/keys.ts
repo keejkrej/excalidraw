@@ -140,11 +140,9 @@ export const isArrowKey = (key: string) =>
   key === KEYS.ARROW_DOWN ||
   key === KEYS.ARROW_UP;
 
-export const shouldResizeFromCenter = (event: MouseEvent | KeyboardEvent) =>
-  event.altKey;
+export const shouldResizeFromCenter = (event: MouseEvent | KeyboardEvent) => event.altKey;
 
-export const shouldMaintainAspectRatio = (event: MouseEvent | KeyboardEvent) =>
-  event.shiftKey;
+export const shouldMaintainAspectRatio = (event: MouseEvent | KeyboardEvent) => event.shiftKey;
 
 export const shouldRotateWithDiscreteAngle = (
   event: MouseEvent | KeyboardEvent | React.PointerEvent<HTMLCanvasElement>,

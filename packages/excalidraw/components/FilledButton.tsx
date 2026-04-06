@@ -11,12 +11,7 @@ import { tablerCheckIcon } from "./icons";
 import "./FilledButton.scss";
 
 export type ButtonVariant = "filled" | "outlined" | "icon";
-export type ButtonColor =
-  | "primary"
-  | "danger"
-  | "warning"
-  | "muted"
-  | "success";
+export type ButtonColor = "primary" | "danger" | "warning" | "muted" | "success";
 export type ButtonSize = "medium" | "large";
 
 export type FilledButtonProps = {
@@ -102,9 +97,7 @@ export const FilledButton = forwardRef<HTMLButtonElement, FilledButtonProps>(
           {_status === "loading" ? (
             <Spinner className="ExcButton__statusIcon" />
           ) : (
-            _status === "success" && (
-              <div className="ExcButton__statusIcon">{tablerCheckIcon}</div>
-            )
+            _status === "success" && <div className="ExcButton__statusIcon">{tablerCheckIcon}</div>
           )}
           {icon && (
             <div className="ExcButton__icon" aria-hidden>

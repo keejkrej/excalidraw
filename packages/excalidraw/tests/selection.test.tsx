@@ -25,10 +25,7 @@ import {
 
 unmountComponent();
 
-const renderInteractiveScene = vi.spyOn(
-  InteractiveCanvas,
-  "renderInteractiveScene",
-);
+const renderInteractiveScene = vi.spyOn(InteractiveCanvas, "renderInteractiveScene");
 const renderStaticScene = vi.spyOn(StaticScene, "renderStaticScene");
 
 beforeEach(() => {
@@ -195,21 +192,14 @@ describe("lasso reselection", () => {
 });
 
 describe("box-selection overlap mode", () => {
-  const boxSelect = (
-    startX: number,
-    startY: number,
-    endX: number,
-    endY: number,
-  ) => {
+  const boxSelect = (startX: number, startY: number, endX: number, endY: number) => {
     mouse.downAt(startX, startY);
     mouse.move(-1000, -1000);
     mouse.moveTo(endX, endY);
     mouse.up();
   };
 
-  const boxSelectTopLeftAabbCorner = (
-    element: ReturnType<typeof API.createElement>,
-  ) => {
+  const boxSelectTopLeftAabbCorner = (element: ReturnType<typeof API.createElement>) => {
     const sceneElement = API.getElement(element);
     const elementsMap = h.scene.getNonDeletedElementsMap();
     const [x1, y1] = getElementBounds(sceneElement, elementsMap);
@@ -217,9 +207,7 @@ describe("box-selection overlap mode", () => {
     boxSelect(x1 + 2, y1 + 2, x1 + 12, y1 + 12);
   };
 
-  const boxSelectTopRightAabbCorner = (
-    element: ReturnType<typeof API.createElement>,
-  ) => {
+  const boxSelectTopRightAabbCorner = (element: ReturnType<typeof API.createElement>) => {
     const sceneElement = API.getElement(element);
     const elementsMap = h.scene.getNonDeletedElementsMap();
     const [, y1, x2] = getElementBounds(sceneElement, elementsMap);
@@ -234,21 +222,13 @@ describe("box-selection overlap mode", () => {
     const elementsMap = h.scene.getNonDeletedElementsMap();
     const [x1, y1, x2, y2] = getElementBounds(sceneElement, elementsMap, true);
     const center = pointFrom((x1 + x2) / 2, (y1 + y2) / 2);
-    const [cornerX, cornerY] = pointRotateRads(
-      pointFrom(x1, y1),
-      center,
-      sceneElement.angle,
-    );
+    const [cornerX, cornerY] = pointRotateRads(pointFrom(x1, y1), center, sceneElement.angle);
 
     boxSelect(cornerX - 4, cornerY - 4, cornerX + 4, cornerY + 4);
   };
 
   beforeEach(async () => {
-    await render(
-      <Excalidraw
-        initialData={{ appState: { boxSelectionMode: "overlap" } }}
-      />,
-    );
+    await render(<Excalidraw initialData={{ appState: { boxSelectionMode: "overlap" } }} />);
   });
 
   it("should select an element when the selection box partially overlaps it", () => {
@@ -342,10 +322,7 @@ describe("box-selection overlap mode", () => {
 
     const sceneRect = API.getElement(rect);
     const elementsMap = h.scene.getNonDeletedElementsMap();
-    const [boundsX1, boundsY1, boundsX2, boundsY2] = getElementBounds(
-      sceneRect,
-      elementsMap,
-    );
+    const [boundsX1, boundsY1, boundsX2, boundsY2] = getElementBounds(sceneRect, elementsMap);
     const [outlineX1, outlineY1, outlineX2, outlineY2] = getOutlineBounds(rect);
 
     expect(outlineX1).toBeGreaterThan(boundsX1 - 1);
@@ -809,9 +786,7 @@ describe("select single element on the scene", () => {
   });
 
   it("rectangle", async () => {
-    const { getByToolName, container } = await render(
-      <Excalidraw handleKeyboardGlobally={true} />,
-    );
+    const { getByToolName, container } = await render(<Excalidraw handleKeyboardGlobally={true} />);
     const canvas = container.querySelector("canvas.interactive")!;
     {
       // create element
@@ -842,9 +817,7 @@ describe("select single element on the scene", () => {
   });
 
   it("diamond", async () => {
-    const { getByToolName, container } = await render(
-      <Excalidraw handleKeyboardGlobally={true} />,
-    );
+    const { getByToolName, container } = await render(<Excalidraw handleKeyboardGlobally={true} />);
     const canvas = container.querySelector("canvas.interactive")!;
     {
       // create element
@@ -875,9 +848,7 @@ describe("select single element on the scene", () => {
   });
 
   it("ellipse", async () => {
-    const { getByToolName, container } = await render(
-      <Excalidraw handleKeyboardGlobally={true} />,
-    );
+    const { getByToolName, container } = await render(<Excalidraw handleKeyboardGlobally={true} />);
     const canvas = container.querySelector("canvas.interactive")!;
     {
       // create element
@@ -908,9 +879,7 @@ describe("select single element on the scene", () => {
   });
 
   it("arrow", async () => {
-    const { getByToolName, container } = await render(
-      <Excalidraw handleKeyboardGlobally={true} />,
-    );
+    const { getByToolName, container } = await render(<Excalidraw handleKeyboardGlobally={true} />);
     const canvas = container.querySelector("canvas.interactive")!;
     {
       // create element
@@ -953,9 +922,7 @@ describe("select single element on the scene", () => {
   });
 
   it("arrow escape", async () => {
-    const { getByToolName, container } = await render(
-      <Excalidraw handleKeyboardGlobally={true} />,
-    );
+    const { getByToolName, container } = await render(<Excalidraw handleKeyboardGlobally={true} />);
     const canvas = container.querySelector("canvas.interactive")!;
     {
       // create element

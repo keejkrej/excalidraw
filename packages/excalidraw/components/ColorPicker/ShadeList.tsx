@@ -7,10 +7,7 @@ import { useAtom } from "../../editor-jotai";
 import { t } from "../../i18n";
 
 import HotkeyLabel from "./HotkeyLabel";
-import {
-  activeColorPickerSectionAtom,
-  getColorNameAndShadeFromColor,
-} from "./colorPickerUtils";
+import { activeColorPickerSectionAtom, getColorNameAndShadeFromColor } from "./colorPickerUtils";
 
 interface ShadeListProps {
   color: string | null;
@@ -19,12 +16,7 @@ interface ShadeListProps {
   showHotKey?: boolean;
 }
 
-export const ShadeList = ({
-  color,
-  onChange,
-  palette,
-  showHotKey,
-}: ShadeListProps) => {
+export const ShadeList = ({ color, onChange, palette, showHotKey }: ShadeListProps) => {
   const colorObj = getColorNameAndShadeFromColor({
     color: color || "transparent",
     palette,
@@ -52,18 +44,13 @@ export const ShadeList = ({
         <div className="color-picker-content--default shades">
           {shades.map((color, i) => (
             <button
-              ref={
-                i === shade && activeColorPickerSection === "shades"
-                  ? btnRef
-                  : undefined
-              }
+              ref={i === shade && activeColorPickerSection === "shades" ? btnRef : undefined}
               tabIndex={-1}
               key={i}
               type="button"
-              className={clsx(
-                "color-picker__button color-picker__button--large has-outline",
-                { active: i === shade },
-              )}
+              className={clsx("color-picker__button color-picker__button--large has-outline", {
+                active: i === shade,
+              })}
               aria-label="Shade"
               title={`${colorName} - ${i + 1}`}
               style={color ? { "--swatch-color": color } : undefined}
@@ -73,9 +60,7 @@ export const ShadeList = ({
               }}
             >
               <div className="color-picker__button-outline" />
-              {showHotKey && (
-                <HotkeyLabel color={color} keyLabel={i + 1} isShade />
-              )}
+              {showHotKey && <HotkeyLabel color={color} keyLabel={i + 1} isShade />}
             </button>
           ))}
         </div>
@@ -84,11 +69,7 @@ export const ShadeList = ({
   }
 
   return (
-    <div
-      className="color-picker-content--default"
-      style={{ position: "relative" }}
-      tabIndex={-1}
-    >
+    <div className="color-picker-content--default" style={{ position: "relative" }} tabIndex={-1}>
       <button
         type="button"
         tabIndex={-1}

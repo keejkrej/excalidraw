@@ -14,8 +14,7 @@ import type { MakeBrand } from "@excalidraw/common/utility-types";
 
 import type { AppState } from "../types";
 
-export type ReconciledExcalidrawElement = OrderedExcalidrawElement &
-  MakeBrand<"ReconciledElement">;
+export type ReconciledExcalidrawElement = OrderedExcalidrawElement & MakeBrand<"ReconciledElement">;
 
 export type RemoteExcalidrawElement = OrderedExcalidrawElement &
   MakeBrand<"RemoteExcalidrawElement">;
@@ -35,8 +34,7 @@ export const shouldDiscardRemoteElement = (
       local.version > remote.version ||
       // resolve conflicting edits deterministically by taking the one with
       // the lowest versionNonce
-      (local.version === remote.version &&
-        local.versionNonce <= remote.versionNonce))
+      (local.version === remote.version && local.versionNonce <= remote.versionNonce))
   ) {
     return true;
   }
@@ -51,9 +49,7 @@ const validateIndicesThrottled = throttle(
   ) => {
     if (isDevEnv() || isTestEnv() || window?.DEBUG_FRACTIONAL_INDICES) {
       // create new instances due to the mutation
-      const elements = syncInvalidIndices(
-        orderedElements.map((x) => ({ ...x })),
-      );
+      const elements = syncInvalidIndices(orderedElements.map((x) => ({ ...x })));
 
       validateFractionalIndices(elements, {
         // throw in dev & test only, to remain functional on `DEBUG_FRACTIONAL_INDICES`

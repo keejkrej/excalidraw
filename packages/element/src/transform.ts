@@ -73,104 +73,81 @@ export type ValidLinearElement = {
     textAlign?: TextAlign;
     verticalAlign?: VerticalAlign;
   } & MarkOptional<ElementConstructorOpts, "x" | "y">;
-  end?:
+  end?: (
     | (
-        | (
-            | {
-                type: Exclude<
-                  ExcalidrawBindableElement["type"],
-                  | "image"
-                  | "text"
-                  | "frame"
-                  | "magicframe"
-                  | "embeddable"
-                  | "iframe"
-                >;
-                id?: ExcalidrawGenericElement["id"];
-              }
-            | {
-                id: ExcalidrawGenericElement["id"];
-                type?: Exclude<
-                  ExcalidrawBindableElement["type"],
-                  | "image"
-                  | "text"
-                  | "frame"
-                  | "magicframe"
-                  | "embeddable"
-                  | "iframe"
-                >;
-              }
-          )
-        | ((
-            | {
-                type: "text";
-                text: string;
-              }
-            | {
-                type?: "text";
-                id: ExcalidrawTextElement["id"];
-                text: string;
-              }
-          ) &
-            Partial<ExcalidrawTextElement>)
+        | {
+            type: Exclude<
+              ExcalidrawBindableElement["type"],
+              "image" | "text" | "frame" | "magicframe" | "embeddable" | "iframe"
+            >;
+            id?: ExcalidrawGenericElement["id"];
+          }
+        | {
+            id: ExcalidrawGenericElement["id"];
+            type?: Exclude<
+              ExcalidrawBindableElement["type"],
+              "image" | "text" | "frame" | "magicframe" | "embeddable" | "iframe"
+            >;
+          }
+      )
+    | ((
+        | {
+            type: "text";
+            text: string;
+          }
+        | {
+            type?: "text";
+            id: ExcalidrawTextElement["id"];
+            text: string;
+          }
       ) &
-        MarkOptional<ElementConstructorOpts, "x" | "y">;
-  start?:
+        Partial<ExcalidrawTextElement>)
+  ) &
+    MarkOptional<ElementConstructorOpts, "x" | "y">;
+  start?: (
     | (
-        | (
-            | {
-                type: Exclude<
-                  ExcalidrawBindableElement["type"],
-                  | "image"
-                  | "text"
-                  | "frame"
-                  | "magicframe"
-                  | "embeddable"
-                  | "iframe"
-                >;
-                id?: ExcalidrawGenericElement["id"];
-              }
-            | {
-                id: ExcalidrawGenericElement["id"];
-                type?: Exclude<
-                  ExcalidrawBindableElement["type"],
-                  | "image"
-                  | "text"
-                  | "frame"
-                  | "magicframe"
-                  | "embeddable"
-                  | "iframe"
-                >;
-              }
-          )
-        | ((
-            | {
-                type: "text";
-                text: string;
-              }
-            | {
-                type?: "text";
-                id: ExcalidrawTextElement["id"];
-                text: string;
-              }
-          ) &
-            Partial<ExcalidrawTextElement>)
+        | {
+            type: Exclude<
+              ExcalidrawBindableElement["type"],
+              "image" | "text" | "frame" | "magicframe" | "embeddable" | "iframe"
+            >;
+            id?: ExcalidrawGenericElement["id"];
+          }
+        | {
+            id: ExcalidrawGenericElement["id"];
+            type?: Exclude<
+              ExcalidrawBindableElement["type"],
+              "image" | "text" | "frame" | "magicframe" | "embeddable" | "iframe"
+            >;
+          }
+      )
+    | ((
+        | {
+            type: "text";
+            text: string;
+          }
+        | {
+            type?: "text";
+            id: ExcalidrawTextElement["id"];
+            text: string;
+          }
       ) &
-        MarkOptional<ElementConstructorOpts, "x" | "y">;
+        Partial<ExcalidrawTextElement>)
+  ) &
+    MarkOptional<ElementConstructorOpts, "x" | "y">;
 } & Partial<ExcalidrawLinearElement>;
 
-export type ValidContainer =
-  | {
-      type: Exclude<ExcalidrawGenericElement["type"], "selection">;
-      id?: ExcalidrawGenericElement["id"];
-      label?: {
-        text: string;
-        fontSize?: number;
-        fontFamily?: FontFamilyValues;
-        textAlign?: TextAlign;
-        verticalAlign?: VerticalAlign;
-      } & MarkOptional<ElementConstructorOpts, "x" | "y">;
-    } & ElementConstructorOpts;
+export type ValidContainer = {
+  type: Exclude<ExcalidrawGenericElement["type"], "selection">;
+  id?: ExcalidrawGenericElement["id"];
+  label?: {
+    text: string;
+    fontSize?: number;
+    fontFamily?: FontFamilyValues;
+    textAlign?: TextAlign;
+    verticalAlign?: VerticalAlign;
+  } & MarkOptional<ElementConstructorOpts, "x" | "y">;
+} & ElementConstructorOpts;
 
 export type ExcalidrawElementSkeleton =
   | Extract<
@@ -286,9 +263,7 @@ const bindLinearElementToElement = (
           text = start.text;
         }
         if (!text) {
-          console.error(
-            `No text found for start binding text element for ${linearElement.id}`,
-          );
+          console.error(`No text found for start binding text element for ${linearElement.id}`);
         }
         startBoundElement = newTextElement({
           x: startX,
@@ -363,9 +338,7 @@ const bindLinearElementToElement = (
         }
 
         if (!text) {
-          console.error(
-            `No text found for end binding text element for ${linearElement.id}`,
-          );
+          console.error(`No text found for end binding text element for ${linearElement.id}`);
         }
         endBoundElement = newTextElement({
           x: endX,
@@ -396,11 +369,7 @@ const bindLinearElementToElement = (
             break;
           }
           default: {
-            assertNever(
-              linearElement as never,
-              `Unhandled element end type "${endType}"`,
-              true,
-            );
+            assertNever(linearElement as never, `Unhandled element end type "${endType}"`, true);
           }
         }
       }
@@ -431,36 +400,24 @@ const bindLinearElementToElement = (
   const newPoints = cloneJSON<readonly LocalPoint[]>(linearElement.points);
 
   // left to right so shift the arrow towards right
-  if (
-    linearElement.points[endPointIndex][0] >
-    linearElement.points[endPointIndex - 1][0]
-  ) {
+  if (linearElement.points[endPointIndex][0] > linearElement.points[endPointIndex - 1][0]) {
     newPoints[0][0] = delta;
     newPoints[endPointIndex][0] -= delta;
   }
 
   // right to left so shift the arrow towards left
-  if (
-    linearElement.points[endPointIndex][0] <
-    linearElement.points[endPointIndex - 1][0]
-  ) {
+  if (linearElement.points[endPointIndex][0] < linearElement.points[endPointIndex - 1][0]) {
     newPoints[0][0] = -delta;
     newPoints[endPointIndex][0] += delta;
   }
   // top to bottom so shift the arrow towards top
-  if (
-    linearElement.points[endPointIndex][1] >
-    linearElement.points[endPointIndex - 1][1]
-  ) {
+  if (linearElement.points[endPointIndex][1] > linearElement.points[endPointIndex - 1][1]) {
     newPoints[0][1] = delta;
     newPoints[endPointIndex][1] -= delta;
   }
 
   // bottom to top so shift the arrow towards bottom
-  if (
-    linearElement.points[endPointIndex][1] <
-    linearElement.points[endPointIndex - 1][1]
-  ) {
+  if (linearElement.points[endPointIndex][1] < linearElement.points[endPointIndex - 1][1]) {
     newPoints[0][1] = -delta;
     newPoints[endPointIndex][1] += delta;
   }
@@ -496,9 +453,7 @@ class ElementStore {
   };
 
   getElementsMap = () => {
-    return toBrandedType<NonDeletedSceneElementsMap>(
-      arrayToMap(this.getElements()),
-    );
+    return toBrandedType<NonDeletedSceneElementsMap>(arrayToMap(this.getElements()));
   };
 
   getElement = (id: string) => {
@@ -570,10 +525,7 @@ export const convertToExcalidrawElements = (
           type: "arrow",
         });
 
-        Object.assign(
-          excalidrawElement,
-          getSizeFromPoints(excalidrawElement.points),
-        );
+        Object.assign(excalidrawElement, getSizeFromPoints(excalidrawElement.points));
         break;
       }
       case "text": {
@@ -631,11 +583,7 @@ export const convertToExcalidrawElements = (
 
       default: {
         excalidrawElement = element;
-        assertNever(
-          element,
-          `Unhandled element type "${(element as any).type}"`,
-          true,
-        );
+        assertNever(element, `Unhandled element type "${(element as any).type}"`, true);
       }
     }
     const existingElement = elementStore.getElement(excalidrawElement.id);
@@ -664,19 +612,13 @@ export const convertToExcalidrawElements = (
       case "diamond":
       case "arrow": {
         if (element.label?.text) {
-          let [container, text] = bindTextToContainer(
-            excalidrawElement,
-            element?.label,
-            scene,
-          );
+          let [container, text] = bindTextToContainer(excalidrawElement, element?.label, scene);
           elementStore.add(container);
           elementStore.add(text);
 
           if (isArrowElement(container)) {
-            const originalStart =
-              element.type === "arrow" ? element?.start : undefined;
-            const originalEnd =
-              element.type === "arrow" ? element?.end : undefined;
+            const originalStart = element.type === "arrow" ? element?.start : undefined;
+            const originalEnd = element.type === "arrow" ? element?.end : undefined;
             if (originalStart && originalStart.id) {
               const newStartId = oldToNewElementIdMap.get(originalStart.id);
               if (newStartId) {
@@ -764,9 +706,7 @@ export const convertToExcalidrawElements = (
       elementInFrame?.boundElements?.forEach((boundElement) => {
         const ele = elementStore.getElement(boundElement.id);
         if (!ele) {
-          throw new Error(
-            `Bound element with id ${boundElement.id} doesn't exist`,
-          );
+          throw new Error(`Bound element with id ${boundElement.id} doesn't exist`);
         }
         Object.assign(ele, { frameId: frame.id });
         childrenElements.push(ele);

@@ -16,10 +16,7 @@ export const DarkModeToggle = (props: {
   title?: string;
 }) => {
   const title =
-    props.title ||
-    (props.value === THEME.DARK
-      ? t("buttons.lightMode")
-      : t("buttons.darkMode"));
+    props.title || (props.value === THEME.DARK ? t("buttons.lightMode") : t("buttons.darkMode"));
 
   return (
     <ToolButton
@@ -27,9 +24,7 @@ export const DarkModeToggle = (props: {
       icon={props.value === THEME.LIGHT ? ICONS.MOON : ICONS.SUN}
       title={title}
       aria-label={title}
-      onClick={() =>
-        props.onChange(props.value === THEME.DARK ? THEME.LIGHT : THEME.DARK)
-      }
+      onClick={() => props.onChange(props.value === THEME.DARK ? THEME.LIGHT : THEME.DARK)}
       data-testid="toggle-dark-mode"
     />
   );

@@ -93,12 +93,7 @@ export const applyDarkModeFilter = (color: string): string => {
   // (corresponds to "filter: invert(invertPercent) hue-rotate(hueDegrees)" in css)
   const rgb = tc.toRgb();
   const inverted = cssInvert(rgb.r, rgb.g, rgb.b, 93);
-  const rotated = cssHueRotate(
-    inverted.r,
-    inverted.g,
-    inverted.b,
-    180 as Degrees,
-  );
+  const rotated = cssHueRotate(inverted.r, inverted.g, inverted.b, 180 as Degrees);
 
   const result = rgbToHex(rotated.r, rotated.g, rotated.b, alpha);
 
@@ -118,12 +113,15 @@ const pick = <R extends Record<string, any>, K extends readonly (keyof R)[]>(
   source: R,
   keys: K,
 ) => {
-  return keys.reduce((acc, key: K[number]) => {
-    if (key in source) {
-      acc[key] = source[key];
-    }
-    return acc;
-  }, {} as Pick<R, K[number]>) as Pick<R, K[number]>;
+  return keys.reduce(
+    (acc, key: K[number]) => {
+      if (key in source) {
+        acc[key] = source[key];
+      }
+      return acc;
+    },
+    {} as Pick<R, K[number]>,
+  ) as Pick<R, K[number]>;
 };
 
 export type ColorTuple = readonly [string, string, string, string, string];
@@ -264,9 +262,7 @@ export const rgbToHex = (r: number, g: number, b: number, a?: number) => {
   // (1 << 24) adds 0x1000000 to ensure the hex string is always 7 chars,
   // then slice(1) removes the leading "1" to get exactly 6 hex digits
   // e.g. rgb(0,0,0) -> 0x1000000 -> "1000000" -> "000000"
-  const hex6 = `#${((1 << 24) + (r << 16) + (g << 8) + b)
-    .toString(16)
-    .slice(1)}`;
+  const hex6 = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
   if (a !== undefined && a < 1) {
     // convert alpha from 0-1 float to 0-255 int, then to 2-digit hex
     // e.g. 0.5 -> 128 -> "80"

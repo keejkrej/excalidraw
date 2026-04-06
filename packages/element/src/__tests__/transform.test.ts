@@ -1,10 +1,7 @@
 import { pointFrom } from "@excalidraw/math";
 import { vi } from "vitest";
 
-import {
-  convertToExcalidrawElements,
-  type ExcalidrawElementSkeleton,
-} from "../transform";
+import { convertToExcalidrawElements, type ExcalidrawElementSkeleton } from "../transform";
 
 import type { ExcalidrawArrowElement } from "../types";
 
@@ -20,16 +17,11 @@ describe("Test Transform", () => {
         id: "rect-1",
       },
     ];
-    let data = convertToExcalidrawElements(
-      elements as ExcalidrawElementSkeleton[],
-    );
+    let data = convertToExcalidrawElements(elements as ExcalidrawElementSkeleton[]);
     expect(data.length).toBe(1);
     expect(data[0].id).toBe("id0");
 
-    data = convertToExcalidrawElements(
-      elements as ExcalidrawElementSkeleton[],
-      opts,
-    );
+    data = convertToExcalidrawElements(elements as ExcalidrawElementSkeleton[], opts);
     expect(data[0].id).toBe("rect-1");
   });
 
@@ -84,10 +76,7 @@ describe("Test Transform", () => {
       },
     ];
 
-    convertToExcalidrawElements(
-      elements as ExcalidrawElementSkeleton[],
-      opts,
-    ).forEach((ele) => {
+    convertToExcalidrawElements(elements as ExcalidrawElementSkeleton[], opts).forEach((ele) => {
       expect(ele).toMatchSnapshot({
         seed: expect.any(Number),
         versionNonce: expect.any(Number),
@@ -113,10 +102,7 @@ describe("Test Transform", () => {
         strokeColor: "#5f3dc4",
       },
     ];
-    convertToExcalidrawElements(
-      elements as ExcalidrawElementSkeleton[],
-      opts,
-    ).forEach((ele) => {
+    convertToExcalidrawElements(elements as ExcalidrawElementSkeleton[], opts).forEach((ele) => {
       expect(ele).toMatchSnapshot({
         seed: expect.any(Number),
         versionNonce: expect.any(Number),
@@ -345,10 +331,7 @@ describe("Test Transform", () => {
           name: "My frame",
         },
       ];
-      const excalidrawElements = convertToExcalidrawElements(
-        elementsSkeleton,
-        opts,
-      );
+      const excalidrawElements = convertToExcalidrawElements(elementsSkeleton, opts);
       expect(excalidrawElements.length).toBe(4);
 
       excalidrawElements.forEach((ele) => {
@@ -371,10 +354,7 @@ describe("Test Transform", () => {
           height: 100,
         },
       ];
-      const excalidrawElements = convertToExcalidrawElements(
-        elementsSkeleton,
-        opts,
-      );
+      const excalidrawElements = convertToExcalidrawElements(elementsSkeleton, opts);
       const frame = excalidrawElements.find((ele) => ele.type === "frame")!;
       expect(frame.width).toBe(800);
       expect(frame.height).toBe(100);
@@ -391,10 +371,7 @@ describe("Test Transform", () => {
           y: 300,
         },
       ];
-      const excalidrawElements = convertToExcalidrawElements(
-        elementsSkeleton,
-        opts,
-      );
+      const excalidrawElements = convertToExcalidrawElements(elementsSkeleton, opts);
       const frame = excalidrawElements.find((ele) => ele.type === "frame")!;
       expect(frame.x).toBe(100);
       expect(frame.y).toBe(300);
@@ -679,9 +656,7 @@ describe("Test Transform", () => {
     });
 
     it("should bind arrows to existing elements if ids are correct", () => {
-      const consoleErrorSpy = vi
-        .spyOn(console, "error")
-        .mockImplementationOnce(() => void 0);
+      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementationOnce(() => void 0);
       const elements = [
         {
           x: 100,
@@ -788,9 +763,7 @@ describe("Test Transform", () => {
   });
 
   it("should not allow duplicate ids", () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementationOnce(() => void 0);
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementationOnce(() => void 0);
     const elements = [
       {
         type: "rectangle",
@@ -820,9 +793,7 @@ describe("Test Transform", () => {
       seed: expect.any(Number),
       versionNonce: expect.any(Number),
     });
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Duplicate id found for rect-1",
-    );
+    expect(consoleErrorSpy).toHaveBeenCalledWith("Duplicate id found for rect-1");
   });
 
   it("should contains customData if provided", () => {

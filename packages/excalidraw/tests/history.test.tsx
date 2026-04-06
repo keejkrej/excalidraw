@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  queryByText,
-  fireEvent,
-  queryByTestId,
-  waitFor,
-} from "@testing-library/react";
+import { queryByText, fireEvent, queryByTestId, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 import { pointFrom } from "@excalidraw/math";
 
@@ -45,11 +40,7 @@ import type {
 
 import "../global.d.ts";
 
-import {
-  actionSendBackward,
-  actionBringForward,
-  actionSendToBack,
-} from "../actions";
+import { actionSendBackward, actionBringForward, actionSendToBack } from "../actions";
 import { createUndoAction, createRedoAction } from "../actions/actionHistory";
 import { actionToggleViewMode } from "../actions/actionToggleViewMode";
 import * as StaticScene from "../renderer/staticScene";
@@ -59,10 +50,7 @@ import { createPasteEvent } from "../clipboard";
 
 import * as blobModule from "../data/blob";
 
-import {
-  DEER_IMAGE_DIMENSIONS,
-  SMILEY_IMAGE_DIMENSIONS,
-} from "./fixtures/constants";
+import { DEER_IMAGE_DIMENSIONS, SMILEY_IMAGE_DIMENSIONS } from "./fixtures/constants";
 import { API } from "./helpers/api";
 import { Keyboard, Pointer, UI } from "./helpers/ui";
 import { INITIALIZED_IMAGE_PROPS } from "./helpers/constants";
@@ -85,25 +73,16 @@ const { h } = window;
 const mouse = new Pointer("mouse");
 
 const checkpoint = (name: string) => {
-  expect(renderStaticScene.mock.calls.length).toMatchSnapshot(
-    `[${name}] number of renders`,
-  );
+  expect(renderStaticScene.mock.calls.length).toMatchSnapshot(`[${name}] number of renders`);
   // `scrolledOutside` does not appear to be stable between test runs
   // `selectedLinearElemnt` includes `startBindingElement` containing seed and versionNonce
-  const {
-    name: _,
-    scrolledOutside,
-    selectedLinearElement,
-    ...strippedAppState
-  } = h.state;
+  const { name: _, scrolledOutside, selectedLinearElement, ...strippedAppState } = h.state;
   expect(strippedAppState).toMatchSnapshot(`[${name}] appState`);
   expect(h.elements.length).toMatchSnapshot(`[${name}] number of elements`);
 
   h.elements
     .map(({ seed, versionNonce, ...strippedElement }) => strippedElement)
-    .forEach((element, i) =>
-      expect(element).toMatchSnapshot(`[${name}] element ${i}`),
-    );
+    .forEach((element, i) => expect(element).toMatchSnapshot(`[${name}] element ${i}`));
 
   checkpointHistory(h.history, name);
 };
@@ -129,9 +108,7 @@ describe("history", () => {
     const generateIdSpy = vi.spyOn(blobModule, "generateIdFromFile");
     const resizeFileSpy = vi.spyOn(blobModule, "resizeImageFile");
 
-    generateIdSpy.mockImplementation(() =>
-      Promise.resolve(randomId() as FileId),
-    );
+    generateIdSpy.mockImplementation(() => Promise.resolve(randomId() as FileId));
     resizeFileSpy.mockImplementation((file: File) => Promise.resolve(file));
 
     Object.assign(document, {
@@ -150,10 +127,7 @@ describe("history", () => {
 
       API.setElements([rect]);
 
-      const corrupedEntry = StoreDelta.create(
-        ElementsDelta.empty(),
-        AppStateDelta.empty(),
-      );
+      const corrupedEntry = StoreDelta.create(ElementsDelta.empty(), AppStateDelta.empty());
 
       vi.spyOn(corrupedEntry.elements, "applyTo").mockImplementation(() => {
         throw new Error("Oh no, I am corrupted!");
@@ -165,13 +139,7 @@ describe("history", () => {
 
       try {
         // due to this we unfortunately we couldn't do simple .toThrow()
-        act(
-          () =>
-            h.history.undo(
-              arrayToMap(h.elements) as SceneElementsMap,
-              appState,
-            ) as any,
-        );
+        act(() => h.history.undo(arrayToMap(h.elements) as SceneElementsMap, appState) as any);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
       }
@@ -185,21 +153,13 @@ describe("history", () => {
 
       try {
         // due to this we unfortunately we couldn't do simple .toThrow()
-        act(
-          () =>
-            h.history.redo(
-              arrayToMap(h.elements) as SceneElementsMap,
-              appState,
-            ) as any,
-        );
+        act(() => h.history.redo(arrayToMap(h.elements) as SceneElementsMap, appState) as any);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
       }
       expect(API.getUndoStack().length).toBe(1); // vice versa for redo
       expect(API.getRedoStack().length).toBe(0); // vice versa for undo
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: rect.id, isDeleted: false }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: rect.id, isDeleted: false })]);
     });
 
     it("should not end up with history entry when there are no appstate changes", async () => {
@@ -273,9 +233,7 @@ describe("history", () => {
         expect(h.state.viewModeEnabled).toBe(true);
         expect(API.getUndoStack().length).toBe(0);
         expect(API.getRedoStack().length).toBe(0);
-        expect(h.elements).toEqual([
-          expect.objectContaining({ id: rect.id, isDeleted: false }),
-        ]);
+        expect(h.elements).toEqual([expect.objectContaining({ id: rect.id, isDeleted: false })]);
         expect(h.store.snapshot.elements.get(rect.id)).toEqual(
           expect.objectContaining({ id: rect.id, isDeleted: false }),
         );
@@ -347,17 +305,13 @@ describe("history", () => {
       expect(API.getUndoStack().length).toBe(3);
       expect(API.getRedoStack().length).toBe(0);
       assertSelectedElements(rect);
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: rect.id, backgroundColor: blue }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: rect.id, backgroundColor: blue })]);
 
       Keyboard.undo();
       expect(API.getUndoStack().length).toBe(2);
       expect(API.getRedoStack().length).toBe(1);
       assertSelectedElements(rect);
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: rect.id, backgroundColor: red }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: rect.id, backgroundColor: red })]);
 
       Keyboard.undo();
       expect(API.getUndoStack().length).toBe(1);
@@ -379,25 +333,19 @@ describe("history", () => {
       expect(API.getUndoStack().length).toBe(3);
       expect(API.getRedoStack().length).toBe(1);
       expect(API.getSelectedElements().length).toBe(0); // previously the item was selected, not it is not
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: rect.id, backgroundColor: red }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: rect.id, backgroundColor: red })]);
 
       Keyboard.redo();
       expect(API.getUndoStack().length).toBe(4);
       expect(API.getRedoStack().length).toBe(0);
       expect(API.getSelectedElements().length).toBe(0); // previously the item was selected, not it is not
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: rect.id, backgroundColor: blue }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: rect.id, backgroundColor: blue })]);
 
       Keyboard.undo();
       expect(API.getUndoStack().length).toBe(3);
       expect(API.getRedoStack().length).toBe(1);
       expect(API.getSelectedElements().length).toBe(0); // previously the item was selected, not it is not
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: rect.id, backgroundColor: red }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: rect.id, backgroundColor: red })]);
 
       Keyboard.undo();
       expect(API.getUndoStack().length).toBe(2);
@@ -424,17 +372,13 @@ describe("history", () => {
       expect(API.getUndoStack().length).toBe(1);
       expect(API.getRedoStack().length).toBe(0);
       assertSelectedElements(rect1);
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: rect1.id, isDeleted: false }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: rect1.id, isDeleted: false })]);
 
       Keyboard.undo();
       expect(API.getUndoStack().length).toBe(0);
       expect(API.getRedoStack().length).toBe(1);
       expect(API.getSelectedElements()).toEqual([]);
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: rect1.id, isDeleted: true }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: rect1.id, isDeleted: true })]);
 
       const rect2 = UI.createElement("rectangle", { x: 20 });
 
@@ -495,9 +439,7 @@ describe("history", () => {
       expect(API.getUndoStack().length).toBe(0); // now we iterated through the same undos!
       expect(API.getRedoStack().length).toBe(3);
       expect(API.getSelectedElements().length).toBe(0);
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: rect.id, isDeleted: true }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: rect.id, isDeleted: true })]);
     });
 
     it("should end up with no history entry after initializing scene", async () => {
@@ -522,9 +464,7 @@ describe("history", () => {
       const redoAction = createRedoAction(h.history);
       // noop
       API.executeAction(undoAction);
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: "A", isDeleted: false }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: "A", isDeleted: false })]);
       const rectangle = UI.createElement("rectangle");
       expect(h.elements).toEqual([
         expect.objectContaining({ id: "A" }),
@@ -565,9 +505,7 @@ describe("history", () => {
       );
 
       await waitFor(() => expect(h.state.viewBackgroundColor).toBe("#FFF"));
-      await waitFor(() =>
-        expect(h.elements).toEqual([expect.objectContaining({ id: "A" })]),
-      );
+      await waitFor(() => expect(h.elements).toEqual([expect.objectContaining({ id: "A" })]));
 
       await API.drop([
         {
@@ -594,9 +532,7 @@ describe("history", () => {
         expect.objectContaining({ id: "A", isDeleted: true }),
         expect.objectContaining({ id: "B", isDeleted: false }),
       ]);
-      expect(h.elements).toEqual([
-        expect.objectContaining({ id: "B", isDeleted: false }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ id: "B", isDeleted: false })]);
 
       const undoAction = createUndoAction(h.history);
       const redoAction = createRedoAction(h.history);
@@ -670,8 +606,7 @@ describe("history", () => {
       ]);
     });
 
-    const setupImageTest = () =>
-      _setupImageTest([DEER_IMAGE_DIMENSIONS, SMILEY_IMAGE_DIMENSIONS]);
+    const setupImageTest = () => _setupImageTest([DEER_IMAGE_DIMENSIONS, SMILEY_IMAGE_DIMENSIONS]);
 
     const assertImageTest = async () => {
       await waitFor(() => {
@@ -680,9 +615,7 @@ describe("history", () => {
 
         // need to check that delta actually contains initialized image elements (with fileId & natural dimensions)
         expect(
-          Object.values(h.history.undoStack[0].elements.removed).map(
-            (val) => val.deleted,
-          ),
+          Object.values(h.history.undoStack[0].elements.removed).map((val) => val.deleted),
         ).toEqual([
           expect.objectContaining({
             ...INITIALIZED_IMAGE_PROPS,
@@ -762,9 +695,7 @@ describe("history", () => {
     });
 
     it("should create new history entry on embeddable link paste", async () => {
-      await render(
-        <Excalidraw autoFocus={true} handleKeyboardGlobally={true} />,
-      );
+      await render(<Excalidraw autoFocus={true} handleKeyboardGlobally={true} />);
 
       const link = "https://www.youtube.com/watch?v=gkGMXY0wekg";
 
@@ -1396,9 +1327,7 @@ describe("history", () => {
       expect(API.getRedoStack().length).toBe(0);
       expect(h.elements.length).toBe(4);
       expect(h.state.editingGroupId).toBeNull();
-      expect(h.state.selectedGroupIds).not.toEqual(
-        expect.objectContaining({ A: true }),
-      );
+      expect(h.state.selectedGroupIds).not.toEqual(expect.objectContaining({ A: true }));
 
       Keyboard.undo();
       expect(API.getUndoStack().length).toBe(1);
@@ -1424,9 +1353,7 @@ describe("history", () => {
         expect.objectContaining({ [ORIG_ID]: rect2.id, isDeleted: false }),
       ]);
       expect(h.state.editingGroupId).toBeNull();
-      expect(h.state.selectedGroupIds).not.toEqual(
-        expect.objectContaining({ A: true }),
-      );
+      expect(h.state.selectedGroupIds).not.toEqual(expect.objectContaining({ A: true }));
 
       // undo again, and duplicate once more
       Keyboard.withModifierKeys({ ctrl: true }, () => {
@@ -1453,9 +1380,7 @@ describe("history", () => {
         ]),
       );
       expect(h.state.editingGroupId).toBeNull();
-      expect(h.state.selectedGroupIds).not.toEqual(
-        expect.objectContaining({ A: true }),
-      );
+      expect(h.state.selectedGroupIds).not.toEqual(expect.objectContaining({ A: true }));
     });
 
     it("should support changes in elements' order", async () => {
@@ -1575,9 +1500,7 @@ describe("history", () => {
 
         expect(API.getUndoStack().length).toBe(4);
         expect(text.containerId).toBe(rect1.id);
-        expect(rect1.boundElements).toStrictEqual([
-          { id: text.id, type: "text" },
-        ]);
+        expect(rect1.boundElements).toStrictEqual([{ id: text.id, type: "text" }]);
 
         // bind arrow to rect1 and rect2
         UI.clickTool("arrow");
@@ -1602,9 +1525,7 @@ describe("history", () => {
           { id: text.id, type: "text" },
           { id: arrow.id, type: "arrow" },
         ]);
-        expect(rect2.boundElements).toStrictEqual([
-          { id: arrow.id, type: "arrow" },
-        ]);
+        expect(rect2.boundElements).toStrictEqual([{ id: arrow.id, type: "arrow" }]);
       });
 
       it("should unbind arrow from non deleted bindable elements on undo and rebind on redo", async () => {
@@ -2117,9 +2038,7 @@ describe("history", () => {
     }
 
     beforeEach(async () => {
-      await render(
-        <Excalidraw handleKeyboardGlobally={true} isCollaborating={true} />,
-      );
+      await render(<Excalidraw handleKeyboardGlobally={true} isCollaborating={true} />);
     });
 
     it("should not override remote changes on different elements", async () => {
@@ -2129,9 +2048,7 @@ describe("history", () => {
 
       expect(API.getUndoStack().length).toBe(2);
 
-      expect(h.elements).toEqual([
-        expect.objectContaining({ backgroundColor: red }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ backgroundColor: red })]);
 
       // Simulate remote update
       API.updateScene({
@@ -2212,14 +2129,10 @@ describe("history", () => {
       expect(API.getUndoStack().length).toBe(3);
 
       Keyboard.undo();
-      expect(h.elements).toEqual([
-        expect.objectContaining({ backgroundColor: red }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ backgroundColor: red })]);
 
       Keyboard.redo();
-      expect(h.elements).toEqual([
-        expect.objectContaining({ backgroundColor: blue }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ backgroundColor: blue })]);
 
       // Simulate remote update
       API.updateScene({
@@ -2233,9 +2146,7 @@ describe("history", () => {
 
       // At this point our entry gets updated from `red` -> `blue` into `red` -> `yellow`
       Keyboard.undo();
-      expect(h.elements).toEqual([
-        expect.objectContaining({ backgroundColor: red }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ backgroundColor: red })]);
 
       // Simulate remote update
       API.updateScene({
@@ -2249,19 +2160,13 @@ describe("history", () => {
 
       // At this point our (inversed) entry gets updated from `red` -> `yellow` into `violet` -> `yellow`
       Keyboard.redo();
-      expect(h.elements).toEqual([
-        expect.objectContaining({ backgroundColor: yellow }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ backgroundColor: yellow })]);
 
       Keyboard.undo();
-      expect(h.elements).toEqual([
-        expect.objectContaining({ backgroundColor: violet }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ backgroundColor: violet })]);
 
       Keyboard.undo();
-      expect(h.elements).toEqual([
-        expect.objectContaining({ backgroundColor: transparent }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ backgroundColor: transparent })]);
     });
 
     it("should redraw arrows on undo", () => {
@@ -2588,9 +2493,7 @@ describe("history", () => {
 
       expect(API.getUndoStack().length).toBe(2);
 
-      expect(h.elements).toEqual([
-        expect.objectContaining({ backgroundColor: red }),
-      ]);
+      expect(h.elements).toEqual([expect.objectContaining({ backgroundColor: red })]);
 
       // Simulate remote update & deletion
       API.updateScene({
@@ -2668,9 +2571,7 @@ describe("history", () => {
       Keyboard.undo();
       expect(API.getUndoStack().length).toBe(1);
       expect(API.getRedoStack().length).toBe(4);
-      expect(API.getSelectedElements()).toEqual([
-        expect.objectContaining({ id: rect1.id }),
-      ]);
+      expect(API.getSelectedElements()).toEqual([expect.objectContaining({ id: rect1.id })]);
       expect(h.elements).toEqual([
         expect.objectContaining({
           id: rect1.id,
@@ -4596,19 +4497,12 @@ describe("history", () => {
         mouse.moveTo(100, 3);
         mouse.up();
 
-        expect(
-          (h.elements[2] as ExcalidrawElbowArrowElement).startBinding
-            ?.fixedPoint,
-        ).toEqual([1, 0.5001]);
-        expect(
-          (h.elements[2] as ExcalidrawElbowArrowElement).startBinding?.mode,
-        ).toBe("orbit");
-        expect(
-          (h.elements[2] as ExcalidrawElbowArrowElement).endBinding,
-        ).not.toEqual([1, 0.5001]);
-        expect(
-          (h.elements[2] as ExcalidrawElbowArrowElement).endBinding?.mode,
-        ).toBe("orbit");
+        expect((h.elements[2] as ExcalidrawElbowArrowElement).startBinding?.fixedPoint).toEqual([
+          1, 0.5001,
+        ]);
+        expect((h.elements[2] as ExcalidrawElbowArrowElement).startBinding?.mode).toBe("orbit");
+        expect((h.elements[2] as ExcalidrawElbowArrowElement).endBinding).not.toEqual([1, 0.5001]);
+        expect((h.elements[2] as ExcalidrawElbowArrowElement).endBinding?.mode).toBe("orbit");
 
         expect(h.elements).toEqual(
           expect.arrayContaining([
@@ -4687,9 +4581,7 @@ describe("history", () => {
             expect.arrayContaining([
               expect.objectContaining({
                 id: rect1.id,
-                boundElements: expect.arrayContaining([
-                  { id: arrowId, type: "arrow" },
-                ]),
+                boundElements: expect.arrayContaining([{ id: arrowId, type: "arrow" }]),
               }),
               expect.objectContaining({
                 id: rect2.id,
@@ -4954,19 +4846,13 @@ describe("history", () => {
                 startBinding: expect.objectContaining({
                   // now we are back in the previous state!
                   elementId: rect1.id,
-                  fixedPoint: [
-                    expect.toBeNonNaNNumber(),
-                    expect.toBeNonNaNNumber(),
-                  ],
+                  fixedPoint: [expect.toBeNonNaNNumber(), expect.toBeNonNaNNumber()],
                   mode: "orbit",
                 }),
                 endBinding: expect.objectContaining({
                   // now we are back in the previous state!
                   elementId: rect2.id,
-                  fixedPoint: [
-                    expect.toBeNonNaNNumber(),
-                    expect.toBeNonNaNNumber(),
-                  ],
+                  fixedPoint: [expect.toBeNonNaNNumber(), expect.toBeNonNaNNumber()],
                   mode: "orbit",
                 }),
               }),
@@ -5032,18 +4918,12 @@ describe("history", () => {
                 id: arrow.id,
                 startBinding: expect.objectContaining({
                   elementId: rect1.id,
-                  fixedPoint: [
-                    expect.toBeNonNaNNumber(),
-                    expect.toBeNonNaNNumber(),
-                  ],
+                  fixedPoint: [expect.toBeNonNaNNumber(), expect.toBeNonNaNNumber()],
                   mode: "orbit",
                 }),
                 endBinding: expect.objectContaining({
                   elementId: rect2.id,
-                  fixedPoint: [
-                    expect.toBeNonNaNNumber(),
-                    expect.toBeNonNaNNumber(),
-                  ],
+                  fixedPoint: [expect.toBeNonNaNNumber(), expect.toBeNonNaNNumber()],
                   mode: "orbit",
                 }),
                 isDeleted: true,
@@ -5070,18 +4950,12 @@ describe("history", () => {
                 id: arrow.id,
                 startBinding: {
                   elementId: rect1.id,
-                  fixedPoint: [
-                    expect.toBeNonNaNNumber(),
-                    expect.toBeNonNaNNumber(),
-                  ],
+                  fixedPoint: [expect.toBeNonNaNNumber(), expect.toBeNonNaNNumber()],
                   mode: "orbit",
                 },
                 endBinding: expect.objectContaining({
                   elementId: rect2.id,
-                  fixedPoint: [
-                    expect.toBeNonNaNNumber(),
-                    expect.toBeNonNaNNumber(),
-                  ],
+                  fixedPoint: [expect.toBeNonNaNNumber(), expect.toBeNonNaNNumber()],
                   mode: "orbit",
                 }),
                 isDeleted: false,
@@ -5155,10 +5029,9 @@ describe("history", () => {
         {
           // no need to be strict about points, hence the rounding
           const points = (h.elements[2] as ExcalidrawLinearElement).points[1];
-          expect([
-            roundToNearestHundred(points[0]),
-            roundToNearestHundred(points[1]),
-          ]).toEqual([500, -400]);
+          expect([roundToNearestHundred(points[0]), roundToNearestHundred(points[1])]).toEqual([
+            500, -400,
+          ]);
         }
         expect(h.elements).toEqual(
           expect.arrayContaining([

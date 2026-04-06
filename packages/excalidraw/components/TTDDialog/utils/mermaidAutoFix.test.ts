@@ -39,9 +39,7 @@ end`);
   });
 
   it("returns empty list for non-parse errors", () => {
-    expect(
-      getMermaidAutoFixCandidates("graph TD\nA-->B", "Network error"),
-    ).toEqual([]);
+    expect(getMermaidAutoFixCandidates("graph TD\nA-->B", "Network error")).toEqual([]);
   });
 
   it("extracts line index from lexical error format too", () => {

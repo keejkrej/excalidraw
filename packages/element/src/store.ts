@@ -29,11 +29,7 @@ import {
 
 import type { ApplyToOptions } from "./delta";
 
-import type {
-  ExcalidrawElement,
-  OrderedExcalidrawElement,
-  SceneElementsMap,
-} from "./types";
+import type { ExcalidrawElement, OrderedExcalidrawElement, SceneElementsMap } from "./types";
 
 export const CaptureUpdateAction = {
   /**
@@ -79,9 +75,7 @@ export class Store {
   // for internal use by history
   public readonly onDurableIncrementEmitter = new Emitter<[DurableIncrement]>();
   // for public use as part of onIncrement API
-  public readonly onStoreIncrementEmitter = new Emitter<
-    [DurableIncrement | EphemeralIncrement]
-  >();
+  public readonly onStoreIncrementEmitter = new Emitter<[DurableIncrement | EphemeralIncrement]>();
 
   private scheduledMacroActions: Set<CaptureUpdateActionType> = new Set();
   private scheduledMicroActions: MicroActionsQueue = [];
@@ -127,9 +121,7 @@ export class Store {
           delta: StoreDelta;
         }
       | {
-          action:
-            | typeof CaptureUpdateAction.NEVER
-            | typeof CaptureUpdateAction.EVENTUALLY;
+          action: typeof CaptureUpdateAction.NEVER | typeof CaptureUpdateAction.EVENTUALLY;
           change: StoreChange;
         },
   ) {
@@ -154,9 +146,7 @@ export class Store {
         // let's sync invalid indices first, so that we could detect this change
         // also have the synced elements immutable, so that we don't mutate elements,
         // that are already in the scene, otherwise we wouldn't see any change
-        params.elements
-          ? syncInvalidIndicesImmutable(params.elements)
-          : undefined,
+        params.elements ? syncInvalidIndicesImmutable(params.elements) : undefined,
         params.appState,
       );
 
@@ -344,11 +334,7 @@ export class Store {
     if ("change" in params) {
       nextSnapshot = this.applyChangeToSnapshot(params.change);
     } else {
-      nextSnapshot = this.maybeCloneSnapshot(
-        action,
-        params.elements,
-        params.appState,
-      );
+      nextSnapshot = this.maybeCloneSnapshot(action, params.elements, params.appState);
     }
 
     if (!nextSnapshot) {
@@ -412,8 +398,7 @@ export class Store {
     if (
       !(
         this.scheduledMacroActions.size >= 0 &&
-        this.scheduledMacroActions.size <=
-          Object.keys(CaptureUpdateAction).length
+        this.scheduledMacroActions.size <= Object.keys(CaptureUpdateAction).length
       )
     ) {
       const message = `There can be at most three store actions scheduled at the same time, but there are "${this.scheduledMacroActions.size}".`;
@@ -437,10 +422,7 @@ export class StoreChange {
     public readonly appState: Partial<ObservedAppState>,
   ) {}
 
-  public static create(
-    prevSnapshot: StoreSnapshot,
-    nextSnapshot: StoreSnapshot,
-  ) {
+  public static create(prevSnapshot: StoreSnapshot, nextSnapshot: StoreSnapshot) {
     const changedElements = nextSnapshot.getChangedElements(prevSnapshot);
     const changedAppState = nextSnapshot.getChangedAppState(prevSnapshot);
 
@@ -457,15 +439,11 @@ export abstract class StoreIncrement {
     public readonly change: StoreChange,
   ) {}
 
-  public static isDurable(
-    increment: StoreIncrement,
-  ): increment is DurableIncrement {
+  public static isDurable(increment: StoreIncrement): increment is DurableIncrement {
     return increment.type === "durable";
   }
 
-  public static isEphemeral(
-    increment: StoreIncrement,
-  ): increment is EphemeralIncrement {
+  public static isEphemeral(increment: StoreIncrement): increment is EphemeralIncrement {
     return increment.type === "ephemeral";
   }
 }
@@ -519,10 +497,7 @@ export class StoreDelta {
   /**
    * Calculate the delta between the previous and next snapshot.
    */
-  public static calculate(
-    prevSnapshot: StoreSnapshot,
-    nextSnapshot: StoreSnapshot,
-  ) {
+  public static calculate(prevSnapshot: StoreSnapshot, nextSnapshot: StoreSnapshot) {
     const elementsDelta = nextSnapshot.metadata.didElementsChange
       ? ElementsDelta.calculate(prevSnapshot.elements, nextSnapshot.elements)
       : ElementsDelta.empty();
@@ -539,11 +514,7 @@ export class StoreDelta {
    */
   public static restore(storeDeltaDTO: DTO<StoreDelta>) {
     const { id, elements, appState } = storeDeltaDTO;
-    return new this(
-      id,
-      ElementsDelta.restore(elements),
-      AppStateDelta.restore(appState),
-    );
+    return new this(id, ElementsDelta.restore(elements), AppStateDelta.restore(appState));
   }
 
   /**
@@ -596,11 +567,12 @@ export class StoreDelta {
       options,
     );
 
-    const [nextAppState, appStateContainsVisibleChange] =
-      delta.appState.applyTo(appState, nextElements);
+    const [nextAppState, appStateContainsVisibleChange] = delta.appState.applyTo(
+      appState,
+      nextElements,
+    );
 
-    const appliedVisibleChanges =
-      elementsContainVisibleChange || appStateContainsVisibleChange;
+    const appliedVisibleChanges = elementsContainVisibleChange || appStateContainsVisibleChange;
 
     return [nextElements, nextAppState, appliedVisibleChanges];
   }
@@ -615,11 +587,7 @@ export class StoreDelta {
     modifierOptions?: "deleted" | "inserted",
   ): StoreDelta {
     return this.create(
-      delta.elements.applyLatestChanges(
-        prevElements,
-        nextElements,
-        modifierOptions,
-      ),
+      delta.elements.applyLatestChanges(prevElements, nextElements, modifierOptions),
       delta.appState,
       {
         id: delta.id,
@@ -677,15 +645,11 @@ export class StoreSnapshot {
   }
 
   public static empty() {
-    return new StoreSnapshot(
-      new Map() as SceneElementsMap,
-      getDefaultObservedAppState(),
-      {
-        didElementsChange: false,
-        didAppStateChange: false,
-        isEmpty: true,
-      },
-    );
+    return new StoreSnapshot(new Map() as SceneElementsMap, getDefaultObservedAppState(), {
+      didElementsChange: false,
+      didAppStateChange: false,
+      isEmpty: true,
+    });
   }
 
   public getChangedElements(prevSnapshot: StoreSnapshot) {
@@ -711,13 +675,8 @@ export class StoreSnapshot {
     return changedElements;
   }
 
-  public getChangedAppState(
-    prevSnapshot: StoreSnapshot,
-  ): Partial<ObservedAppState> {
-    return Delta.getRightDifferences(
-      prevSnapshot.appState,
-      this.appState,
-    ).reduce(
+  public getChangedAppState(prevSnapshot: StoreSnapshot): Partial<ObservedAppState> {
+    return Delta.getRightDifferences(prevSnapshot.appState, this.appState).reduce(
       (acc, key) =>
         Object.assign(acc, {
           [key]: this.appState[key as keyof ObservedAppState],
@@ -774,14 +733,8 @@ export class StoreSnapshot {
       options.shouldCompareHashes = true;
     }
 
-    const nextElementsSnapshot = this.maybeCreateElementsSnapshot(
-      elements,
-      options,
-    );
-    const nextAppStateSnapshot = this.maybeCreateAppStateSnapshot(
-      appState,
-      options,
-    );
+    const nextElementsSnapshot = this.maybeCreateElementsSnapshot(elements, options);
+    const nextAppStateSnapshot = this.maybeCreateAppStateSnapshot(appState, options);
 
     let didElementsChange = false;
     let didAppStateChange = false;
@@ -798,14 +751,10 @@ export class StoreSnapshot {
       return this;
     }
 
-    const snapshot = new StoreSnapshot(
-      nextElementsSnapshot,
-      nextAppStateSnapshot,
-      {
-        didElementsChange,
-        didAppStateChange,
-      },
-    );
+    const snapshot = new StoreSnapshot(nextElementsSnapshot, nextAppStateSnapshot, {
+      didElementsChange,
+      didAppStateChange,
+    });
 
     return snapshot;
   }
@@ -827,10 +776,7 @@ export class StoreSnapshot {
       ? getObservedAppState(appState)
       : appState;
 
-    const didAppStateChange = this.detectChangedAppState(
-      nextAppStateSnapshot,
-      options,
-    );
+    const didAppStateChange = this.detectChangedAppState(nextAppStateSnapshot, options);
 
     if (!didAppStateChange) {
       return this.appState;
@@ -873,23 +819,15 @@ export class StoreSnapshot {
       return;
     }
 
-    const didAppStateChange = Delta.isRightDifferent(
-      this.appState,
-      nextObservedAppState,
-    );
+    const didAppStateChange = Delta.isRightDifferent(this.appState, nextObservedAppState);
 
     if (!didAppStateChange) {
       return;
     }
 
-    const changedAppStateHash = hashString(
-      JSON.stringify(nextObservedAppState),
-    );
+    const changedAppStateHash = hashString(JSON.stringify(nextObservedAppState));
 
-    if (
-      options.shouldCompareHashes &&
-      this._lastChangedAppStateHash === changedAppStateHash
-    ) {
+    if (options.shouldCompareHashes && this._lastChangedAppStateHash === changedAppStateHash) {
       return;
     }
 
@@ -920,10 +858,7 @@ export class StoreSnapshot {
 
       if (!nextElement) {
         // element was deleted
-        changedElements.set(
-          prevElement.id,
-          newElementWith(prevElement, { isDeleted: true }),
-        );
+        changedElements.set(prevElement.id, newElementWith(prevElement, { isDeleted: true }));
       }
     }
 
@@ -934,10 +869,7 @@ export class StoreSnapshot {
         !prevElement || // element was added
         prevElement.version < nextElement.version // element was updated
       ) {
-        if (
-          isImageElement(nextElement) &&
-          !isInitializedImageElement(nextElement)
-        ) {
+        if (isImageElement(nextElement) && !isInitializedImageElement(nextElement)) {
           // ignore any updates on uninitialized image elements
           continue;
         }
@@ -952,10 +884,7 @@ export class StoreSnapshot {
 
     const changedElementsHash = hashElementsVersion(changedElements);
 
-    if (
-      options.shouldCompareHashes &&
-      this._lastChangedElementsHash === changedElementsHash
-    ) {
+    if (options.shouldCompareHashes && this._lastChangedElementsHash === changedElementsHash) {
       return;
     }
 
@@ -1003,9 +932,7 @@ const getDefaultObservedAppState = (): ObservedAppState => {
   };
 };
 
-export const getObservedAppState = (
-  appState: AppState | ObservedAppState,
-): ObservedAppState => {
+export const getObservedAppState = (appState: AppState | ObservedAppState): ObservedAppState => {
   const observedAppState = {
     name: appState.name,
     editingGroupId: appState.editingGroupId,
@@ -1031,7 +958,5 @@ export const getObservedAppState = (
   return observedAppState;
 };
 
-const isObservedAppState = (
-  appState: AppState | ObservedAppState,
-): appState is ObservedAppState =>
+const isObservedAppState = (appState: AppState | ObservedAppState): appState is ObservedAppState =>
   !!Reflect.get(appState, hiddenObservedAppStateProp);

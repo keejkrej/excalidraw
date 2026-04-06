@@ -29,10 +29,7 @@ describe("element locking", () => {
       API.setAppState({
         currentItemBackgroundColor: color,
       });
-      const activeColor = queryByTestId(
-        document.body,
-        `color-top-pick-${color}`,
-      );
+      const activeColor = queryByTestId(document.body, `color-top-pick-${color}`);
       expect(activeColor).toHaveClass("active");
     });
 
@@ -121,10 +118,7 @@ describe("element locking", () => {
       API.setElements([rect1, rect2]);
       API.setSelectedElements([rect1, rect2]);
 
-      const thinStrokeWidthButton = queryByTestId(
-        document.body,
-        `strokeWidth-thin`,
-      );
+      const thinStrokeWidthButton = queryByTestId(document.body, `strokeWidth-thin`);
       expect(thinStrokeWidthButton).toBeChecked();
     });
 
@@ -141,15 +135,9 @@ describe("element locking", () => {
       API.setSelectedElements([rect1, rect2]);
 
       expect(queryByTestId(document.body, `strokeWidth-thin`)).not.toBe(null);
-      expect(
-        queryByTestId(document.body, `strokeWidth-thin`),
-      ).not.toBeChecked();
-      expect(
-        queryByTestId(document.body, `strokeWidth-bold`),
-      ).not.toBeChecked();
-      expect(
-        queryByTestId(document.body, `strokeWidth-extraBold`),
-      ).not.toBeChecked();
+      expect(queryByTestId(document.body, `strokeWidth-thin`)).not.toBeChecked();
+      expect(queryByTestId(document.body, `strokeWidth-bold`)).not.toBeChecked();
+      expect(queryByTestId(document.body, `strokeWidth-extraBold`)).not.toBeChecked();
     });
 
     it("should show properties of different element types when selected", () => {
@@ -165,9 +153,7 @@ describe("element locking", () => {
       API.setSelectedElements([rect, text]);
 
       expect(queryByTestId(document.body, `strokeWidth-bold`)).toBeChecked();
-      expect(queryByTestId(document.body, `font-family-code`)).toHaveClass(
-        "active",
-      );
+      expect(queryByTestId(document.body, `font-family-code`)).toHaveClass("active");
     });
   });
 });

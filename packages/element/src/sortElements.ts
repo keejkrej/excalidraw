@@ -6,9 +6,7 @@ const normalizeGroupElementOrder = (elements: readonly ExcalidrawElement[]) => {
   const origElements: ExcalidrawElement[] = elements.slice();
   const sortedElements = new Set<ExcalidrawElement>();
 
-  const orderInnerGroups = (
-    elements: readonly ExcalidrawElement[],
-  ): ExcalidrawElement[] => {
+  const orderInnerGroups = (elements: readonly ExcalidrawElement[]): ExcalidrawElement[] => {
     const firstGroupSig = elements[0]?.groupIds?.join("");
     const aGroup: ExcalidrawElement[] = [elements[0]];
     const bGroup: ExcalidrawElement[] = [];
@@ -65,9 +63,7 @@ const normalizeGroupElementOrder = (elements: readonly ExcalidrawElement[]) => {
  * original z-index of container (i.e. it moves bound text elements after
  * containers).
  */
-const normalizeBoundElementsOrder = (
-  elements: readonly ExcalidrawElement[],
-) => {
+const normalizeBoundElementsOrder = (elements: readonly ExcalidrawElement[]) => {
   const elementsMap = arrayToMapWithIndex(elements);
 
   const origElements: (ExcalidrawElement | null)[] = elements.slice();
@@ -105,17 +101,13 @@ const normalizeBoundElementsOrder = (
   // if there's a bug which resulted in losing some of the elements, return
   // original instead as that's better than losing data
   if (sortedElements.size !== elements.length) {
-    console.error(
-      "normalizeBoundElementsOrder: lost some elements... bailing!",
-    );
+    console.error("normalizeBoundElementsOrder: lost some elements... bailing!");
     return elements;
   }
 
   return [...sortedElements];
 };
 
-export const normalizeElementOrder = (
-  elements: readonly ExcalidrawElement[],
-) => {
+export const normalizeElementOrder = (elements: readonly ExcalidrawElement[]) => {
   return normalizeBoundElementsOrder(normalizeGroupElementOrder(elements));
 };

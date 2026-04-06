@@ -5,12 +5,7 @@ import { isDevEnv } from "@excalidraw/common";
 // small subset of categories at a given time.
 const ALLOWED_CATEGORIES_TO_TRACK = new Set(["command_palette", "export"]);
 
-export const trackEvent = (
-  category: string,
-  action: string,
-  label?: string,
-  value?: number,
-) => {
+export const trackEvent = (category: string, action: string, label?: string, value?: number) => {
   try {
     if (
       typeof window === "undefined" ||

@@ -21,16 +21,11 @@ import type { LibraryItem, LibraryItems } from "../types";
 
 const { h } = window;
 
-const libraryJSONPromise = API.readFile(
-  "./fixtures/fixture_library.excalidrawlib",
-  "utf8",
-);
+const libraryJSONPromise = API.readFile("./fixtures/fixture_library.excalidrawlib", "utf8");
 
 const mockLibraryFilePromise = new Promise<Blob>(async (resolve, reject) => {
   try {
-    resolve(
-      new Blob([await libraryJSONPromise], { type: MIME_TYPES.excalidrawlib }),
-    );
+    resolve(new Blob([await libraryJSONPromise], { type: MIME_TYPES.excalidrawlib }));
   } catch (error) {
     reject(error);
   }
@@ -250,10 +245,7 @@ describe("library menu", () => {
 
     fireEvent.click(libraryButton!);
     fireEvent.click(
-      queryByTestId(
-        container.querySelector(".layer-ui__library")!,
-        "dropdown-menu-button",
-      )!,
+      queryByTestId(container.querySelector(".layer-ui__library")!, "dropdown-menu-button")!,
     );
     fireEvent.click(queryByTestId(container, "lib-dropdown--load")!);
 
@@ -264,18 +256,14 @@ describe("library menu", () => {
       expect(latestLibrary.length).toBeGreaterThan(0);
       expect(latestLibrary.length).toBe(libraryItems.length);
       const { versionNonce, ...strippedElement } = libraryItems[0]?.elements[0]; // stripped due to mutations
-      expect(latestLibrary[0].elements).toEqual([
-        expect.objectContaining(strippedElement),
-      ]);
+      expect(latestLibrary[0].elements).toEqual([expect.objectContaining(strippedElement)]);
     });
   });
 });
 
 describe("distributeLibraryItemsOnSquareGrid()", () => {
   it("should distribute items on a grid", async () => {
-    const createLibraryItem = (
-      elements: ExcalidrawGenericElement[],
-    ): LibraryItem => {
+    const createLibraryItem = (elements: ExcalidrawGenericElement[]): LibraryItem => {
       return {
         id: `id-${Date.now()}`,
         elements,
@@ -335,9 +323,7 @@ describe("distributeLibraryItemsOnSquareGrid()", () => {
 
     const distributed = distributeLibraryItemsOnSquareGrid(libraryItems);
     // assert the returned library items are flattened to elements
-    expect(distributed.length).toEqual(
-      libraryItems.map((x) => x.elements).flat().length,
-    );
+    expect(distributed.length).toEqual(libraryItems.map((x) => x.elements).flat().length);
     expect(distributed).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -347,10 +333,7 @@ describe("distributeLibraryItemsOnSquareGrid()", () => {
         }),
         expect.objectContaining({
           id: el2.id,
-          x:
-            el1.width +
-            PADDING +
-            (getCommonBoundingBox([el4, el5]).width - el2.width) / 2,
+          x: el1.width + PADDING + (getCommonBoundingBox([el4, el5]).width - el2.width) / 2,
           y: Math.abs(el1.height - el2.height) / 2,
         }),
         expect.objectContaining({
@@ -369,10 +352,7 @@ describe("distributeLibraryItemsOnSquareGrid()", () => {
         expect.objectContaining({
           id: el5.id,
           x: Math.max(el1.width, el2.width) + PADDING + Math.abs(el5.x - el4.x),
-          y:
-            Math.max(el1.height, el2.height) +
-            PADDING +
-            Math.abs(el5.y - el4.y),
+          y: Math.max(el1.height, el2.height) + PADDING + Math.abs(el5.y - el4.y),
         }),
       ]),
     );

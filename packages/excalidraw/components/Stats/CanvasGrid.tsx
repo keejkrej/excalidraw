@@ -16,23 +16,13 @@ interface PositionProps {
 
 const STEP_SIZE = 5;
 
-const CanvasGrid = ({
-  property,
-  scene,
-  appState,
-  setAppState,
-}: PositionProps) => {
+const CanvasGrid = ({ property, scene, appState, setAppState }: PositionProps) => {
   return (
     <StatsDragInput
       label="Grid step"
       sensitivity={8}
       elements={[]}
-      dragInputCallback={({
-        nextValue,
-        instantChange,
-        shouldChangeByStepSize,
-        setInputValue,
-      }) => {
+      dragInputCallback={({ nextValue, instantChange, shouldChangeByStepSize, setInputValue }) => {
         setAppState((state) => {
           let nextGridStep;
 
@@ -40,10 +30,7 @@ const CanvasGrid = ({
             nextGridStep = nextValue;
           } else if (instantChange) {
             nextGridStep = shouldChangeByStepSize
-              ? getStepSizedValue(
-                  state.gridStep + STEP_SIZE * Math.sign(instantChange),
-                  STEP_SIZE,
-                )
+              ? getStepSizedValue(state.gridStep + STEP_SIZE * Math.sign(instantChange), STEP_SIZE)
               : state.gridStep + instantChange;
           }
 

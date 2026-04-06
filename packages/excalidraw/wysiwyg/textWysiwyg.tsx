@@ -40,11 +40,7 @@ import { getLineWidth } from "@excalidraw/element";
 import { normalizeText } from "@excalidraw/element";
 import { wrapText } from "@excalidraw/element";
 import { getWrappedTextLines } from "@excalidraw/element";
-import {
-  isArrowElement,
-  isBoundToContainer,
-  isTextElement,
-} from "@excalidraw/element";
+import { isArrowElement, isBoundToContainer, isTextElement } from "@excalidraw/element";
 
 import type {
   ExcalidrawElement,
@@ -60,15 +56,8 @@ import {
   parseDataTransferEvent,
   parseDataTransferEventMimeTypes,
 } from "../clipboard";
-import {
-  actionDecreaseFontSize,
-  actionIncreaseFontSize,
-} from "../actions/actionProperties";
-import {
-  actionResetZoom,
-  actionZoomIn,
-  actionZoomOut,
-} from "../actions/actionCanvas";
+import { actionDecreaseFontSize, actionIncreaseFontSize } from "../actions/actionProperties";
+import { actionResetZoom, actionZoomIn, actionZoomOut } from "../actions/actionCanvas";
 
 import type { ParsedDataTranferList } from "../clipboard";
 
@@ -99,10 +88,7 @@ const getTransform = (
 const getLineDirection = (text: string, offset: number) => {
   const hardLineStart = text.lastIndexOf("\n", Math.max(0, offset - 1)) + 1;
   const hardLineEnd = text.indexOf("\n", offset);
-  const hardLineText = text.slice(
-    hardLineStart,
-    hardLineEnd === -1 ? text.length : hardLineEnd,
-  );
+  const hardLineText = text.slice(hardLineStart, hardLineEnd === -1 ? text.length : hardLineEnd);
 
   return isRTL(hardLineText) ? "rtl" : "ltr";
 };
@@ -243,10 +229,7 @@ export const textWysiwyg = ({
       return false;
     }
     const currentFont = editable.style.fontFamily.replace(/"/g, "");
-    if (
-      getFontFamilyString({ fontFamily: updatedTextElement.fontFamily }) !==
-      currentFont
-    ) {
+    if (getFontFamilyString({ fontFamily: updatedTextElement.fontFamily }) !== currentFont) {
       return true;
     }
     if (`${updatedTextElement.fontSize}px` !== editable.style.fontSize) {
@@ -287,33 +270,23 @@ export const textWysiwyg = ({
 
       if (container && updatedTextElement.containerId) {
         if (isArrowElement(container)) {
-          const boundTextCoords =
-            LinearElementEditor.getBoundTextElementPosition(
-              container,
-              updatedTextElement as ExcalidrawTextElementWithContainer,
-              elementsMap,
-            );
+          const boundTextCoords = LinearElementEditor.getBoundTextElementPosition(
+            container,
+            updatedTextElement as ExcalidrawTextElementWithContainer,
+            elementsMap,
+          );
           coordX = boundTextCoords.x;
           coordY = boundTextCoords.y;
         }
-        const propertiesUpdated = textPropertiesUpdated(
-          updatedTextElement,
-          editable,
-        );
+        const propertiesUpdated = textPropertiesUpdated(updatedTextElement, editable);
 
         let originalContainerData;
         if (propertiesUpdated) {
-          originalContainerData = updateOriginalContainerCache(
-            container.id,
-            container.height,
-          );
+          originalContainerData = updateOriginalContainerCache(container.id, container.height);
         } else {
           originalContainerData = originalContainerCache[container.id];
           if (!originalContainerData) {
-            originalContainerData = updateOriginalContainerCache(
-              container.id,
-              container.height,
-            );
+            originalContainerData = updateOriginalContainerCache(container.id, container.height);
           }
         }
 
@@ -372,8 +345,7 @@ export const textWysiwyg = ({
       const angle = getTextElementAngle(updatedTextElement, container);
 
       // Make sure text editor height doesn't go beyond viewport
-      const editorMaxHeight =
-        (appState.height - viewportY) / appState.zoom.value;
+      const editorMaxHeight = (appState.height - viewportY) / appState.zoom.value;
       Object.assign(editable.style, {
         font,
         // must be defined *after* font ¯\_(ツ)_/¯
@@ -382,14 +354,7 @@ export const textWysiwyg = ({
         height: `${height}px`,
         left: `${viewportX}px`,
         top: `${viewportY}px`,
-        transform: getTransform(
-          width,
-          height,
-          angle,
-          appState,
-          maxWidth,
-          editorMaxHeight,
-        ),
+        transform: getTransform(width, height, angle, appState, maxWidth, editorMaxHeight),
         textAlign,
         verticalAlign,
         color:
@@ -403,10 +368,7 @@ export const textWysiwyg = ({
         angle: angle as Radians,
         font,
         height: updatedTextElement.height,
-        lineHeightPx: getLineHeightInPx(
-          updatedTextElement.fontSize,
-          updatedTextElement.lineHeight,
-        ),
+        lineHeightPx: getLineHeightInPx(updatedTextElement.fontSize, updatedTextElement.lineHeight),
         textAlign,
         width: updatedTextElement.width,
         x: coordX,
@@ -468,10 +430,7 @@ export const textWysiwyg = ({
     }
 
     const layout = currentTextLayout;
-    const center = pointFrom(
-      layout.x + layout.width / 2,
-      layout.y + layout.height / 2,
-    );
+    const center = pointFrom(layout.x + layout.width / 2, layout.y + layout.height / 2);
     const [unrotatedX, unrotatedY] = pointRotateRads(
       pointFrom(initialCaretSceneCoords.x, initialCaretSceneCoords.y),
       center,
@@ -495,8 +454,8 @@ export const textWysiwyg = ({
       layout.textAlign === "center"
         ? (layout.width - lineWidth) / 2
         : layout.textAlign === "right"
-        ? layout.width - lineWidth
-        : 0;
+          ? layout.width - lineWidth
+          : 0;
     const relativeX = localX - lineStartX;
 
     if (!line.text) {
@@ -541,10 +500,7 @@ export const textWysiwyg = ({
       // of browsers, so won't work e.g. between chrome and firefox. We could
       // parse the text/plain for existence of excalidraw instead, but this
       // is an edge case
-      if (
-        mimeTypes.has(MIME_TYPES.excalidrawClipboard) ||
-        mimeTypes.has(MIME_TYPES.excalidraw)
-      ) {
+      if (mimeTypes.has(MIME_TYPES.excalidrawClipboard) || mimeTypes.has(MIME_TYPES.excalidraw)) {
         // must be called in the same tick
         event.preventDefault();
 
@@ -558,10 +514,7 @@ export const textWysiwyg = ({
             if (text) {
               const { selectionStart, selectionEnd, value } = editable;
 
-              editable.value =
-                value.slice(0, selectionStart) +
-                text +
-                value.slice(selectionEnd);
+              editable.value = value.slice(0, selectionStart) + text + value.slice(selectionEnd);
 
               const newPos = selectionStart + text.length;
               editable.selectionStart = editable.selectionEnd = newPos;
@@ -588,10 +541,7 @@ export const textWysiwyg = ({
       if (!text) {
         return;
       }
-      const container = getContainerElement(
-        element,
-        app.scene.getNonDeletedElementsMap(),
-      );
+      const container = getContainerElement(element, app.scene.getNonDeletedElementsMap());
 
       const font = getFontString({
         fontSize: app.state.currentItemFontSize,
@@ -661,8 +611,7 @@ export const textWysiwyg = ({
     } else if (
       event.key === KEYS.TAB ||
       (event[KEYS.CTRL_OR_CMD] &&
-        (event.code === CODES.BRACKET_LEFT ||
-          event.code === CODES.BRACKET_RIGHT))
+        (event.code === CODES.BRACKET_LEFT || event.code === CODES.BRACKET_RIGHT))
     ) {
       event.preventDefault();
       if (event.isComposing) {
@@ -705,9 +654,7 @@ export const textWysiwyg = ({
 
     let value = editable.value;
     linesStartIndices.forEach((startIndex) => {
-      const tabMatch = value
-        .slice(startIndex, startIndex + TAB_SIZE)
-        .match(RE_LEADING_TAB);
+      const tabMatch = value.slice(startIndex, startIndex + TAB_SIZE).match(RE_LEADING_TAB);
 
       if (tabMatch) {
         const startValue = value.slice(0, startIndex);
@@ -749,8 +696,7 @@ export const textWysiwyg = ({
     let { selectionStart, selectionEnd, value } = editable;
 
     // chars before selectionStart on the same line
-    const startOffset = value.slice(0, selectionStart).match(/[^\n]*$/)![0]
-      .length;
+    const startOffset = value.slice(0, selectionStart).match(/[^\n]*$/)![0].length;
     // put caret at the start of the line
     selectionStart = selectionStart - startOffset;
 
@@ -793,16 +739,11 @@ export const textWysiwyg = ({
     // it'd get stuck in an infinite loop of blur→onSubmit after we re-focus the
     // wysiwyg on update
     cleanup();
-    const updateElement = app.scene.getElement(
-      element.id,
-    ) as ExcalidrawTextElement;
+    const updateElement = app.scene.getElement(element.id) as ExcalidrawTextElement;
     if (!updateElement) {
       return;
     }
-    const container = getContainerElement(
-      updateElement,
-      app.scene.getNonDeletedElementsMap(),
-    );
+    const container = getContainerElement(updateElement, app.scene.getNonDeletedElementsMap());
 
     if (container) {
       if (editable.value.trim()) {
@@ -821,10 +762,7 @@ export const textWysiwyg = ({
       } else {
         app.scene.mutateElement(container, {
           boundElements: container.boundElements?.filter(
-            (ele) =>
-              !isTextElement(
-                ele as ExcalidrawTextElement | ExcalidrawLinearElement,
-              ),
+            (ele) => !isTextElement(ele as ExcalidrawTextElement | ExcalidrawLinearElement),
           ),
         });
       }
@@ -870,8 +808,7 @@ export const textWysiwyg = ({
     const target = event?.target;
 
     const isPropertiesTrigger =
-      target instanceof HTMLElement &&
-      target.classList.contains("properties-trigger");
+      target instanceof HTMLElement && target.classList.contains("properties-trigger");
     const isPropertiesContent =
       (target instanceof HTMLElement || target instanceof SVGElement) &&
       !!(target as Element).closest(".properties-content");
@@ -891,10 +828,7 @@ export const textWysiwyg = ({
       editable.onblur = handleSubmit;
       editable.focus();
       if (pendingInitialSelection) {
-        editable.setSelectionRange(
-          pendingInitialSelection.start,
-          pendingInitialSelection.end,
-        );
+        editable.setSelectionRange(pendingInitialSelection.start, pendingInitialSelection.end);
         pendingInitialSelection = null;
       }
     });
@@ -925,18 +859,14 @@ export const textWysiwyg = ({
     }
 
     const isPropertiesTrigger =
-      target instanceof HTMLElement &&
-      target.classList.contains("properties-trigger");
+      target instanceof HTMLElement && target.classList.contains("properties-trigger");
     const isPropertiesContent =
       (target instanceof HTMLElement || target instanceof SVGElement) &&
       !!(target as Element).closest(".properties-content");
 
     if (
-      ((event.target instanceof HTMLElement ||
-        event.target instanceof SVGElement) &&
-        (event.target.closest(
-          `.${CLASSES.SHAPE_ACTIONS_MENU}, .${CLASSES.ZOOM_ACTIONS}`,
-        ) ||
+      ((event.target instanceof HTMLElement || event.target instanceof SVGElement) &&
+        (event.target.closest(`.${CLASSES.SHAPE_ACTIONS_MENU}, .${CLASSES.ZOOM_ACTIONS}`) ||
           event.target.closest(".compact-shape-actions-island")) &&
         !isWritableElement(event.target)) ||
       isPropertiesTrigger ||
@@ -971,9 +901,7 @@ export const textWysiwyg = ({
   // handle updates of textElement properties of editing element
   const unbindUpdate = app.scene.onUpdate(() => {
     updateWysiwygStyle();
-    const isPopupOpened = !!document.activeElement?.closest(
-      ".properties-content",
-    );
+    const isPopupOpened = !!document.activeElement?.closest(".properties-content");
     if (!isPopupOpened) {
       editable.focus();
     }
@@ -1014,9 +942,7 @@ export const textWysiwyg = ({
     window.addEventListener("pointerdown", onPointerDown, { capture: true });
   });
   window.addEventListener("beforeunload", handleSubmit);
-  excalidrawContainer
-    ?.querySelector(".excalidraw-textEditorContainer")!
-    .appendChild(editable);
+  excalidrawContainer?.querySelector(".excalidraw-textEditorContainer")!.appendChild(editable);
 
   return handleSubmit;
 };

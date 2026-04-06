@@ -13,10 +13,7 @@ import { register } from "./register";
 
 import type { AppClassProperties, AppState } from "../types";
 
-const getNextActiveTool = (
-  appState: Readonly<AppState>,
-  app: AppClassProperties,
-) => {
+const getNextActiveTool = (appState: Readonly<AppState>, app: AppClassProperties) => {
   if (appState.activeTool.type === "eraser") {
     return updateActiveTool(appState, {
       ...(appState.activeTool.lastActiveTool || {
@@ -71,24 +68,20 @@ export const actionDeselect = register({
       const selectedElementIds =
         Object.keys(appState.selectedElementIds).length > 0
           ? appState.selectedElementIds
-          : getElementsInGroup(
-              nonDeletedElements,
-              appState.editingGroupId,
-            ).reduce((acc, element) => {
-              acc[element.id] = true;
-              return acc;
-            }, {} as Record<string, true>);
+          : getElementsInGroup(nonDeletedElements, appState.editingGroupId).reduce(
+              (acc, element) => {
+                acc[element.id] = true;
+                return acc;
+              },
+              {} as Record<string, true>,
+            );
 
       return {
         appState: {
           ...appState,
           ...selectGroupsForSelectedElements(
             {
-              editingGroupId: getParentEditingGroupId(
-                appState,
-                app,
-                selectedElementIds,
-              ),
+              editingGroupId: getParentEditingGroupId(appState, app, selectedElementIds),
               selectedElementIds,
             },
             nonDeletedElements,

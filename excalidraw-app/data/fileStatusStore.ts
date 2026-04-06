@@ -5,9 +5,7 @@ import type { FileId } from "@excalidraw/element/types";
 export type FileLoadingStatus = "loading" | "loaded" | "error";
 
 export class FileStatusStore {
-  private static store = new VersionedSnapshotStore<
-    Map<FileId, FileLoadingStatus>
-  >(new Map());
+  private static store = new VersionedSnapshotStore<Map<FileId, FileLoadingStatus>>(new Map());
 
   static getSnapshot() {
     return this.store.getSnapshot();

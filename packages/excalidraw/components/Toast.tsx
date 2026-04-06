@@ -51,9 +51,7 @@ const ToastComponent = ({
     return () => clearTimeout(timerRef.current);
   }, [scheduleTimeout, message, duration, shouldAutoClose]);
 
-  const onMouseEnter = shouldAutoClose
-    ? () => clearTimeout(timerRef?.current)
-    : undefined;
+  const onMouseEnter = shouldAutoClose ? () => clearTimeout(timerRef?.current) : undefined;
   const onMouseLeave = shouldAutoClose ? scheduleTimeout : undefined;
   return (
     <div

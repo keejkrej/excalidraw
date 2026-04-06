@@ -17,10 +17,7 @@ import type { ExcalidrawElement } from "@excalidraw/element/types";
 import type { Distribution } from "@excalidraw/element";
 
 import { ToolButton } from "../components/ToolButton";
-import {
-  DistributeHorizontallyIcon,
-  DistributeVerticallyIcon,
-} from "../components/icons";
+import { DistributeHorizontallyIcon, DistributeVerticallyIcon } from "../components/icons";
 
 import { t } from "../i18n";
 
@@ -84,17 +81,14 @@ export const distributeHorizontally = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  keyTest: (event) =>
-    !event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.H,
+  keyTest: (event) => !event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.H,
   PanelComponent: ({ elements, appState, updateData, app }) => (
     <ToolButton
       hidden={!enableActionGroup(appState, app)}
       type="button"
       icon={DistributeHorizontallyIcon}
       onClick={() => updateData(null)}
-      title={`${t("labels.distributeHorizontally")} — ${getShortcutKey(
-        "Alt+H",
-      )}`}
+      title={`${t("labels.distributeHorizontally")} — ${getShortcutKey("Alt+H")}`}
       aria-label={t("labels.distributeHorizontally")}
       visible={isSomeElementSelected(getNonDeletedElements(elements), appState)}
     />
@@ -115,8 +109,7 @@ export const distributeVertically = register({
       captureUpdate: CaptureUpdateAction.IMMEDIATELY,
     };
   },
-  keyTest: (event) =>
-    !event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.V,
+  keyTest: (event) => !event[KEYS.CTRL_OR_CMD] && event.altKey && event.code === CODES.V,
   PanelComponent: ({ elements, appState, updateData, app }) => (
     <ToolButton
       hidden={!enableActionGroup(appState, app)}

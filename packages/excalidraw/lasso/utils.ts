@@ -1,10 +1,6 @@
 import { simplify } from "points-on-curve";
 
-import {
-  polygonFromPoints,
-  lineSegment,
-  polygonIncludesPointNonZero,
-} from "@excalidraw/math";
+import { polygonFromPoints, lineSegment, polygonIncludesPointNonZero } from "@excalidraw/math";
 
 import { type Bounds } from "@excalidraw/common";
 
@@ -101,9 +97,7 @@ const enclosureTest = (
   }
 
   return segments.some((segment) => {
-    return segment.some((point) =>
-      polygonIncludesPointNonZero(point, lassoPolygon),
-    );
+    return segment.some((point) => polygonIncludesPointNonZero(point, lassoPolygon));
   });
 };
 
@@ -121,13 +115,7 @@ const intersectionTest = (
 
   return lassoSegments.some(
     (lassoSegment) =>
-      intersectElementWithLineSegment(
-        element,
-        elementsMap,
-        lassoSegment,
-        0,
-        true,
-      ).length > 0 ||
+      intersectElementWithLineSegment(element, elementsMap, lassoSegment, 0, true).length > 0 ||
       (!!boundTextElement &&
         intersectElementWithLineSegment(
           {

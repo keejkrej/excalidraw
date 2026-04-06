@@ -35,10 +35,7 @@ export const mockMermaidToExcalidraw = (opts: {
       ...module,
     };
   });
-  const parseMermaidToExcalidrawSpy = vi.spyOn(
-    MermaidToExcalidraw,
-    "parseMermaidToExcalidraw",
-  );
+  const parseMermaidToExcalidrawSpy = vi.spyOn(MermaidToExcalidraw, "parseMermaidToExcalidraw");
 
   parseMermaidToExcalidrawSpy.mockImplementation(opts.parseMermaidToExcalidraw);
 
@@ -53,10 +50,7 @@ export const mockMermaidToExcalidraw = (opts: {
 
 // Mock for HTMLImageElement (use with `vi.unstubAllGlobals()`)
 // as jsdom.resources: "usable" throws an error on image load
-export const mockHTMLImageElement = (
-  naturalWidth: number,
-  naturalHeight: number,
-) => {
+export const mockHTMLImageElement = (naturalWidth: number, naturalHeight: number) => {
   vi.stubGlobal(
     "Image",
     class extends Image {
@@ -79,9 +73,7 @@ export const mockHTMLImageElement = (
 };
 
 // Mocks for multiple HTMLImageElements (dimensions are assigned in the order of image initialization)
-export const mockMultipleHTMLImageElements = (
-  sizes: (readonly [number, number])[],
-) => {
+export const mockMultipleHTMLImageElements = (sizes: (readonly [number, number])[]) => {
   const _sizes = [...sizes];
 
   vi.stubGlobal(

@@ -25,8 +25,7 @@ export const getScrollBars = (
     };
   }
   // This is the bounding box of all the elements
-  const [elementsMinX, elementsMinY, elementsMaxX, elementsMaxY] =
-    getCommonBounds(elements);
+  const [elementsMinX, elementsMinY, elementsMaxX, elementsMaxY] = getCommonBounds(elements);
 
   // Apply zoom
   const viewportWidthWithZoom = viewportWidth / appState.zoom.value;
@@ -62,33 +61,27 @@ export const getScrollBars = (
   const extendedSceneHeight = sceneMaxY - sceneMinY;
 
   const scrollWidthOffset =
-    Math.max(SCROLLBAR_MARGIN * 2, safeArea.left + safeArea.right) +
-    SCROLLBAR_WIDTH * 2;
+    Math.max(SCROLLBAR_MARGIN * 2, safeArea.left + safeArea.right) + SCROLLBAR_WIDTH * 2;
 
   const scrollbarWidth =
-    viewportWidth * (viewportWidthWithZoom / extendedSceneWidth) -
-    scrollWidthOffset;
+    viewportWidth * (viewportWidthWithZoom / extendedSceneWidth) - scrollWidthOffset;
 
   const scrollbarHeightOffset =
-    Math.max(SCROLLBAR_MARGIN * 2, safeArea.top + safeArea.bottom) +
-    SCROLLBAR_WIDTH * 2;
+    Math.max(SCROLLBAR_MARGIN * 2, safeArea.top + safeArea.bottom) + SCROLLBAR_WIDTH * 2;
 
   const scrollbarHeight =
-    viewportHeight * (viewportHeightWithZoom / extendedSceneHeight) -
-    scrollbarHeightOffset;
+    viewportHeight * (viewportHeightWithZoom / extendedSceneHeight) - scrollbarHeightOffset;
   // NOTE the delta multiplier calculation isn't quite correct when viewport
   // is extended outside the scene (elements) bbox as there's some small
   // accumulation error. I'll let this be an exercise for others to fix. ^^
   const horizontalDeltaMultiplier =
     extendedSceneWidth > sceneWidth
-      ? (extendedSceneWidth * appState.zoom.value) /
-        (scrollbarWidth + scrollWidthOffset)
+      ? (extendedSceneWidth * appState.zoom.value) / (scrollbarWidth + scrollWidthOffset)
       : viewportWidth / (scrollbarWidth + scrollWidthOffset);
 
   const verticalDeltaMultiplier =
     extendedSceneHeight > sceneHeight
-      ? (extendedSceneHeight * appState.zoom.value) /
-        (scrollbarHeight + scrollbarHeightOffset)
+      ? (extendedSceneHeight * appState.zoom.value) / (scrollbarHeight + scrollbarHeightOffset)
       : viewportHeight / (scrollbarHeight + scrollbarHeightOffset);
   return {
     horizontal:
@@ -99,10 +92,7 @@ export const getScrollBars = (
               Math.max(safeArea.left, SCROLLBAR_MARGIN) +
               SCROLLBAR_WIDTH +
               ((viewportMinX - sceneMinX) / extendedSceneWidth) * viewportWidth,
-            y:
-              viewportHeight -
-              SCROLLBAR_WIDTH -
-              Math.max(SCROLLBAR_MARGIN, safeArea.bottom),
+            y: viewportHeight - SCROLLBAR_WIDTH - Math.max(SCROLLBAR_MARGIN, safeArea.bottom),
             width: scrollbarWidth,
             height: SCROLLBAR_WIDTH,
             deltaMultiplier: horizontalDeltaMultiplier,
@@ -114,14 +104,11 @@ export const getScrollBars = (
         : {
             x: isRTL
               ? Math.max(safeArea.left, SCROLLBAR_MARGIN)
-              : viewportWidth -
-                SCROLLBAR_WIDTH -
-                Math.max(safeArea.right, SCROLLBAR_MARGIN),
+              : viewportWidth - SCROLLBAR_WIDTH - Math.max(safeArea.right, SCROLLBAR_MARGIN),
             y:
               Math.max(safeArea.top, SCROLLBAR_MARGIN) +
               SCROLLBAR_WIDTH +
-              ((viewportMinY - sceneMinY) / extendedSceneHeight) *
-                viewportHeight,
+              ((viewportMinY - sceneMinY) / extendedSceneHeight) * viewportHeight,
             width: SCROLLBAR_WIDTH,
             height: scrollbarHeight,
             deltaMultiplier: verticalDeltaMultiplier,
@@ -138,18 +125,17 @@ export const isOverScrollBars = (
   isOverHorizontal: boolean;
   isOverVertical: boolean;
 } => {
-  const [isOverHorizontal, isOverVertical] = [
-    scrollBars.horizontal,
-    scrollBars.vertical,
-  ].map((scrollBar) => {
-    return (
-      scrollBar != null &&
-      scrollBar.x <= x &&
-      x <= scrollBar.x + scrollBar.width &&
-      scrollBar.y <= y &&
-      y <= scrollBar.y + scrollBar.height
-    );
-  });
+  const [isOverHorizontal, isOverVertical] = [scrollBars.horizontal, scrollBars.vertical].map(
+    (scrollBar) => {
+      return (
+        scrollBar != null &&
+        scrollBar.x <= x &&
+        x <= scrollBar.x + scrollBar.width &&
+        scrollBar.y <= y &&
+        y <= scrollBar.y + scrollBar.height
+      );
+    },
+  );
   const isOverEither = isOverHorizontal || isOverVertical;
   return { isOverEither, isOverHorizontal, isOverVertical };
 };

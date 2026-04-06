@@ -13,18 +13,11 @@ export type ActionProps = {
   onClick: () => void;
 };
 
-export const Action = ({
-  title,
-  children,
-  actionLabel,
-  onClick,
-}: ActionProps) => {
+export const Action = ({ title, children, actionLabel, onClick }: ActionProps) => {
   return (
     <div className="OverwriteConfirm__Actions__Action">
       <h4>{title}</h4>
-      <div className="OverwriteConfirm__Actions__Action__content">
-        {children}
-      </div>
+      <div className="OverwriteConfirm__Actions__Action__content">{children}</div>
       <FilledButton
         variant="outlined"
         color="muted"

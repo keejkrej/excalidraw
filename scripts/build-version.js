@@ -9,10 +9,7 @@ const versionDate = (date) => date.toISOString().replace(".000", "");
 
 const commitHash = () => {
   try {
-    return require("child_process")
-      .execSync("git rev-parse --short HEAD")
-      .toString()
-      .trim();
+    return require("child_process").execSync("git rev-parse --short HEAD").toString().trim();
   } catch {
     return "none";
   }

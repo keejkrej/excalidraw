@@ -11,9 +11,7 @@ export class Emitter<T extends any[] = []> {
    * @returns unsubscribe function
    */
   on(...handlers: Subscriber<T>[] | Subscriber<T>[][]): UnsubscribeCallback {
-    const _handlers = handlers
-      .flat()
-      .filter((item) => typeof item === "function");
+    const _handlers = handlers.flat().filter((item) => typeof item === "function");
 
     this.subscribers.push(..._handlers);
 
@@ -21,9 +19,7 @@ export class Emitter<T extends any[] = []> {
   }
 
   once(...handlers: Subscriber<T>[] | Subscriber<T>[][]): UnsubscribeCallback {
-    const _handlers = handlers
-      .flat()
-      .filter((item) => typeof item === "function");
+    const _handlers = handlers.flat().filter((item) => typeof item === "function");
 
     _handlers.push(() => detach());
 
@@ -33,9 +29,7 @@ export class Emitter<T extends any[] = []> {
 
   off(...handlers: Subscriber<T>[] | Subscriber<T>[][]) {
     const _handlers = handlers.flat();
-    this.subscribers = this.subscribers.filter(
-      (handler) => !_handlers.includes(handler),
-    );
+    this.subscribers = this.subscribers.filter((handler) => !_handlers.includes(handler));
   }
 
   trigger(...payload: T) {

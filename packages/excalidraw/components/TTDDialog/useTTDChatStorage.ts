@@ -44,8 +44,7 @@ export const useTTDChatStorage = ({
   const savedChatsRef = useRef(savedChats);
   savedChatsRef.current = savedChats;
 
-  const lastMessageInHistory =
-    chatHistory?.messages[chatHistory?.messages.length - 1];
+  const lastMessageInHistory = chatHistory?.messages[chatHistory?.messages.length - 1];
 
   // Load chats on-demand
   const loadChats = useCallback(async () => {
@@ -65,14 +64,7 @@ export const useTTDChatStorage = ({
     } finally {
       setIsLoading(false);
     }
-  }, [
-    chatsLoaded,
-    isLoading,
-    setSavedChats,
-    setIsLoading,
-    setChatsLoaded,
-    persistenceAdapter,
-  ]);
+  }, [chatsLoaded, isLoading, setSavedChats, setIsLoading, setChatsLoaded, persistenceAdapter]);
 
   // INITIAL LOAD
   useEffect(() => {
@@ -85,9 +77,7 @@ export const useTTDChatStorage = ({
       return;
     }
 
-    const firstUserMessage = chatHistory.messages.find(
-      (msg) => msg.type === "user",
-    );
+    const firstUserMessage = chatHistory.messages.find((msg) => msg.type === "user");
     if (!firstUserMessage || typeof firstUserMessage.content !== "string") {
       return;
     }
@@ -95,9 +85,7 @@ export const useTTDChatStorage = ({
     const title = generateChatTitle(firstUserMessage.content);
 
     const currentSavedChats = savedChatsRef.current;
-    const existingChat = currentSavedChats.find(
-      (chat) => chat.id === chatHistory.id,
-    );
+    const existingChat = currentSavedChats.find((chat) => chat.id === chatHistory.id);
 
     const messagesChanged =
       !existingChat ||
@@ -115,15 +103,10 @@ export const useTTDChatStorage = ({
         .filter((msg) => msg.type === "user" || msg.type === "assistant")
         .map((msg) => ({
           ...msg,
-          timestamp:
-            msg.timestamp instanceof Date
-              ? msg.timestamp
-              : new Date(msg.timestamp),
+          timestamp: msg.timestamp instanceof Date ? msg.timestamp : new Date(msg.timestamp),
         })),
       currentPrompt: chatHistory.currentPrompt,
-      timestamp: messagesChanged
-        ? Date.now()
-        : existingChat?.timestamp ?? Date.now(),
+      timestamp: messagesChanged ? Date.now() : (existingChat?.timestamp ?? Date.now()),
     };
 
     const updatedChats = [
@@ -148,17 +131,11 @@ export const useTTDChatStorage = ({
       saveCurrentChat();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    chatHistory.messages?.length,
-    lastMessageInHistory?.id,
-    lastMessageInHistory?.isGenerating,
-  ]);
+  }, [chatHistory.messages?.length, lastMessageInHistory?.id, lastMessageInHistory?.isGenerating]);
 
   const deleteChat = useCallback(
     async (chatId: string): Promise<SavedChats> => {
-      const updatedChats = savedChatsRef.current.filter(
-        (chat) => chat.id !== chatId,
-      );
+      const updatedChats = savedChatsRef.current.filter((chat) => chat.id !== chatId);
       setSavedChats(updatedChats);
 
       try {

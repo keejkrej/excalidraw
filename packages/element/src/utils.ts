@@ -28,11 +28,7 @@ import {
 
 import type { Curve, LineSegment, LocalPoint } from "@excalidraw/math";
 
-import type {
-  AppState,
-  NormalizedZoomValue,
-  Zoom,
-} from "@excalidraw/excalidraw/types";
+import type { AppState, NormalizedZoomValue, Zoom } from "@excalidraw/excalidraw/types";
 
 import { elementCenterPoint, getDiamondPoints } from "./bounds";
 
@@ -43,10 +39,7 @@ import { LinearElementEditor } from "./linearElementEditor";
 import { isRectangularElement } from "./typeChecks";
 import { maxBindingDistance_simple } from "./binding";
 
-import {
-  getGlobalFixedPointForBindableElement,
-  normalizeFixedPoint,
-} from "./binding";
+import { getGlobalFixedPointForBindableElement, normalizeFixedPoint } from "./binding";
 
 import type {
   ElementsMap,
@@ -138,8 +131,7 @@ export function deconstructLinearOrFreeDrawElement(
 
   for (let idx = 0; idx < ops.length; idx += 1) {
     const op = ops[idx];
-    const prevPoint =
-      ops[idx - 1] && pointFromArray<LocalPoint>(ops[idx - 1].data.slice(-2));
+    const prevPoint = ops[idx - 1] && pointFromArray<LocalPoint>(ops[idx - 1].data.slice(-2));
     switch (op.op) {
       case "move":
         continue;
@@ -150,14 +142,8 @@ export function deconstructLinearOrFreeDrawElement(
 
         lines.push(
           lineSegment<GlobalPoint>(
-            pointFrom<GlobalPoint>(
-              element.x + prevPoint[0],
-              element.y + prevPoint[1],
-            ),
-            pointFrom<GlobalPoint>(
-              element.x + op.data[0],
-              element.y + op.data[1],
-            ),
+            pointFrom<GlobalPoint>(element.x + prevPoint[0], element.y + prevPoint[1]),
+            pointFrom<GlobalPoint>(element.x + op.data[0], element.y + op.data[1]),
           ),
         );
         continue;
@@ -168,22 +154,10 @@ export function deconstructLinearOrFreeDrawElement(
 
         curves.push(
           curve<GlobalPoint>(
-            pointFrom<GlobalPoint>(
-              element.x + prevPoint[0],
-              element.y + prevPoint[1],
-            ),
-            pointFrom<GlobalPoint>(
-              element.x + op.data[0],
-              element.y + op.data[1],
-            ),
-            pointFrom<GlobalPoint>(
-              element.x + op.data[2],
-              element.y + op.data[3],
-            ),
-            pointFrom<GlobalPoint>(
-              element.x + op.data[4],
-              element.y + op.data[5],
-            ),
+            pointFrom<GlobalPoint>(element.x + prevPoint[0], element.y + prevPoint[1]),
+            pointFrom<GlobalPoint>(element.x + op.data[0], element.y + op.data[1]),
+            pointFrom<GlobalPoint>(element.x + op.data[2], element.y + op.data[3]),
+            pointFrom<GlobalPoint>(element.x + op.data[4], element.y + op.data[5]),
           ),
         );
         continue;
@@ -217,10 +191,7 @@ export function deconstructRectanguloidElement(
     return cachedShape;
   }
 
-  let radius = getCornerRadius(
-    Math.min(element.width, element.height),
-    element,
-  );
+  let radius = getCornerRadius(Math.min(element.width, element.height), element);
 
   if (radius === 0) {
     radius = 0.01;
@@ -302,35 +273,15 @@ export function deconstructRectanguloidElement(
   const corners =
     offset > 0
       ? baseCorners.map(
-          (corner) =>
-            curveCatmullRomCubicApproxPoints(
-              curveOffsetPoints(corner, offset),
-            )!,
+          (corner) => curveCatmullRomCubicApproxPoints(curveOffsetPoints(corner, offset))!,
         )
-      : [
-          [baseCorners[0]],
-          [baseCorners[1]],
-          [baseCorners[2]],
-          [baseCorners[3]],
-        ];
+      : [[baseCorners[0]], [baseCorners[1]], [baseCorners[2]], [baseCorners[3]]];
 
   const sides = [
-    lineSegment<GlobalPoint>(
-      corners[0][corners[0].length - 1][3],
-      corners[1][0][0],
-    ),
-    lineSegment<GlobalPoint>(
-      corners[1][corners[1].length - 1][3],
-      corners[2][0][0],
-    ),
-    lineSegment<GlobalPoint>(
-      corners[2][corners[2].length - 1][3],
-      corners[3][0][0],
-    ),
-    lineSegment<GlobalPoint>(
-      corners[3][corners[3].length - 1][3],
-      corners[0][0][0],
-    ),
+    lineSegment<GlobalPoint>(corners[0][corners[0].length - 1][3], corners[1][0][0]),
+    lineSegment<GlobalPoint>(corners[1][corners[1].length - 1][3], corners[2][0][0]),
+    lineSegment<GlobalPoint>(corners[2][corners[2].length - 1][3], corners[3][0][0]),
+    lineSegment<GlobalPoint>(corners[3][corners[3].length - 1][3], corners[0][0][0]),
   ];
   const shape = [sides, corners.flat()] as ElementShape;
 
@@ -343,8 +294,7 @@ export function getDiamondBaseCorners(
   element: ExcalidrawDiamondElement,
   offset: number = 0,
 ): Curve<GlobalPoint>[] {
-  const [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY] =
-    getDiamondPoints(element);
+  const [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY] = getDiamondPoints(element);
   const verticalRadius = element.roundness
     ? getCornerRadius(Math.abs(topX - leftX), element)
     : (topX - leftX) * 0.01;
@@ -361,52 +311,28 @@ export function getDiamondBaseCorners(
 
   return [
     curve(
-      pointFrom<GlobalPoint>(
-        right[0] - verticalRadius,
-        right[1] - horizontalRadius,
-      ),
+      pointFrom<GlobalPoint>(right[0] - verticalRadius, right[1] - horizontalRadius),
       right,
       right,
-      pointFrom<GlobalPoint>(
-        right[0] - verticalRadius,
-        right[1] + horizontalRadius,
-      ),
+      pointFrom<GlobalPoint>(right[0] - verticalRadius, right[1] + horizontalRadius),
     ), // RIGHT
     curve(
-      pointFrom<GlobalPoint>(
-        bottom[0] + verticalRadius,
-        bottom[1] - horizontalRadius,
-      ),
+      pointFrom<GlobalPoint>(bottom[0] + verticalRadius, bottom[1] - horizontalRadius),
       bottom,
       bottom,
-      pointFrom<GlobalPoint>(
-        bottom[0] - verticalRadius,
-        bottom[1] - horizontalRadius,
-      ),
+      pointFrom<GlobalPoint>(bottom[0] - verticalRadius, bottom[1] - horizontalRadius),
     ), // BOTTOM
     curve(
-      pointFrom<GlobalPoint>(
-        left[0] + verticalRadius,
-        left[1] + horizontalRadius,
-      ),
+      pointFrom<GlobalPoint>(left[0] + verticalRadius, left[1] + horizontalRadius),
       left,
       left,
-      pointFrom<GlobalPoint>(
-        left[0] + verticalRadius,
-        left[1] - horizontalRadius,
-      ),
+      pointFrom<GlobalPoint>(left[0] + verticalRadius, left[1] - horizontalRadius),
     ), // LEFT
     curve(
-      pointFrom<GlobalPoint>(
-        top[0] - verticalRadius,
-        top[1] + horizontalRadius,
-      ),
+      pointFrom<GlobalPoint>(top[0] - verticalRadius, top[1] + horizontalRadius),
       top,
       top,
-      pointFrom<GlobalPoint>(
-        top[0] + verticalRadius,
-        top[1] + horizontalRadius,
-      ),
+      pointFrom<GlobalPoint>(top[0] + verticalRadius, top[1] + horizontalRadius),
     ), // TOP
   ];
 }
@@ -432,27 +358,14 @@ export function deconstructDiamondElement(
   const baseCorners = getDiamondBaseCorners(element, offset);
 
   const corners = baseCorners.map(
-    (corner) =>
-      curveCatmullRomCubicApproxPoints(curveOffsetPoints(corner, offset))!,
+    (corner) => curveCatmullRomCubicApproxPoints(curveOffsetPoints(corner, offset))!,
   );
 
   const sides = [
-    lineSegment<GlobalPoint>(
-      corners[0][corners[0].length - 1][3],
-      corners[1][0][0],
-    ),
-    lineSegment<GlobalPoint>(
-      corners[1][corners[1].length - 1][3],
-      corners[2][0][0],
-    ),
-    lineSegment<GlobalPoint>(
-      corners[2][corners[2].length - 1][3],
-      corners[3][0][0],
-    ),
-    lineSegment<GlobalPoint>(
-      corners[3][corners[3].length - 1][3],
-      corners[0][0][0],
-    ),
+    lineSegment<GlobalPoint>(corners[0][corners[0].length - 1][3], corners[1][0][0]),
+    lineSegment<GlobalPoint>(corners[1][corners[1].length - 1][3], corners[2][0][0]),
+    lineSegment<GlobalPoint>(corners[2][corners[2].length - 1][3], corners[3][0][0]),
+    lineSegment<GlobalPoint>(corners[3][corners[3].length - 1][3], corners[0][0][0]),
   ];
 
   const shape = [sides, corners.flat()] as ElementShape;
@@ -503,10 +416,7 @@ export const getCornerRadius = (x: number, element: ExcalidrawElement) => {
   return 0;
 };
 
-const getDiagonalsForBindableElement = (
-  element: ExcalidrawElement,
-  elementsMap: ElementsMap,
-) => {
+const getDiagonalsForBindableElement = (element: ExcalidrawElement, elementsMap: ElementsMap) => {
   // for rectangles, shrink the diagonals a bit because there's something
   // going on with the focus points around the corners. Ask Mark for details.
   const OFFSET_PX = element.type === "rectangle" ? 15 : 0;
@@ -523,16 +433,9 @@ const getDiagonalsForBindableElement = (
   const diagonalOne = shrinkSegment(
     isRectangularElement(element)
       ? lineSegment<GlobalPoint>(
+          pointRotateRads(pointFrom<GlobalPoint>(element.x, element.y), center, element.angle),
           pointRotateRads(
-            pointFrom<GlobalPoint>(element.x, element.y),
-            center,
-            element.angle,
-          ),
-          pointRotateRads(
-            pointFrom<GlobalPoint>(
-              element.x + element.width,
-              element.y + element.height,
-            ),
+            pointFrom<GlobalPoint>(element.x + element.width, element.y + element.height),
             center,
             element.angle,
           ),
@@ -544,10 +447,7 @@ const getDiagonalsForBindableElement = (
             element.angle,
           ),
           pointRotateRads(
-            pointFrom<GlobalPoint>(
-              element.x + element.width / 2,
-              element.y + element.height,
-            ),
+            pointFrom<GlobalPoint>(element.x + element.width / 2, element.y + element.height),
             center,
             element.angle,
           ),
@@ -574,10 +474,7 @@ const getDiagonalsForBindableElement = (
             element.angle,
           ),
           pointRotateRads(
-            pointFrom<GlobalPoint>(
-              element.x + element.width,
-              element.y + element.height / 2,
-            ),
+            pointFrom<GlobalPoint>(element.x + element.width, element.y + element.height / 2),
             center,
             element.angle,
           ),
@@ -605,19 +502,13 @@ export const getSnapOutlineMidPoint = (
       : [
           // RIGHT midpoint
           pointRotateRads(
-            pointFrom<GlobalPoint>(
-              element.x + element.width,
-              element.y + element.height / 2,
-            ),
+            pointFrom<GlobalPoint>(element.x + element.width, element.y + element.height / 2),
             center,
             element.angle,
           ),
           // BOTTOM midpoint
           pointRotateRads(
-            pointFrom<GlobalPoint>(
-              element.x + element.width / 2,
-              element.y + element.height,
-            ),
+            pointFrom<GlobalPoint>(element.x + element.width / 2, element.y + element.height),
             center,
             element.angle,
           ),
@@ -636,8 +527,7 @@ export const getSnapOutlineMidPoint = (
         ];
   const candidate = sideMidpoints.find(
     (midpoint) =>
-      pointDistance(point, midpoint) <=
-        maxBindingDistance_simple(zoom) + element.strokeWidth / 2 &&
+      pointDistance(point, midpoint) <= maxBindingDistance_simple(zoom) + element.strokeWidth / 2 &&
       !hitElementItself({
         point,
         element,
@@ -665,12 +555,7 @@ export const projectFixedPointOntoDiagonal = (
   }
 
   if (isMidpointSnappingEnabled) {
-    const sideMidPoint = getSnapOutlineMidPoint(
-      point,
-      element,
-      elementsMap,
-      zoom,
-    );
+    const sideMidPoint = getSnapOutlineMidPoint(point, element, elementsMap, zoom);
     if (sideMidPoint) {
       return sideMidPoint;
     }
@@ -678,10 +563,7 @@ export const projectFixedPointOntoDiagonal = (
 
   // Do the projection onto the diagonals (or center lines
   // for non-rectangular shapes)
-  const [diagonalOne, diagonalTwo] = getDiagonalsForBindableElement(
-    element,
-    elementsMap,
-  );
+  const [diagonalOne, diagonalTwo] = getDiagonalsForBindableElement(element, elementsMap);
 
   // To avoid working with stale arrow state, we use the opposite focus point
   // of the current endpoint, which will always be unchanged during moving of
@@ -692,13 +574,10 @@ export const projectFixedPointOntoDiagonal = (
     elementsMap,
   );
   if (arrow.points.length === 2) {
-    const otherBinding =
-      startOrEnd === "start" ? arrow.endBinding : arrow.startBinding;
+    const otherBinding = startOrEnd === "start" ? arrow.endBinding : arrow.startBinding;
     const otherBindable =
       otherBinding &&
-      (elementsMap.get(otherBinding.elementId) as
-        | ExcalidrawBindableElement
-        | undefined);
+      (elementsMap.get(otherBinding.elementId) as ExcalidrawBindableElement | undefined);
     const otherFocusPoint =
       otherBinding &&
       otherBindable &&

@@ -17,10 +17,7 @@ let loadedWasm: ReturnType<typeof load> | null = null;
 
 // TODO: consider adding support for fetching the wasm from an URL (external CDN, data URL, etc.)
 const load = (): Promise<{
-  subset: (
-    fontBuffer: ArrayBuffer,
-    codePoints: ReadonlySet<number>,
-  ) => Uint8Array<ArrayBuffer>;
+  subset: (fontBuffer: ArrayBuffer, codePoints: ReadonlySet<number>) => Uint8Array<ArrayBuffer>;
 }> => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -31,12 +28,7 @@ const load = (): Promise<{
 
       const hbSubset = {
         subset: (fontBuffer: ArrayBuffer, codePoints: ReadonlySet<number>) => {
-          return bindings.subset(
-            harfbuzzJsWasm,
-            heapu8,
-            fontBuffer,
-            codePoints,
-          );
+          return bindings.subset(harfbuzzJsWasm, heapu8, fontBuffer, codePoints);
         },
       };
 

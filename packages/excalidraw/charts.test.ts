@@ -1,13 +1,7 @@
 import { FONT_FAMILY } from "@excalidraw/common";
-import {
-  DEFAULT_CHART_COLOR_INDEX,
-  getAllColorsSpecificShade,
-} from "@excalidraw/common";
+import { DEFAULT_CHART_COLOR_INDEX, getAllColorsSpecificShade } from "@excalidraw/common";
 
-import type {
-  ExcalidrawLineElement,
-  ExcalidrawTextElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawLineElement, ExcalidrawTextElement } from "@excalidraw/element/types";
 
 import {
   isSpreadsheetValidForChartType,
@@ -76,22 +70,11 @@ describe("charts", () => {
 
       expect(result.ok).toBe(true);
 
-      const { title, labels, series } = (
-        result as { ok: true; data: Spreadsheet }
-      ).data;
+      const { title, labels, series } = (result as { ok: true; data: Spreadsheet }).data;
 
       expect(title).toEqual("value");
-      expect(labels).toEqual([
-        "01:00",
-        "02:00",
-        "03:00",
-        "04:00",
-        "05:00",
-        "06:00",
-      ]);
-      expect(series).toEqual([
-        { title: "value", values: [61, -60, 85, -67, 54, 95] },
-      ]);
+      expect(labels).toEqual(["01:00", "02:00", "03:00", "04:00", "05:00", "06:00"]);
+      expect(series).toEqual([{ title: "value", values: [61, -60, 85, -67, 54, 95] }]);
     });
 
     it("Uses the second column as the label if it is not a number", () => {
@@ -109,22 +92,11 @@ describe("charts", () => {
 
       expect(result.ok).toBe(true);
 
-      const { title, labels, series } = (
-        result as { ok: true; data: Spreadsheet }
-      ).data;
+      const { title, labels, series } = (result as { ok: true; data: Spreadsheet }).data;
 
       expect(title).toEqual("value");
-      expect(labels).toEqual([
-        "01:00",
-        "02:00",
-        "03:00",
-        "04:00",
-        "05:00",
-        "06:00",
-      ]);
-      expect(series).toEqual([
-        { title: "value", values: [61, -60, 85, -67, 54, 95] },
-      ]);
+      expect(labels).toEqual(["01:00", "02:00", "03:00", "04:00", "05:00", "06:00"]);
+      expect(series).toEqual([{ title: "value", values: [61, -60, 85, -67, 54, 95] }]);
     });
 
     it("treats the first column as labels if both columns are numbers", () => {
@@ -142,15 +114,11 @@ describe("charts", () => {
 
       expect(result.ok).toBe(true);
 
-      const { title, labels, series } = (
-        result as { ok: true; data: Spreadsheet }
-      ).data;
+      const { title, labels, series } = (result as { ok: true; data: Spreadsheet }).data;
 
       expect(title).toEqual("value");
       expect(labels).toEqual(["01", "02", "03", "04", "05", "06"]);
-      expect(series).toEqual([
-        { title: "value", values: [61, -60, 85, -67, 54, 95] },
-      ]);
+      expect(series).toEqual([{ title: "value", values: [61, -60, 85, -67, 54, 95] }]);
     });
 
     it("parses multi-series cells for radar charts", () => {
@@ -170,13 +138,7 @@ describe("charts", () => {
       const parsed = (result as { ok: true; data: Spreadsheet }).data;
 
       expect(parsed.title).toEqual("Metric");
-      expect(parsed.labels).toEqual([
-        "Speed",
-        "Strength",
-        "Agility",
-        "Intelligence",
-        "Stamina",
-      ]);
+      expect(parsed.labels).toEqual(["Speed", "Strength", "Agility", "Intelligence", "Stamina"]);
       expect(parsed.series).toEqual([
         { title: "Player A", values: [80, 65, 90, 70, 85] },
         { title: "Player B", values: [60, 85, 70, 88, 75] },
@@ -217,11 +179,7 @@ describe("charts", () => {
       const parsed = (result as { ok: true; data: Spreadsheet }).data;
 
       expect(parsed.title).toBeNull();
-      expect(parsed.labels).toEqual([
-        "Physical Strength",
-        "Swordsmanship",
-        "Political Instinct",
-      ]);
+      expect(parsed.labels).toEqual(["Physical Strength", "Swordsmanship", "Political Instinct"]);
       expect(parsed.series).toEqual([
         { title: "Dunk", values: [10, 8, 3] },
         { title: "Egg", values: [2, 1, 9] },
@@ -241,10 +199,7 @@ describe("charts", () => {
       const parsed = (result as { ok: true; data: Spreadsheet }).data;
 
       expect(parsed.title).toEqual("trait");
-      expect(parsed.labels).toEqual([
-        "Physical Strength",
-        "Swordsmanship skill",
-      ]);
+      expect(parsed.labels).toEqual(["Physical Strength", "Swordsmanship skill"]);
       expect(parsed.series).toEqual([
         { title: "Dunk", values: [10, 8] },
         { title: "Egg", values: [2, 1] },
@@ -263,10 +218,7 @@ describe("charts", () => {
       const parsed = (result as { ok: true; data: Spreadsheet }).data;
 
       expect(parsed.title).toBeNull();
-      expect(parsed.labels).toEqual([
-        "Physical Strength",
-        "Swordsmanship skill",
-      ]);
+      expect(parsed.labels).toEqual(["Physical Strength", "Swordsmanship skill"]);
       expect(parsed.series).toEqual([
         { title: "Series 1", values: [10, 8] },
         { title: "Series 2", values: [2, 1] },
@@ -307,11 +259,7 @@ describe("charts", () => {
     it("accepts radar charts with 3 or more dimensions", () => {
       const spreadsheet: Spreadsheet = {
         title: "trait",
-        labels: [
-          "Physical Strength",
-          "Swordsmanship skill",
-          "Political Instinct",
-        ],
+        labels: ["Physical Strength", "Swordsmanship skill", "Political Instinct"],
         series: [
           { title: "Dunk", values: [10, 8, 3] },
           { title: "Egg", values: [2, 1, 9] },
@@ -342,28 +290,20 @@ describe("charts", () => {
           element.opacity === 100 &&
           !element.roundness,
       );
-      const textElements = elements!.filter(
-        (element) => element.type === "text",
-      );
+      const textElements = elements!.filter((element) => element.type === "text");
       const axisLabels = textElements.filter((element) =>
         spreadsheet.labels?.includes(element.originalText || ""),
       );
       const legendLabels = textElements.filter((element) =>
-        spreadsheet.series.some(
-          (series) => series.title === element.originalText,
-        ),
+        spreadsheet.series.some((series) => series.title === element.originalText),
       );
 
       const axisBottomY = Math.max(
         ...axisLabels.map((axisLabel) => axisLabel.y + axisLabel.height),
       );
-      const legendTopY = Math.min(
-        ...legendLabels.map((legendLabel) => legendLabel.y),
-      );
+      const legendTopY = Math.min(...legendLabels.map((legendLabel) => legendLabel.y));
 
-      expect(bars).toHaveLength(
-        spreadsheet.series.length * spreadsheet.series[0].values.length,
-      );
+      expect(bars).toHaveLength(spreadsheet.series.length * spreadsheet.series[0].values.length);
       expect(legendLabels).toHaveLength(spreadsheet.series.length);
       expect(legendTopY).toBeGreaterThan(axisBottomY + 2);
     });
@@ -392,9 +332,7 @@ describe("charts", () => {
           element.opacity === 100 &&
           !element.roundness,
       );
-      const uniqueColors = Array.from(
-        new Set(bars.map((bar) => bar.backgroundColor)),
-      );
+      const uniqueColors = Array.from(new Set(bars.map((bar) => bar.backgroundColor)));
       const colorIndices = uniqueColors.map((color) =>
         palette.findIndex((paletteColor) => paletteColor === color),
       );
@@ -408,9 +346,7 @@ describe("charts", () => {
       };
       const minDistance = Math.min(
         ...colorIndices.flatMap((index, i) =>
-          colorIndices
-            .slice(i + 1)
-            .map((other) => circularDistance(index, other)),
+          colorIndices.slice(i + 1).map((other) => circularDistance(index, other)),
         ),
       );
       expect(minDistance).toBeGreaterThan(1);
@@ -440,16 +376,13 @@ describe("charts", () => {
           element.opacity === 100 &&
           !element.roundness,
       );
-      const textElements = elements!.filter(
-        (element) => element.type === "text",
-      );
+      const textElements = elements!.filter((element) => element.type === "text");
       const legendLabels = textElements
         .map((element) => element.originalText)
         .filter((text): text is string => typeof text === "string");
 
       expect(bars).toHaveLength(
-        parsedSpreadsheet.series[0].values.length *
-          parsedSpreadsheet.series.length,
+        parsedSpreadsheet.series[0].values.length * parsedSpreadsheet.series.length,
       );
       expect(legendLabels).toContain("Series 1");
       expect(legendLabels).toContain("Series 2");
@@ -484,9 +417,7 @@ describe("charts", () => {
             element.points[1][0] > 0,
         )?.width || 0;
 
-      expect(getXAxisWidth(multiElements)).toBeGreaterThan(
-        getXAxisWidth(singleElements),
-      );
+      expect(getXAxisWidth(multiElements)).toBeGreaterThan(getXAxisWidth(singleElements));
     });
 
     it("makes multi-series line charts wider than single-series line charts", () => {
@@ -517,19 +448,13 @@ describe("charts", () => {
             element.points[1][0] > 0,
         )?.width || 0;
 
-      expect(getXAxisWidth(multiElements)).toBeGreaterThan(
-        getXAxisWidth(singleElements),
-      );
+      expect(getXAxisWidth(multiElements)).toBeGreaterThan(getXAxisWidth(singleElements));
     });
 
     it("wraps grouped bar labels with spaces and still ellipsifies long single words", () => {
       const spreadsheet: Spreadsheet = {
         title: "Trait",
-        labels: [
-          "Supercalifragilisticexpialidocious",
-          "Data Flow",
-          "Logic Layer",
-        ],
+        labels: ["Supercalifragilisticexpialidocious", "Data Flow", "Logic Layer"],
         series: [
           { title: "Dunk", values: [8, 3, 2.5] },
           { title: "Egg", values: [1, 9, 8] },
@@ -540,30 +465,21 @@ describe("charts", () => {
       const elements = renderSpreadsheet("bar", spreadsheet, 0, 0);
       const longWordLabel = elements!.find(
         (element): element is ExcalidrawTextElement =>
-          element.type === "text" &&
-          Math.abs(element.angle) > 0 &&
-          element.text.includes("..."),
+          element.type === "text" && Math.abs(element.angle) > 0 && element.text.includes("..."),
       );
       const spacedLabels = elements!.filter(
         (element): element is ExcalidrawTextElement =>
           element.type === "text" &&
-          (element.originalText === "Data Flow" ||
-            element.originalText === "Logic Layer"),
+          (element.originalText === "Data Flow" || element.originalText === "Logic Layer"),
       );
 
       expect(longWordLabel).toBeDefined();
       expect(longWordLabel?.text).toContain("...");
       expect(longWordLabel?.originalText).toBe(longWordLabel?.text);
+      expect((longWordLabel?.text || "").replace("...", "").length).toBeGreaterThan(0);
+      expect(spacedLabels.some((label) => label.text.includes("\n"))).toBe(true);
       expect(
-        (longWordLabel?.text || "").replace("...", "").length,
-      ).toBeGreaterThan(0);
-      expect(spacedLabels.some((label) => label.text.includes("\n"))).toBe(
-        true,
-      );
-      expect(
-        spacedLabels.every(
-          (label) => !!label.originalText && !label.originalText.includes("\n"),
-        ),
+        spacedLabels.every((label) => !!label.originalText && !label.originalText.includes("\n")),
       ).toBe(true);
     });
 
@@ -598,13 +514,9 @@ describe("charts", () => {
         expect(bound.top).toBeGreaterThan(0);
       }
 
-      const sortedBounds = bounds.sort(
-        (left, right) => left.centerX - right.centerX,
-      );
+      const sortedBounds = bounds.sort((left, right) => left.centerX - right.centerX);
       for (let index = 1; index < sortedBounds.length; index++) {
-        expect(sortedBounds[index - 1].right).toBeLessThanOrEqual(
-          sortedBounds[index].left + 2,
-        );
+        expect(sortedBounds[index - 1].right).toBeLessThanOrEqual(sortedBounds[index].left + 2);
       }
     });
 
@@ -628,9 +540,7 @@ describe("charts", () => {
       );
 
       expect(seriesLines).toHaveLength(spreadsheet.series.length);
-      expect(dots).toHaveLength(
-        spreadsheet.series.length * spreadsheet.series[0].values.length,
-      );
+      expect(dots).toHaveLength(spreadsheet.series.length * spreadsheet.series[0].values.length);
     });
 
     it("spreads line series colors across palette to avoid similar adjacent colors", () => {
@@ -665,9 +575,7 @@ describe("charts", () => {
       };
       const minDistance = Math.min(
         ...colorIndices.flatMap((index, i) =>
-          colorIndices
-            .slice(i + 1)
-            .map((other) => circularDistance(index, other)),
+          colorIndices.slice(i + 1).map((other) => circularDistance(index, other)),
         ),
       );
 
@@ -696,9 +604,7 @@ describe("charts", () => {
       };
 
       expect(getSeriesLineColors(0.125)).toEqual(getSeriesLineColors(0.125));
-      expect(getSeriesLineColors(0.125)).not.toEqual(
-        getSeriesLineColors(0.875),
-      );
+      expect(getSeriesLineColors(0.125)).not.toEqual(getSeriesLineColors(0.875));
     });
 
     it("renders multi-series line legend below axis labels with clearance", () => {
@@ -712,24 +618,18 @@ describe("charts", () => {
       };
 
       const elements = renderSpreadsheet("line", spreadsheet, 0, 0);
-      const textElements = elements!.filter(
-        (element) => element.type === "text",
-      );
+      const textElements = elements!.filter((element) => element.type === "text");
       const axisLabels = textElements.filter((element) =>
         spreadsheet.labels?.includes(element.originalText || ""),
       );
       const legendLabels = textElements.filter((element) =>
-        spreadsheet.series.some(
-          (series) => series.title === element.originalText,
-        ),
+        spreadsheet.series.some((series) => series.title === element.originalText),
       );
 
       const axisBottomY = Math.max(
         ...axisLabels.map((axisLabel) => axisLabel.y + axisLabel.height),
       );
-      const legendTopY = Math.min(
-        ...legendLabels.map((legendLabel) => legendLabel.y),
-      );
+      const legendTopY = Math.min(...legendLabels.map((legendLabel) => legendLabel.y));
 
       expect(axisLabels.length).toBeGreaterThan(0);
       expect(legendLabels.length).toBe(2);
@@ -770,13 +670,9 @@ describe("charts", () => {
         expect(bound.top).toBeGreaterThan(0);
       }
 
-      const sortedBounds = bounds.sort(
-        (left, right) => left.centerX - right.centerX,
-      );
+      const sortedBounds = bounds.sort((left, right) => left.centerX - right.centerX);
       for (let index = 1; index < sortedBounds.length; index++) {
-        expect(sortedBounds[index - 1].right).toBeLessThanOrEqual(
-          sortedBounds[index].left + 2,
-        );
+        expect(sortedBounds[index - 1].right).toBeLessThanOrEqual(sortedBounds[index].left + 2);
       }
     });
 
@@ -802,9 +698,7 @@ describe("charts", () => {
 
       expect(seriesPolygons).toHaveLength(3);
       for (const polygon of seriesPolygons) {
-        expect(polygon.points[0]).toEqual(
-          polygon.points[polygon.points.length - 1],
-        );
+        expect(polygon.points[0]).toEqual(polygon.points[polygon.points.length - 1]);
       }
     });
 
@@ -829,17 +723,14 @@ describe("charts", () => {
 
       const series1 = seriesPolygons[0];
       const series2 = seriesPolygons[1];
-      const getRadius = (point: readonly [number, number]) =>
-        Math.hypot(point[0], point[1]);
+      const getRadius = (point: readonly [number, number]) => Math.hypot(point[0], point[1]);
 
       // On alpha axis, second series is about ~1.9x first series.
-      const alphaRatio =
-        getRadius(series2.points[0]!) / getRadius(series1.points[0]!);
+      const alphaRatio = getRadius(series2.points[0]!) / getRadius(series1.points[0]!);
       expect(alphaRatio).toBeCloseTo(76000 / 40000, 1);
 
       // On epsilon axis, first series should dominate strongly.
-      const epsilonRatio =
-        getRadius(series1.points[4]!) / getRadius(series2.points[4]!);
+      const epsilonRatio = getRadius(series1.points[4]!) / getRadius(series2.points[4]!);
       expect(epsilonRatio).toBeGreaterThan(50);
     });
 
@@ -888,8 +779,7 @@ describe("charts", () => {
       );
 
       const polygon = seriesPolygons[0];
-      const getRadius = (point: readonly [number, number]) =>
-        Math.hypot(point[0], point[1]);
+      const getRadius = (point: readonly [number, number]) => Math.hypot(point[0], point[1]);
 
       const alphaRadius = getRadius(polygon.points[0]!);
       const epsilonRadius = getRadius(polygon.points[4]!);
@@ -912,16 +802,12 @@ describe("charts", () => {
       };
 
       const elements = renderSpreadsheet("radar", spreadsheet, 0, 0);
-      const textElements = elements!.filter(
-        (element) => element.type === "text",
-      );
+      const textElements = elements!.filter((element) => element.type === "text");
 
       expect(textElements.some((element) => element.text === "0")).toBe(false);
       expect(
         textElements.some(
-          (element) =>
-            element.text ===
-            Math.max(...spreadsheet.series[0].values).toLocaleString(),
+          (element) => element.text === Math.max(...spreadsheet.series[0].values).toLocaleString(),
         ),
       ).toBe(false);
     });
@@ -948,9 +834,7 @@ describe("charts", () => {
       };
 
       const elements = renderSpreadsheet("radar", spreadsheet, 0, 0);
-      const textElements = elements!.filter(
-        (element) => element.type === "text",
-      );
+      const textElements = elements!.filter((element) => element.type === "text");
       const wrappedAxisLabels = textElements.filter(
         (element) =>
           element.text.includes("\n") &&
@@ -963,14 +847,11 @@ describe("charts", () => {
       expect(
         wrappedAxisLabels.every(
           (element) =>
-            typeof element.originalText === "string" &&
-            !element.originalText.includes("\n"),
+            typeof element.originalText === "string" && !element.originalText.includes("\n"),
         ),
       ).toBe(true);
       expect(
-        textElements.some(
-          (element) => element.text.includes("...") && element.text !== "Dunk",
-        ),
+        textElements.some((element) => element.text.includes("...") && element.text !== "Dunk"),
       ).toBe(false);
       expect(
         textElements.some(
@@ -988,9 +869,7 @@ describe("charts", () => {
         ),
       ).toBe(true);
 
-      const topLabel = textElements.find(
-        (element) => element.originalText === "Physical Strength",
-      );
+      const topLabel = textElements.find((element) => element.originalText === "Physical Strength");
       const topSpokeY = Math.min(
         ...elements!
           .filter(
@@ -1018,12 +897,8 @@ describe("charts", () => {
       };
 
       const elements = renderSpreadsheet("radar", spreadsheet, 0, 0);
-      const textElements = elements!.filter(
-        (element) => element.type === "text",
-      );
-      const title = textElements.find((element) =>
-        element.text.includes("Trait"),
-      );
+      const textElements = elements!.filter((element) => element.type === "text");
+      const title = textElements.find((element) => element.text.includes("Trait"));
       const dunkLabel = textElements.find((element) => element.text === "Dunk");
       const eggLabel = textElements.find((element) => element.text === "Egg");
 
@@ -1055,9 +930,7 @@ describe("charts", () => {
       };
 
       const elements = renderSpreadsheet("radar", spreadsheet, 0, 0);
-      const textElements = elements!.filter(
-        (element) => element.type === "text",
-      );
+      const textElements = elements!.filter((element) => element.type === "text");
       const title = textElements.find(
         (element) => element.fontFamily === FONT_FAMILY["Lilita One"],
       );
@@ -1109,9 +982,7 @@ describe("charts", () => {
       };
       const minDistance = Math.min(
         ...colorIndices.flatMap((index, i) =>
-          colorIndices
-            .slice(i + 1)
-            .map((other) => circularDistance(index, other)),
+          colorIndices.slice(i + 1).map((other) => circularDistance(index, other)),
         ),
       );
 
@@ -1138,24 +1009,18 @@ describe("charts", () => {
       };
 
       const elements = renderSpreadsheet("radar", spreadsheet, 0, 0);
-      const textElements = elements!.filter(
-        (element) => element.type === "text",
-      );
+      const textElements = elements!.filter((element) => element.type === "text");
       const axisLabels = textElements.filter((element) =>
         spreadsheet.labels?.includes(element.originalText),
       );
       const legendLabels = textElements.filter((element) =>
-        spreadsheet.series.some(
-          (series) => series.title === element.originalText,
-        ),
+        spreadsheet.series.some((series) => series.title === element.originalText),
       );
 
       const axisBottomY = Math.max(
         ...axisLabels.map((axisLabel) => axisLabel.y + axisLabel.height),
       );
-      const legendTopY = Math.min(
-        ...legendLabels.map((legendLabel) => legendLabel.y),
-      );
+      const legendTopY = Math.min(...legendLabels.map((legendLabel) => legendLabel.y));
 
       expect(axisLabels.length).toBeGreaterThan(0);
       expect(legendLabels.length).toBeGreaterThan(0);

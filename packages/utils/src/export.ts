@@ -7,10 +7,7 @@ import {
 } from "@excalidraw/excalidraw/clipboard";
 import { encodePngMetadata } from "@excalidraw/excalidraw/data/image";
 import { serializeAsJSON } from "@excalidraw/excalidraw/data/json";
-import {
-  restoreAppState,
-  restoreElements,
-} from "@excalidraw/excalidraw/data/restore";
+import { restoreAppState, restoreElements } from "@excalidraw/excalidraw/data/restore";
 import {
   exportToCanvas as _exportToCanvas,
   exportToSvg as _exportToSvg,
@@ -64,18 +61,14 @@ export const exportToCanvas = ({
 
       if (maxWidthOrHeight) {
         if (typeof getDimensions === "function") {
-          console.warn(
-            "`getDimensions()` is ignored when `maxWidthOrHeight` is supplied.",
-          );
+          console.warn("`getDimensions()` is ignored when `maxWidthOrHeight` is supplied.");
         }
 
         const max = Math.max(width, height);
 
         // if content is less then maxWidthOrHeight, fallback on supplied scale
         const scale =
-          maxWidthOrHeight < max
-            ? maxWidthOrHeight / max
-            : appState?.exportScale ?? 1;
+          maxWidthOrHeight < max ? maxWidthOrHeight / max : (appState?.exportScale ?? 1);
 
         canvas.width = width * scale;
         canvas.height = height * scale;
@@ -118,9 +111,7 @@ export const exportToBlob = async (
   }
 
   if (mimeType === MIME_TYPES.jpg && !opts.appState?.exportBackground) {
-    console.warn(
-      `Defaulting "exportBackground" to "true" for "${MIME_TYPES.jpg}" mimeType`,
-    );
+    console.warn(`Defaulting "exportBackground" to "true" for "${MIME_TYPES.jpg}" mimeType`);
     opts = {
       ...opts,
       appState: { ...opts.appState, exportBackground: true },
@@ -137,11 +128,7 @@ export const exportToBlob = async (
         if (!blob) {
           return reject(new Error("couldn't export to blob"));
         }
-        if (
-          blob &&
-          mimeType === MIME_TYPES.png &&
-          opts.appState?.exportEmbedScene
-        ) {
+        if (blob && mimeType === MIME_TYPES.png && opts.appState?.exportEmbedScene) {
           blob = await encodePngMetadata({
             blob,
             metadata: serializeAsJSON(

@@ -43,8 +43,7 @@ export const FontPickerTrigger = ({
           active={isOpened}
           onClick={() => {
             setAppState((appState) => ({
-              openPopup:
-                appState.openPopup === "fontFamily" ? null : appState.openPopup,
+              openPopup: appState.openPopup === "fontFamily" ? null : appState.openPopup,
             }));
           }}
           style={{

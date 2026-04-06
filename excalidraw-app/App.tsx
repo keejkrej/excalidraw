@@ -4,9 +4,7 @@ import {
   ExcalidrawAPIProvider,
   useExcalidrawAPI,
 } from "@excalidraw/excalidraw";
-import {
-  CommandPalette,
-} from "@excalidraw/excalidraw/components/CommandPalette/CommandPalette";
+import { CommandPalette } from "@excalidraw/excalidraw/components/CommandPalette/CommandPalette";
 import { ErrorDialog } from "@excalidraw/excalidraw/components/ErrorDialog";
 import { OverwriteConfirmDialog } from "@excalidraw/excalidraw/components/OverwriteConfirm/OverwriteConfirm";
 import { openConfirmModal } from "@excalidraw/excalidraw/components/OverwriteConfirm/OverwriteConfirmState";
@@ -27,10 +25,7 @@ import { useHandleLibrary } from "@excalidraw/excalidraw/data/library";
 import { t } from "@excalidraw/excalidraw/i18n";
 import { isElementLink, isInitializedImageElement } from "@excalidraw/element";
 import { newElementWith } from "@excalidraw/element";
-import {
-  restoreAppState,
-  restoreElements,
-} from "@excalidraw/excalidraw/data/restore";
+import { restoreAppState, restoreElements } from "@excalidraw/excalidraw/data/restore";
 import clsx from "clsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -52,10 +47,7 @@ import type { ResolvablePromise } from "@excalidraw/common/utils";
 
 import CustomStats from "./CustomStats";
 import { Provider, appJotaiStore, useAtomValue } from "./app-jotai";
-import {
-  STORAGE_KEYS,
-  SYNC_BROWSER_TABS_TIMEOUT,
-} from "./app_constants";
+import { STORAGE_KEYS, SYNC_BROWSER_TABS_TIMEOUT } from "./app_constants";
 import { getPreferredLanguage } from "./app-language/language-detector";
 import { useAppLangCode } from "./app-language/language-state";
 import { AppFooter } from "./components/AppFooter";
@@ -77,10 +69,7 @@ import { updateStaleImageStatuses } from "./data/FileManager";
 import { FileStatusStore } from "./data/fileStatusStore";
 import { importFromLocalStorage } from "./data/localStorage";
 import { isBrowserStorageStateNewer } from "./data/tabSync";
-import {
-  onDesktopOpenFiles,
-  readDesktopFile,
-} from "./desktop/runtime";
+import { onDesktopOpenFiles, readDesktopFile } from "./desktop/runtime";
 import { useHandleAppTheme } from "./useHandleAppTheme";
 
 import "./index.scss";
@@ -90,22 +79,14 @@ polyfill();
 window.EXCALIDRAW_THROTTLE_RENDER = true;
 
 const stripUnsupportedDesktopUrlState = () => {
-  const hasUnsupportedSearch = new URLSearchParams(window.location.search).has(
-    "id",
-  );
+  const hasUnsupportedSearch = new URLSearchParams(window.location.search).has("id");
   const hasUnsupportedHash =
     /^#(json=|room=|url=)/.test(window.location.hash) ||
     window.location.hash.includes("addLibrary=");
   const hasUnsupportedQuery = window.location.search.includes("addLibrary=");
-  const hasUnsupportedPath =
-    window.location.pathname === "/excalidraw-plus-export";
+  const hasUnsupportedPath = window.location.pathname === "/excalidraw-plus-export";
 
-  if (
-    hasUnsupportedSearch ||
-    hasUnsupportedHash ||
-    hasUnsupportedQuery ||
-    hasUnsupportedPath
-  ) {
+  if (hasUnsupportedSearch || hasUnsupportedHash || hasUnsupportedQuery || hasUnsupportedPath) {
     window.history.replaceState({}, APP_NAME, window.location.origin);
   }
 };
@@ -144,8 +125,7 @@ const ExcalidrawDesktopWrapper = () => {
   }>({ promise: null! });
 
   if (!initialStatePromiseRef.current.promise) {
-    initialStatePromiseRef.current.promise =
-      resolvablePromise<ExcalidrawInitialDataState | null>();
+    initialStatePromiseRef.current.promise = resolvablePromise<ExcalidrawInitialDataState | null>();
   }
 
   const debugCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -188,18 +168,16 @@ const ExcalidrawDesktopWrapper = () => {
         }, [] as FileId[]) || [];
 
       if (fileIds.length) {
-        LocalData.fileStorage
-          .getFiles(fileIds)
-          .then(({ loadedFiles, erroredFiles }) => {
-            if (loadedFiles.length) {
-              excalidrawAPI.addFiles(loadedFiles);
-            }
-            updateStaleImageStatuses({
-              excalidrawAPI,
-              erroredFiles,
-              elements: excalidrawAPI.getSceneElementsIncludingDeleted(),
-            });
+        LocalData.fileStorage.getFiles(fileIds).then(({ loadedFiles, erroredFiles }) => {
+          if (loadedFiles.length) {
+            excalidrawAPI.addFiles(loadedFiles);
+          }
+          updateStaleImageStatuses({
+            excalidrawAPI,
+            erroredFiles,
+            elements: excalidrawAPI.getSceneElementsIncludingDeleted(),
           });
+        });
       }
 
       if (isInitialLoad) {
@@ -247,28 +225,23 @@ const ExcalidrawDesktopWrapper = () => {
         const currFiles = excalidrawAPI.getFiles();
         const fileIds =
           elements?.reduce((acc, element) => {
-            if (
-              isInitializedImageElement(element) &&
-              !currFiles[element.fileId]
-            ) {
+            if (isInitializedImageElement(element) && !currFiles[element.fileId]) {
               return acc.concat(element.fileId);
             }
             return acc;
           }, [] as FileId[]) || [];
 
         if (fileIds.length) {
-          LocalData.fileStorage
-            .getFiles(fileIds)
-            .then(({ loadedFiles, erroredFiles }) => {
-              if (loadedFiles.length) {
-                excalidrawAPI.addFiles(loadedFiles);
-              }
-              updateStaleImageStatuses({
-                excalidrawAPI,
-                erroredFiles,
-                elements: excalidrawAPI.getSceneElementsIncludingDeleted(),
-              });
+          LocalData.fileStorage.getFiles(fileIds).then(({ loadedFiles, erroredFiles }) => {
+            if (loadedFiles.length) {
+              excalidrawAPI.addFiles(loadedFiles);
+            }
+            updateStaleImageStatuses({
+              excalidrawAPI,
+              erroredFiles,
+              elements: excalidrawAPI.getSceneElementsIncludingDeleted(),
             });
+          });
         }
       }
     }, SYNC_BROWSER_TABS_TIMEOUT);
@@ -281,10 +254,7 @@ const ExcalidrawDesktopWrapper = () => {
       if (event.type === EVENT.BLUR || document.hidden) {
         LocalData.flushSave();
       }
-      if (
-        event.type === EVENT.VISIBILITY_CHANGE ||
-        event.type === EVENT.FOCUS
-      ) {
+      if (event.type === EVENT.VISIBILITY_CHANGE || event.type === EVENT.FOCUS) {
         syncData();
       }
     };
@@ -298,11 +268,7 @@ const ExcalidrawDesktopWrapper = () => {
       window.removeEventListener(EVENT.UNLOAD, onUnload, false);
       window.removeEventListener(EVENT.BLUR, visibilityChange, false);
       window.removeEventListener(EVENT.FOCUS, visibilityChange, false);
-      document.removeEventListener(
-        EVENT.VISIBILITY_CHANGE,
-        visibilityChange,
-        false,
-      );
+      document.removeEventListener(EVENT.VISIBILITY_CHANGE, visibilityChange, false);
     };
   }, [excalidrawAPI, loadImages, setLangCode]);
 
@@ -314,17 +280,11 @@ const ExcalidrawDesktopWrapper = () => {
     const unloadHandler = (event: BeforeUnloadEvent) => {
       LocalData.flushSave();
 
-      if (
-        LocalData.fileStorage.shouldPreventUnload(
-          excalidrawAPI.getSceneElements(),
-        )
-      ) {
+      if (LocalData.fileStorage.shouldPreventUnload(excalidrawAPI.getSceneElements())) {
         if (import.meta.env.VITE_APP_DISABLE_PREVENT_UNLOAD !== "true") {
           preventUnload(event);
         } else {
-          console.warn(
-            "preventing unload disabled (VITE_APP_DISABLE_PREVENT_UNLOAD)",
-          );
+          console.warn("preventing unload disabled (VITE_APP_DISABLE_PREVENT_UNLOAD)");
         }
       }
     };
@@ -347,18 +307,16 @@ const ExcalidrawDesktopWrapper = () => {
         }
 
         let didChange = false;
-        const nextElements = excalidrawAPI
-          .getSceneElementsIncludingDeleted()
-          .map((element) => {
-            if (LocalData.fileStorage.shouldUpdateImageElementStatus(element)) {
-              const nextElement = newElementWith(element, { status: "saved" });
-              if (nextElement !== element) {
-                didChange = true;
-              }
-              return nextElement;
+        const nextElements = excalidrawAPI.getSceneElementsIncludingDeleted().map((element) => {
+          if (LocalData.fileStorage.shouldUpdateImageElementStatus(element)) {
+            const nextElement = newElementWith(element, { status: "saved" });
+            if (nextElement !== element) {
+              didChange = true;
             }
-            return element;
-          });
+            return nextElement;
+          }
+          return element;
+        });
 
         if (didChange) {
           excalidrawAPI.updateScene({
@@ -370,12 +328,7 @@ const ExcalidrawDesktopWrapper = () => {
     }
 
     if (debugCanvasRef.current && excalidrawAPI) {
-      debugRenderer(
-        debugCanvasRef.current,
-        appState,
-        elements,
-        window.devicePixelRatio,
-      );
+      debugRenderer(debugCanvasRef.current, appState, elements, window.devicePixelRatio);
     }
   };
 
@@ -403,12 +356,7 @@ const ExcalidrawDesktopWrapper = () => {
       const elements = excalidrawAPI.getSceneElements();
       const appState = excalidrawAPI.getAppState();
       const { file, fileHandle } = await readDesktopFile(path);
-      const loadedScene = await loadFromBlob(
-        file,
-        appState,
-        elements,
-        fileHandle,
-      );
+      const loadedScene = await loadFromBlob(file, appState, elements, fileHandle);
 
       excalidrawAPI.updateScene({
         elements: loadedScene.elements,
@@ -463,46 +411,42 @@ const ExcalidrawDesktopWrapper = () => {
     });
   }, [excalidrawAPI, loadDesktopSceneFromPath]);
 
-  const onExport: Required<ExcalidrawProps>["onExport"] = useCallback(
-    async function* () {
-      let snapshot = FileStatusStore.getSnapshot();
-      const { pending, total } = FileStatusStore.getPendingCount(
+  const onExport: Required<ExcalidrawProps>["onExport"] = useCallback(async function* () {
+    let snapshot = FileStatusStore.getSnapshot();
+    const { pending, total } = FileStatusStore.getPendingCount(snapshot.value);
+
+    if (pending === 0) {
+      return;
+    }
+
+    yield {
+      type: "progress",
+      progress: (total - pending) / total,
+      message: `Loading images (${total - pending}/${total})...`,
+    };
+
+    while (true) {
+      snapshot = await FileStatusStore.pull(snapshot.version);
+      const { pending: nowPending, total: nowTotal } = FileStatusStore.getPendingCount(
         snapshot.value,
       );
 
-      if (pending === 0) {
-        return;
-      }
-
       yield {
         type: "progress",
-        progress: (total - pending) / total,
-        message: `Loading images (${total - pending}/${total})...`,
+        progress: (nowTotal - nowPending) / nowTotal,
+        message: `Loading images (${nowTotal - nowPending}/${nowTotal})...`,
       };
 
-      while (true) {
-        snapshot = await FileStatusStore.pull(snapshot.version);
-        const { pending: nowPending, total: nowTotal } =
-          FileStatusStore.getPendingCount(snapshot.value);
-
+      if (nowPending === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
         yield {
           type: "progress",
-          progress: (nowTotal - nowPending) / nowTotal,
-          message: `Loading images (${nowTotal - nowPending}/${nowTotal})...`,
+          message: "Preparing export...",
         };
-
-        if (nowPending === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-          yield {
-            type: "progress",
-            message: "Preparing export...",
-          };
-          return;
-        }
+        return;
       }
-    },
-    [],
-  );
+    }
+  }, []);
   return (
     <div style={{ height: "100%" }} className={clsx("excalidraw-app")}>
       <Excalidraw
@@ -544,15 +488,11 @@ const ExcalidrawDesktopWrapper = () => {
         <AppFooter onChange={() => excalidrawAPI?.refresh()} />
 
         {localStorageQuotaExceeded && (
-          <div className="alert alert--danger">
-            {t("alerts.localStorageQuotaExceeded")}
-          </div>
+          <div className="alert alert--danger">{t("alerts.localStorageQuotaExceeded")}</div>
         )}
 
         {errorMessage && (
-          <ErrorDialog onClose={() => setErrorMessage("")}>
-            {errorMessage}
-          </ErrorDialog>
+          <ErrorDialog onClose={() => setErrorMessage("")}>{errorMessage}</ErrorDialog>
         )}
 
         <CommandPalette
@@ -560,9 +500,7 @@ const ExcalidrawDesktopWrapper = () => {
             {
               ...CommandPalette.defaultItems.toggleTheme,
               perform: () => {
-                setAppTheme(
-                  editorTheme === THEME.DARK ? THEME.LIGHT : THEME.DARK,
-                );
+                setAppTheme(editorTheme === THEME.DARK ? THEME.LIGHT : THEME.DARK);
               },
             },
           ]}

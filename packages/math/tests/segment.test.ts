@@ -1,9 +1,5 @@
 import { pointFrom } from "../src/point";
-import {
-  lineSegment,
-  lineSegmentIntersectionPoints,
-  isLineSegment,
-} from "../src/segment";
+import { lineSegment, lineSegmentIntersectionPoints, isLineSegment } from "../src/segment";
 
 describe("line-segment intersections", () => {
   it("should correctly detect intersection", () => {

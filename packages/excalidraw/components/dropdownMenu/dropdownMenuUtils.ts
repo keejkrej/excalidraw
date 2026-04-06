@@ -19,9 +19,5 @@ const getMenuComponent = (component: string) => (children: React.ReactNode) => {
 
 export const getMenuTriggerComponent = getMenuComponent("DropdownMenuTrigger");
 export const getMenuContentComponent = getMenuComponent("DropdownMenuContent");
-export const getSubMenuTriggerComponent = getMenuComponent(
-  "DropdownMenuSubTrigger",
-);
-export const getSubMenuContentComponent = getMenuComponent(
-  "DropdownMenuSubContent",
-);
+export const getSubMenuTriggerComponent = getMenuComponent("DropdownMenuSubTrigger");
+export const getSubMenuContentComponent = getMenuComponent("DropdownMenuSubContent");

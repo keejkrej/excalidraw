@@ -4,10 +4,7 @@ import { vi } from "vitest";
 import { getDefaultAppState } from "../appState";
 import { ExcalidrawAPIContext } from "../components/App";
 import { AppStateObserver } from "../components/AppStateObserver";
-import {
-  useAppStateValue,
-  useOnAppStateChange,
-} from "../hooks/useAppStateValue";
+import { useAppStateValue, useOnAppStateChange } from "../hooks/useAppStateValue";
 
 import type { AppState, ExcalidrawImperativeAPI } from "../types";
 

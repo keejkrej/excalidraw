@@ -120,9 +120,7 @@ Logo.displayName = "Logo";
 
 const Heading = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="welcome-screen-center__heading welcome-screen-decor excalifont">
-      {children}
-    </div>
+    <div className="welcome-screen-center__heading welcome-screen-decor excalifont">{children}</div>
   );
 };
 Heading.displayName = "Heading";
@@ -167,11 +165,7 @@ const MenuItemLoadScene = () => {
 };
 MenuItemLoadScene.displayName = "MenuItemLoadScene";
 
-const MenuItemLiveCollaborationTrigger = ({
-  onSelect,
-}: {
-  onSelect: () => any;
-}) => {
+const MenuItemLiveCollaborationTrigger = ({ onSelect }: { onSelect: () => any }) => {
   const { t } = useI18n();
   return (
     <WelcomeScreenMenuItem shortcut={null} onSelect={onSelect} icon={usersIcon}>
@@ -179,8 +173,7 @@ const MenuItemLiveCollaborationTrigger = ({
     </WelcomeScreenMenuItem>
   );
 };
-MenuItemLiveCollaborationTrigger.displayName =
-  "MenuItemLiveCollaborationTrigger";
+MenuItemLiveCollaborationTrigger.displayName = "MenuItemLiveCollaborationTrigger";
 
 // -----------------------------------------------------------------------------
 

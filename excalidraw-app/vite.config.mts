@@ -19,10 +19,7 @@ export default defineConfig(({ mode }) => {
       alias: [
         {
           find: /^@excalidraw\/common$/,
-          replacement: path.resolve(
-            __dirname,
-            "../packages/common/src/index.ts",
-          ),
+          replacement: path.resolve(__dirname, "../packages/common/src/index.ts"),
         },
         {
           find: /^@excalidraw\/common\/(.*?)/,
@@ -30,10 +27,7 @@ export default defineConfig(({ mode }) => {
         },
         {
           find: /^@excalidraw\/element$/,
-          replacement: path.resolve(
-            __dirname,
-            "../packages/element/src/index.ts",
-          ),
+          replacement: path.resolve(__dirname, "../packages/element/src/index.ts"),
         },
         {
           find: /^@excalidraw\/element\/(.*?)/,
@@ -41,10 +35,7 @@ export default defineConfig(({ mode }) => {
         },
         {
           find: /^@excalidraw\/excalidraw$/,
-          replacement: path.resolve(
-            __dirname,
-            "../packages/excalidraw/index.tsx",
-          ),
+          replacement: path.resolve(__dirname, "../packages/excalidraw/index.tsx"),
         },
         {
           find: /^@excalidraw\/excalidraw\/(.*?)/,
@@ -60,10 +51,7 @@ export default defineConfig(({ mode }) => {
         },
         {
           find: /^@excalidraw\/utils$/,
-          replacement: path.resolve(
-            __dirname,
-            "../packages/utils/src/index.ts",
-          ),
+          replacement: path.resolve(__dirname, "../packages/utils/src/index.ts"),
         },
         {
           find: /^@excalidraw\/utils\/(.*?)/,
@@ -110,10 +98,6 @@ export default defineConfig(({ mode }) => {
       react(),
       checker({
         typescript: true,
-        eslint:
-          envVars.VITE_APP_ENABLE_ESLINT === "false"
-            ? undefined
-            : { lintCommand: 'eslint "./**/*.{js,ts,tsx}"' },
         overlay: {
           initialIsOpen: envVars.VITE_APP_COLLAPSE_OVERLAY === "false",
           badgeStyle: "margin-bottom: 4rem; margin-left: 1rem",

@@ -17,12 +17,7 @@ interface TopPicksProps {
   topPicks?: readonly string[];
 }
 
-export const TopPicks = ({
-  onChange,
-  type,
-  activeColor,
-  topPicks,
-}: TopPicksProps) => {
+export const TopPicks = ({ onChange, type, activeColor, topPicks }: TopPicksProps) => {
   let colors;
   if (type === "elementStroke") {
     colors = DEFAULT_ELEMENT_STROKE_PICKS;
@@ -53,10 +48,7 @@ export const TopPicks = ({
           className={clsx("color-picker__button", {
             active: color === activeColor,
             "is-transparent": color === "transparent" || !color,
-            "has-outline": !isColorDark(
-              color,
-              COLOR_OUTLINE_CONTRAST_THRESHOLD,
-            ),
+            "has-outline": !isColorDark(color, COLOR_OUTLINE_CONTRAST_THRESHOLD),
           })}
           style={{ "--swatch-color": color }}
           key={color}

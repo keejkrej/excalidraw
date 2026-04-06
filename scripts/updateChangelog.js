@@ -6,10 +6,7 @@ const excalidrawDir = `${__dirname}/../packages/excalidraw`;
 const excalidrawPackage = `${excalidrawDir}/package.json`;
 const pkg = require(excalidrawPackage);
 const lastVersion = pkg.version;
-const existingChangeLog = fs.readFileSync(
-  `${excalidrawDir}/CHANGELOG.md`,
-  "utf8",
-);
+const existingChangeLog = fs.readFileSync(`${excalidrawDir}/CHANGELOG.md`, "utf8");
 
 const supportedTypes = ["feat", "fix", "style", "refactor", "perf", "build"];
 const headerForType = {
@@ -25,9 +22,7 @@ const badCommits = [];
 const getCommitHashForLastVersion = async () => {
   try {
     const commitMessage = `"release @excalidraw/excalidraw"`;
-    const { stdout } = await exec(
-      `git log --format=format:"%H" --grep=${commitMessage}`,
-    );
+    const { stdout } = await exec(`git log --format=format:"%H" --grep=${commitMessage}`);
     // take commit hash from latest release
     return stdout.split(/\r?\n/)[0];
   } catch (error) {
@@ -37,9 +32,7 @@ const getCommitHashForLastVersion = async () => {
 
 const getLibraryCommitsSinceLastRelease = async () => {
   const commitHash = await getCommitHashForLastVersion();
-  const { stdout } = await exec(
-    `git log --pretty=format:%s ${commitHash}...master`,
-  );
+  const { stdout } = await exec(`git log --pretty=format:%s ${commitHash}...master`);
   const commitsSinceLastRelease = stdout.split("\n");
   const commitList = {};
   supportedTypes.forEach((type) => {
@@ -64,10 +57,7 @@ const getLibraryCommitsSinceLastRelease = async () => {
         return;
       }
       const prMarkdown = `[#${prNumber}](https://github.com/excalidraw/excalidraw/pull/${prNumber})`;
-      const messageWithPRLink = messageWithCapitalizeFirst.replace(
-        /\(#[0-9]*\)/,
-        prMarkdown,
-      );
+      const messageWithPRLink = messageWithCapitalizeFirst.replace(/\(#[0-9]*\)/, prMarkdown);
       commitList[type].push(messageWithPRLink);
     } else {
       badCommits.push(commit);

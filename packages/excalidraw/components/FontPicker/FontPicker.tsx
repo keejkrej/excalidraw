@@ -9,11 +9,7 @@ import type { FontFamilyValues } from "@excalidraw/element/types";
 import { t } from "../../i18n";
 import { RadioSelection } from "../RadioSelection";
 import { ButtonSeparator } from "../ButtonSeparator";
-import {
-  FontFamilyCodeIcon,
-  FontFamilyNormalIcon,
-  FreedrawIcon,
-} from "../icons";
+import { FontFamilyCodeIcon, FontFamilyNormalIcon, FreedrawIcon } from "../icons";
 
 import { FontPickerList } from "./FontPickerList";
 import { FontPickerTrigger } from "./FontPickerTrigger";

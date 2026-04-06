@@ -14,9 +14,7 @@ describe("FontPicker", () => {
         disconnect() {}
       };
 
-    const { queryByTestId } = await render(
-      <Excalidraw handleKeyboardGlobally={true} />,
-    );
+    const { queryByTestId } = await render(<Excalidraw handleKeyboardGlobally={true} />);
 
     Keyboard.keyPress(KEYS.T);
 

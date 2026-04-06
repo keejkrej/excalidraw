@@ -26,9 +26,7 @@ export const SidebarTrigger = ({
         className="ToolIcon_type_checkbox"
         type="checkbox"
         onChange={(event) => {
-          document
-            .querySelector(".layer-ui__wrapper")
-            ?.classList.remove("animate");
+          document.querySelector(".layer-ui__wrapper")?.classList.remove("animate");
           const isOpen = event.target.checked;
           setAppState({
             openSidebar: isOpen ? { name, tab } : null,

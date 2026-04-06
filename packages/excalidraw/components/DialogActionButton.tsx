@@ -33,9 +33,7 @@ const DialogActionButton = ({
       onClick={onClick}
       {...rest}
     >
-      {children && (
-        <div style={isLoading ? { visibility: "hidden" } : {}}>{children}</div>
-      )}
+      {children && <div style={isLoading ? { visibility: "hidden" } : {}}>{children}</div>}
       <div style={isLoading ? { visibility: "hidden" } : {}}>{label}</div>
       {isLoading && (
         <div style={{ position: "absolute", inset: 0 }}>

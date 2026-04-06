@@ -9,18 +9,8 @@ type FixedSideContainerProps = {
   className?: string;
 };
 
-export const FixedSideContainer = ({
-  children,
-  side,
-  className,
-}: FixedSideContainerProps) => (
-  <div
-    className={clsx(
-      "FixedSideContainer",
-      `FixedSideContainer_side_${side}`,
-      className,
-    )}
-  >
+export const FixedSideContainer = ({ children, side, className }: FixedSideContainerProps) => (
+  <div className={clsx("FixedSideContainer", `FixedSideContainer_side_${side}`, className)}>
     {children}
   </div>
 );

@@ -11,11 +11,7 @@ export const isValidMermaidSyntax = (content: string): boolean => {
   const openParens = (trimmed.match(/\(/g) || []).length;
   const closeParens = (trimmed.match(/\)/g) || []).length;
 
-  if (
-    openBrackets !== closeBrackets ||
-    openBraces !== closeBraces ||
-    openParens !== closeParens
-  ) {
+  if (openBrackets !== closeBrackets || openBraces !== closeBraces || openParens !== closeParens) {
     return false;
   }
 

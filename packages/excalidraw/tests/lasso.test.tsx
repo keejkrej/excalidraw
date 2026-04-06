@@ -48,10 +48,7 @@ const updatePath = (startPoint: GlobalPoint, points: LocalPoint[]) => {
     h.app.lassoTrail.startPath(startPoint[0], startPoint[1]);
 
     points.forEach((point) => {
-      h.app.lassoTrail.addPointToPath(
-        startPoint[0] + point[0],
-        startPoint[1] + point[1],
-      );
+      h.app.lassoTrail.addPointToPath(startPoint[0] + point[0], startPoint[1] + point[1]);
     });
 
     const elementsSegments: ElementsSegmentsMap = new Map();
@@ -67,8 +64,7 @@ const updatePath = (startPoint: GlobalPoint, points: LocalPoint[]) => {
       lassoPath:
         h.app.lassoTrail
           .getCurrentTrail()
-          ?.originalPoints?.map((p) => pointFrom<GlobalPoint>(p[0], p[1])) ??
-        [],
+          ?.originalPoints?.map((p) => pointFrom<GlobalPoint>(p[0], p[1])) ?? [],
       elements: h.elements,
       elementsMap: h.scene.getNonDeletedElementsMap(),
       elementsSegments,
@@ -76,9 +72,7 @@ const updatePath = (startPoint: GlobalPoint, points: LocalPoint[]) => {
       enclosedElements: new Set(),
     });
 
-    act(() =>
-      h.app.lassoTrail.selectElementsFromIds(result.selectedElementIds),
-    );
+    act(() => h.app.lassoTrail.selectElementsFromIds(result.selectedElementIds));
 
     h.app.lassoTrail.endPath();
   });
@@ -359,7 +353,7 @@ describe("Basic lasso selection tests", () => {
           ...e,
           angle: e.angle as Radians,
           index: null,
-        } as ExcalidrawElement),
+        }) as ExcalidrawElement,
     );
 
     act(() => {
@@ -641,12 +635,8 @@ describe("Basic lasso selection tests", () => {
     const selectedElements = getSelectedElements(h.elements, h.state);
     expect(selectedElements.length).toBe(3);
     expect(selectedElements.filter((e) => e.type === "arrow").length).toBe(1);
-    expect(selectedElements.filter((e) => e.type === "rectangle").length).toBe(
-      1,
-    );
-    expect(selectedElements.filter((e) => e.type === "freedraw").length).toBe(
-      1,
-    );
+    expect(selectedElements.filter((e) => e.type === "rectangle").length).toBe(1);
+    expect(selectedElements.filter((e) => e.type === "freedraw").length).toBe(1);
   });
 
   it("Intersects some and encloses some", () => {
@@ -866,9 +856,7 @@ describe("Basic lasso selection tests", () => {
     expect(selectedElements.filter((e) => e.type === "line").length).toBe(1);
     expect(selectedElements.filter((e) => e.type === "ellipse").length).toBe(1);
     expect(selectedElements.filter((e) => e.type === "diamond").length).toBe(1);
-    expect(selectedElements.filter((e) => e.type === "freedraw").length).toBe(
-      1,
-    );
+    expect(selectedElements.filter((e) => e.type === "freedraw").length).toBe(1);
   });
 
   it("Single linear element", () => {

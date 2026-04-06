@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  memo,
-  useRef,
-} from "react";
+import React, { useState, useCallback, useMemo, useEffect, memo, useRef } from "react";
 
 import {
   LIBRARY_DISABLED_TYPES,
@@ -18,28 +11,17 @@ import {
   CLASSES,
 } from "@excalidraw/common";
 
-import type {
-  ExcalidrawElement,
-  NonDeletedExcalidrawElement,
-} from "@excalidraw/element/types";
+import type { ExcalidrawElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
 
 import { trackEvent } from "../analytics";
 import { useUIAppState } from "../context/ui-appState";
-import {
-  distributeLibraryItemsOnSquareGrid,
-  libraryItemsAtom,
-} from "../data/library";
+import { distributeLibraryItemsOnSquareGrid, libraryItemsAtom } from "../data/library";
 import { atom, useAtom } from "../editor-jotai";
 import { t } from "../i18n";
 
 import { getSelectedElements } from "../scene";
 
-import {
-  useApp,
-  useAppProps,
-  useExcalidrawElements,
-  useExcalidrawSetAppState,
-} from "./App";
+import { useApp, useAppProps, useExcalidrawElements, useExcalidrawSetAppState } from "./App";
 import { LibraryMenuControlButtons } from "./LibraryMenuControlButtons";
 import LibraryMenuItems from "./LibraryMenuItems";
 import Spinner from "./Spinner";
@@ -120,15 +102,9 @@ const LibraryMenuContent = memo(
       [onAddToLibrary, library, setAppState, libraryItemsData.libraryItems],
     );
 
-    const libraryItems = useMemo(
-      () => libraryItemsData.libraryItems,
-      [libraryItemsData],
-    );
+    const libraryItems = useMemo(() => libraryItemsData.libraryItems, [libraryItemsData]);
 
-    if (
-      libraryItemsData.status === "loading" &&
-      !libraryItemsData.isInitialized
-    ) {
+    if (libraryItemsData.status === "loading" && !libraryItemsData.isInitialized) {
       return (
         <LibraryMenuWrapper>
           <div className="layer-ui__library-message">
@@ -141,8 +117,7 @@ const LibraryMenuContent = memo(
       );
     }
 
-    const showBtn =
-      libraryItemsData.libraryItems.length > 0 || pendingElements.length > 0;
+    const showBtn = libraryItemsData.libraryItems.length > 0 || pendingElements.length > 0;
 
     return (
       <LibraryMenuWrapper>
@@ -188,10 +163,7 @@ const getPendingElements = (
   selectedElementIds,
 });
 
-const usePendingElementsMemo = (
-  appState: UIAppState,
-  app: AppClassProperties,
-) => {
+const usePendingElementsMemo = (appState: UIAppState, app: AppClassProperties) => {
   const elements = useExcalidrawElements();
   const [state, setState] = useState(() =>
     getPendingElements(elements, appState.selectedElementIds),
@@ -218,9 +190,7 @@ const usePendingElementsMemo = (
       setState((prev) => {
         // if selectedElementIds changed, we don't have to compare versions
         // ---------------------------------------------------------------------
-        if (
-          !isShallowEqual(prev.selectedElementIds, appState.selectedElementIds)
-        ) {
+        if (!isShallowEqual(prev.selectedElementIds, appState.selectedElementIds)) {
           selectedElementVersions.current.clear();
           return getPendingElements(elements, appState.selectedElementIds);
         }
@@ -229,10 +199,7 @@ const usePendingElementsMemo = (
         const elementsMap = app.scene.getNonDeletedElementsMap();
         for (const id of Object.keys(appState.selectedElementIds)) {
           const currVersion = elementsMap.get(id)?.version;
-          if (
-            currVersion &&
-            currVersion !== selectedElementVersions.current.get(id)
-          ) {
+          if (currVersion && currVersion !== selectedElementVersions.current.get(id)) {
             // we can't update the selectedElementVersions in here
             // because of double render in StrictMode which would overwrite
             // the state in the second pass with the old `prev` state.

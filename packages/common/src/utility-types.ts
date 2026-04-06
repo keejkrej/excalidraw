@@ -17,11 +17,9 @@ export type ResolutionType<T extends (...args: any) => any> = T extends (
   : any;
 
 // https://github.com/krzkaczor/ts-essentials
-export type MarkOptional<T, K extends keyof T> = Omit<T, K> &
-  Partial<Pick<T, K>>;
+export type MarkOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> &
-  Required<Pick<T, RK>>;
+export type MarkRequired<T, RK extends keyof T> = Exclude<T, RK> & Required<Pick<T, RK>>;
 
 export type MarkNonNullable<T, K extends keyof T> = {
   [P in K]-?: P extends K ? NonNullable<T[P]> : T[P];
@@ -44,9 +42,7 @@ export type ForwardRef<T, P = any> = Parameters<
   CallableType<React.ForwardRefRenderFunction<T, P>>
 >[1];
 
-export type ExtractSetType<T extends Set<any>> = T extends Set<infer U>
-  ? U
-  : never;
+export type ExtractSetType<T extends Set<any>> = T extends Set<infer U> ? U : never;
 
 export type SameType<T, U> = T extends U ? (U extends T ? true : false) : false;
 export type Assert<T extends true> = T;
@@ -74,6 +70,4 @@ export type DTO<T> = {
   [K in keyof T as T[K] extends Function ? never : K]: T[K];
 };
 
-export type MapEntry<M extends Map<any, any>> = M extends Map<infer K, infer V>
-  ? [K, V]
-  : never;
+export type MapEntry<M extends Map<any, any>> = M extends Map<infer K, infer V> ? [K, V] : never;

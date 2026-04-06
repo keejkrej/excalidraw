@@ -2,19 +2,12 @@
   "name": "excalidraw-app",
   "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "prettier": "@excalidraw/prettier-config",
   "scripts": {
     "build:renderer": "vite build && bun run build:version",
     "build:version": "node ../scripts/build-version.js",
     "dev:renderer": "vite --host 127.0.0.1 --port 3000",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build"
-  },
-  "devDependencies": {
-    "@tauri-apps/cli": "^2.9.1"
   },
   "dependencies": {
     "@excalidraw/random-username": "1.0.0",
@@ -26,5 +19,11 @@
     "jotai": "2.11.0",
     "react": "19.0.0",
     "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

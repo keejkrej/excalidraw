@@ -51,10 +51,7 @@ export const debugDrawHitVolume = (
     fill?: boolean;
   },
 ) => {
-  if (
-    (isLinearElement(element) || isFreeDrawElement(element)) &&
-    !isPathALoop(element.points)
-  ) {
+  if ((isLinearElement(element) || isFreeDrawElement(element)) && !isPathALoop(element.points)) {
     return;
   }
 
@@ -70,11 +67,7 @@ export const debugDrawHitVolume = (
       center[0] + Math.cos(angle) * radius,
       center[1] + Math.sin(angle) * radius,
     );
-    const hits = intersectElementWithLineSegment(
-      element,
-      elementsMap,
-      lineSegment(center, end),
-    );
+    const hits = intersectElementWithLineSegment(element, elementsMap, lineSegment(center, end));
     if (hits.length === 0) {
       continue;
     }
@@ -88,9 +81,7 @@ export const debugDrawHitVolume = (
       fill: options?.fill ?? true,
     });
   } else {
-    console.warn(
-      `debugDrawHitVolume: could not compute hit volume for element ${element.id}`,
-    );
+    console.warn(`debugDrawHitVolume: could not compute hit volume for element ${element.id}`);
   }
 };
 
@@ -115,9 +106,7 @@ export const debugDrawLine = (
     permanent?: boolean;
   },
 ) => {
-  const segments = (
-    isLineSegment(segment) ? [segment] : segment
-  ) as LineSegment<GlobalPoint>[];
+  const segments = (isLineSegment(segment) ? [segment] : segment) as LineSegment<GlobalPoint>[];
 
   segments.forEach((data) =>
     addToCurrentFrame({
@@ -233,9 +222,7 @@ export const debugDrawPoints = (
   },
   options?: any,
 ) => {
-  points.forEach((p) =>
-    debugDrawPoint(pointFrom<GlobalPoint>(x + p[0], y + p[1]), options),
-  );
+  points.forEach((p) => debugDrawPoint(pointFrom<GlobalPoint>(x + p[0], y + p[1]), options));
 };
 
 export const debugCloseFrame = () => {

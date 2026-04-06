@@ -1,11 +1,6 @@
 import { pointFrom } from "@excalidraw/math";
 
-import {
-  FONT_FAMILY,
-  ORIG_ID,
-  ROUNDNESS,
-  isPrimitive,
-} from "@excalidraw/common";
+import { FONT_FAMILY, ORIG_ID, ROUNDNESS, isPrimitive } from "@excalidraw/common";
 
 import { Excalidraw, mutateElement } from "@excalidraw/excalidraw";
 
@@ -176,9 +171,7 @@ describe("duplicating multiple elements", () => {
 
     // generic id in-equality checks
     // --------------------------------------------------------------------------
-    expect(origElements.map((e) => e.type)).toEqual(
-      duplicatedElements.map((e) => e.type),
-    );
+    expect(origElements.map((e) => e.type)).toEqual(duplicatedElements.map((e) => e.type));
     origElements.forEach((origElement, idx) => {
       const clonedElement = duplicatedElements[idx];
       expect(origElement).toEqual(
@@ -188,9 +181,7 @@ describe("duplicating multiple elements", () => {
         }),
       );
       if ("containerId" in origElement) {
-        expect(origElement.containerId).not.toBe(
-          (clonedElement as any).containerId,
-        );
+        expect(origElement.containerId).not.toBe((clonedElement as any).containerId);
       }
       if ("endBinding" in origElement) {
         if (origElement.endBinding) {
@@ -221,9 +212,7 @@ describe("duplicating multiple elements", () => {
       duplicatedElements as any as typeof origElements;
 
     expect(clonedText1.containerId).toBe(clonedRectangle.id);
-    expect(
-      clonedRectangle.boundElements!.find((e) => e.id === clonedText1.id),
-    ).toEqual(
+    expect(clonedRectangle.boundElements!.find((e) => e.id === clonedText1.id)).toEqual(
       expect.objectContaining({
         id: clonedText1.id,
         type: clonedText1.type,
@@ -232,9 +221,7 @@ describe("duplicating multiple elements", () => {
     expect(clonedRectangle.type).toBe("rectangle");
 
     clonedArrows.forEach((arrow) => {
-      expect(
-        clonedRectangle.boundElements!.find((e) => e.id === arrow.id),
-      ).toEqual(
+      expect(clonedRectangle.boundElements!.find((e) => e.id === arrow.id)).toEqual(
         expect.objectContaining({
           id: arrow.id,
           type: arrow.type,
@@ -249,9 +236,7 @@ describe("duplicating multiple elements", () => {
       }
     });
 
-    expect(clonedArrow2.boundElements).toEqual([
-      { type: "text", id: clonedArrowLabel.id },
-    ]);
+    expect(clonedArrow2.boundElements).toEqual([{ type: "text", id: clonedArrowLabel.id }]);
     expect(clonedArrowLabel.containerId).toBe(clonedArrow2.id);
   });
 
@@ -323,17 +308,10 @@ describe("duplicating multiple elements", () => {
       elements: origElements,
     }).duplicatedElements as any as typeof origElements;
 
-    const [
-      clonedRectangle,
-      clonedText1,
-      clonedArrow1,
-      clonedArrow2,
-      clonedArrow3,
-    ] = duplicatedElements;
+    const [clonedRectangle, clonedText1, clonedArrow1, clonedArrow2, clonedArrow3] =
+      duplicatedElements;
 
-    expect(clonedRectangle.boundElements).toEqual([
-      { id: clonedArrow1.id, type: "arrow" },
-    ]);
+    expect(clonedRectangle.boundElements).toEqual([{ id: clonedArrow1.id, type: "arrow" }]);
 
     expect(clonedText1.containerId).toBe(null);
 
@@ -369,8 +347,7 @@ describe("duplicating multiple elements", () => {
         type: "everything",
         elements: origElements,
       });
-      const [clonedRectangle1, clonedRectangle2, clonedRectangle3] =
-        duplicatedElements;
+      const [clonedRectangle1, clonedRectangle2, clonedRectangle3] = duplicatedElements;
 
       expect(rectangle1.groupIds[0]).not.toBe(clonedRectangle1.groupIds[0]);
       expect(rectangle2.groupIds[0]).not.toBe(clonedRectangle2.groupIds[0]);
@@ -828,9 +805,7 @@ describe("duplication z-order", () => {
     assertElements(h.elements, [
       {
         id: rect.id,
-        boundElements: expect.arrayContaining([
-          expect.objectContaining({ id: arrow.id }),
-        ]),
+        boundElements: expect.arrayContaining([expect.objectContaining({ id: arrow.id })]),
       },
       { [ORIG_ID]: rect.id, boundElements: [], selected: true },
       {

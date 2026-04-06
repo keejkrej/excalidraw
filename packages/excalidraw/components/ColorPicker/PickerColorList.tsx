@@ -49,35 +49,25 @@ const PickerColorList = ({
   return (
     <div className="color-picker-content--default">
       {Object.entries(palette).map(([key, value], index) => {
-        const color =
-          (Array.isArray(value) ? value[activeShade] : value) || "transparent";
+        const color = (Array.isArray(value) ? value[activeShade] : value) || "transparent";
 
         const keybinding = colorPickerHotkeyBindings[index];
-        const label = t(
-          `colors.${key.replace(/\d+/, "")}` as unknown as TranslationKeys,
-          null,
-          "",
-        );
+        const label = t(`colors.${key.replace(/\d+/, "")}` as unknown as TranslationKeys, null, "");
 
         return (
           <button
             ref={colorObj?.colorName === key ? btnRef : undefined}
             tabIndex={-1}
             type="button"
-            className={clsx(
-              "color-picker__button color-picker__button--large has-outline",
-              {
-                active: colorObj?.colorName === key,
-                "is-transparent": color === "transparent" || !color,
-              },
-            )}
+            className={clsx("color-picker__button color-picker__button--large has-outline", {
+              active: colorObj?.colorName === key,
+              "is-transparent": color === "transparent" || !color,
+            })}
             onClick={() => {
               onChange(color);
               setActiveColorPickerSection("baseColors");
             }}
-            title={`${label}${
-              color.startsWith("#") ? ` ${color}` : ""
-            } — ${keybinding}`}
+            title={`${label}${color.startsWith("#") ? ` ${color}` : ""} — ${keybinding}`}
             aria-label={`${label} — ${keybinding}`}
             style={color ? { "--swatch-color": color } : undefined}
             data-testid={`color-${key}`}

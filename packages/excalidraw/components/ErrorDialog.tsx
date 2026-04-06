@@ -28,11 +28,7 @@ export const ErrorDialog = ({
   return (
     <>
       {modalIsShown && (
-        <Dialog
-          size="small"
-          onCloseRequest={handleClose}
-          title={t("errorDialog.title")}
-        >
+        <Dialog size="small" onCloseRequest={handleClose} title={t("errorDialog.title")}>
           <div style={{ whiteSpace: "pre-wrap" }}>{children}</div>
         </Dialog>
       )}

@@ -8,12 +8,7 @@ import {
   segmentsIntersectAt,
 } from "@excalidraw/math";
 
-import type {
-  GlobalPoint,
-  LineSegment,
-  Polygon,
-  Radians,
-} from "@excalidraw/math";
+import type { GlobalPoint, LineSegment, Polygon, Radians } from "@excalidraw/math";
 
 import { pointInEllipse, pointOnEllipse, type Ellipse } from "../src/shape";
 
@@ -30,10 +25,7 @@ describe("point and line", () => {
   //   expect(pointRightofLine(point(2, 1), l)).toBe(true);
   // });
 
-  const s: LineSegment<GlobalPoint> = lineSegment(
-    pointFrom(1, 0),
-    pointFrom(1, 2),
-  );
+  const s: LineSegment<GlobalPoint> = lineSegment(pointFrom(1, 0), pointFrom(1, 2));
 
   it("point on the line", () => {
     expect(pointOnLineSegment(pointFrom(0, 1), s)).toBe(false);
@@ -80,12 +72,7 @@ describe("point and ellipse", () => {
   };
 
   it("point on ellipse", () => {
-    [
-      pointFrom(0, 1),
-      pointFrom(0, -1),
-      pointFrom(2, 0),
-      pointFrom(-2, 0),
-    ].forEach((p) => {
+    [pointFrom(0, 1), pointFrom(0, -1), pointFrom(2, 0), pointFrom(-2, 0)].forEach((p) => {
       expect(pointOnEllipse(p, ellipse)).toBe(true);
     });
     expect(pointOnEllipse(pointFrom(-1.4, 0.7), ellipse, 0.1)).toBe(true);
@@ -105,12 +92,7 @@ describe("point and ellipse", () => {
   });
 
   it("point in ellipse", () => {
-    [
-      pointFrom(0, 1),
-      pointFrom(0, -1),
-      pointFrom(2, 0),
-      pointFrom(-2, 0),
-    ].forEach((p) => {
+    [pointFrom(0, 1), pointFrom(0, -1), pointFrom(2, 0), pointFrom(-2, 0)].forEach((p) => {
       expect(pointInEllipse(p, ellipse)).toBe(true);
     });
 
@@ -123,34 +105,13 @@ describe("point and ellipse", () => {
 });
 
 describe("line and line", () => {
-  const lineA: LineSegment<GlobalPoint> = lineSegment(
-    pointFrom(1, 4),
-    pointFrom(3, 4),
-  );
-  const lineB: LineSegment<GlobalPoint> = lineSegment(
-    pointFrom(2, 1),
-    pointFrom(2, 7),
-  );
-  const lineC: LineSegment<GlobalPoint> = lineSegment(
-    pointFrom(1, 8),
-    pointFrom(3, 8),
-  );
-  const lineD: LineSegment<GlobalPoint> = lineSegment(
-    pointFrom(1, 8),
-    pointFrom(3, 8),
-  );
-  const lineE: LineSegment<GlobalPoint> = lineSegment(
-    pointFrom(1, 9),
-    pointFrom(3, 9),
-  );
-  const lineF: LineSegment<GlobalPoint> = lineSegment(
-    pointFrom(1, 2),
-    pointFrom(3, 4),
-  );
-  const lineG: LineSegment<GlobalPoint> = lineSegment(
-    pointFrom(0, 1),
-    pointFrom(2, 3),
-  );
+  const lineA: LineSegment<GlobalPoint> = lineSegment(pointFrom(1, 4), pointFrom(3, 4));
+  const lineB: LineSegment<GlobalPoint> = lineSegment(pointFrom(2, 1), pointFrom(2, 7));
+  const lineC: LineSegment<GlobalPoint> = lineSegment(pointFrom(1, 8), pointFrom(3, 8));
+  const lineD: LineSegment<GlobalPoint> = lineSegment(pointFrom(1, 8), pointFrom(3, 8));
+  const lineE: LineSegment<GlobalPoint> = lineSegment(pointFrom(1, 9), pointFrom(3, 9));
+  const lineF: LineSegment<GlobalPoint> = lineSegment(pointFrom(1, 2), pointFrom(3, 4));
+  const lineG: LineSegment<GlobalPoint> = lineSegment(pointFrom(0, 1), pointFrom(2, 3));
 
   it("intersection", () => {
     expect(segmentsIntersectAt(lineA, lineB)).toEqual([2, 4]);

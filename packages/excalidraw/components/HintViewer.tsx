@@ -66,10 +66,7 @@ const getHints = ({
   const selectedElements = app.scene.getSelectedElements(appState);
 
   // creating or dragging arrow point
-  if (
-    appState.selectedLinearElement?.isDragging &&
-    selectedElements[0]?.type === "arrow"
-  ) {
+  if (appState.selectedLinearElement?.isDragging && selectedElements[0]?.type === "arrow") {
     return t("hints.arrowBindModifiers", {
       shortcut_1: getTaggedShortcutKey("Ctrl"),
       shortcut_2: getTaggedShortcutKey("Alt"),
@@ -103,11 +100,7 @@ const getHints = ({
     return t("hints.embeddable");
   }
 
-  if (
-    isResizing &&
-    lastPointerDownWith === "mouse" &&
-    selectedElements.length === 1
-  ) {
+  if (isResizing && lastPointerDownWith === "mouse" && selectedElements.length === 1) {
     const targetElement = selectedElements[0];
     if (isLinearElement(targetElement) && targetElement.points.length === 2) {
       return t("hints.lockAngle", {
@@ -216,12 +209,7 @@ const getHints = ({
           shortcut: getTaggedShortcutKey(["CtrlOrCmd", "↑↓"]),
         });
         if (isFlowchartNodeElement(selectedElements[0])) {
-          if (
-            isNodeInFlowchart(
-              selectedElements[0],
-              app.scene.getNonDeletedElementsMap(),
-            )
-          ) {
+          if (isNodeInFlowchart(selectedElements[0], app.scene.getNonDeletedElementsMap())) {
             return [bindTextToElement, createFlowchart];
           }
 
@@ -236,12 +224,7 @@ const getHints = ({
   return null;
 };
 
-export const HintViewer = ({
-  appState,
-  isMobile,
-  editorInterface,
-  app,
-}: HintViewerProps) => {
+export const HintViewer = ({ appState, isMobile, editorInterface, app }: HintViewerProps) => {
   const hints = getHints({
     appState,
     isMobile,
@@ -259,8 +242,7 @@ export const HintViewer = ({
 
   const hintJSX = hint.split(/(<kbd>[^<]+<\/kbd>)/g).map((part, index) => {
     if (index % 2 === 1) {
-      const shortcutMatch =
-        part[0] === "<" && part.match(/^<kbd>([^<]+)<\/kbd>$/);
+      const shortcutMatch = part[0] === "<" && part.match(/^<kbd>([^<]+)<\/kbd>$/);
       return <kbd key={index}>{shortcutMatch ? shortcutMatch[1] : part}</kbd>;
     }
     return part;

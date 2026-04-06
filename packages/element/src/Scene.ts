@@ -34,11 +34,7 @@ import type {
   Ordered,
 } from "@excalidraw/element/types";
 
-import type {
-  Assert,
-  Mutable,
-  SameType,
-} from "@excalidraw/common/utility-types";
+import type { Assert, Mutable, SameType } from "@excalidraw/common/utility-types";
 
 import type { AppState } from "../../excalidraw/types";
 
@@ -47,18 +43,13 @@ type SceneStateCallbackRemover = () => void;
 
 type SelectionHash = string & { __brand: "selectionHash" };
 
-const getNonDeletedElements = <T extends ExcalidrawElement>(
-  allElements: readonly T[],
-) => {
+const getNonDeletedElements = <T extends ExcalidrawElement>(allElements: readonly T[]) => {
   const elementsMap = new Map() as NonDeletedSceneElementsMap;
   const elements: T[] = [];
   for (const element of allElements) {
     if (!element.isDeleted) {
       elements.push(element as NonDeleted<T>);
-      elementsMap.set(
-        element.id,
-        element as Ordered<NonDeletedExcalidrawElement>,
-      );
+      elementsMap.set(element.id, element as Ordered<NonDeletedExcalidrawElement>);
     }
   }
   return { elementsMap, elements };
@@ -88,10 +79,7 @@ const hashSelectionOpts = (
   // just to ensure we're hashing all expected keys
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type _ = Assert<
-    SameType<
-      Required<HashableKeys>,
-      Pick<Required<HashableKeys>, typeof keys[number]>
-    >
+    SameType<Required<HashableKeys>, Pick<Required<HashableKeys>, (typeof keys)[number]>>
   >;
 
   let hash = "";
@@ -112,15 +100,11 @@ export class Scene {
 
   private callbacks: Set<SceneStateCallback> = new Set();
 
-  private nonDeletedElements: readonly Ordered<NonDeletedExcalidrawElement>[] =
-    [];
-  private nonDeletedElementsMap = toBrandedType<NonDeletedSceneElementsMap>(
-    new Map(),
-  );
+  private nonDeletedElements: readonly Ordered<NonDeletedExcalidrawElement>[] = [];
+  private nonDeletedElementsMap = toBrandedType<NonDeletedSceneElementsMap>(new Map());
   // ideally all elements within the scene should be wrapped around with `Ordered` type, but right now there is no real benefit doing so
   private elements: readonly OrderedExcalidrawElement[] = [];
-  private nonDeletedFramesLikes: readonly NonDeleted<ExcalidrawFrameLikeElement>[] =
-    [];
+  private nonDeletedFramesLikes: readonly NonDeleted<ExcalidrawFrameLikeElement>[] = [];
   private frames: readonly ExcalidrawFrameLikeElement[] = [];
   private elementsMap = toBrandedType<SceneElementsMap>(new Map());
   private selectedElementsCache: {
@@ -229,9 +213,7 @@ export class Scene {
     return (this.elementsMap.get(id) as T | undefined) || null;
   }
 
-  getNonDeletedElement(
-    id: ExcalidrawElement["id"],
-  ): NonDeleted<ExcalidrawElement> | null {
+  getNonDeletedElement(id: ExcalidrawElement["id"]): NonDeleted<ExcalidrawElement> | null {
     const element = this.getElement(id);
     if (element && isNonDeletedElement(element)) {
       return element;
@@ -251,9 +233,7 @@ export class Scene {
    *
    * @returns whether a change was made
    */
-  mapElements(
-    iteratee: (element: ExcalidrawElement) => ExcalidrawElement,
-  ): boolean {
+  mapElements(iteratee: (element: ExcalidrawElement) => ExcalidrawElement): boolean {
     let didChange = false;
     const newElements = this.elements.map((element) => {
       const nextElement = iteratee(element);
@@ -340,16 +320,10 @@ export class Scene {
 
   insertElementAtIndex(element: ExcalidrawElement, index: number) {
     if (!Number.isFinite(index) || index < 0) {
-      throw new Error(
-        "insertElementAtIndex can only be called with index >= 0",
-      );
+      throw new Error("insertElementAtIndex can only be called with index >= 0");
     }
 
-    const nextElements = [
-      ...this.elements.slice(0, index),
-      element,
-      ...this.elements.slice(index),
-    ];
+    const nextElements = [...this.elements.slice(0, index), element, ...this.elements.slice(index)];
 
     syncMovedIndices(nextElements, arrayToMap([element]));
 
@@ -362,9 +336,7 @@ export class Scene {
     }
 
     if (!Number.isFinite(index) || index < 0) {
-      throw new Error(
-        "insertElementAtIndex can only be called with index >= 0",
-      );
+      throw new Error("insertElementAtIndex can only be called with index >= 0");
     }
 
     const nextElements = [
@@ -379,9 +351,7 @@ export class Scene {
   }
 
   insertElement = (element: ExcalidrawElement) => {
-    const index = element.frameId
-      ? this.getElementIndex(element.frameId)
-      : this.elements.length;
+    const index = element.frameId ? this.getElementIndex(element.frameId) : this.elements.length;
 
     this.insertElementAtIndex(element, index);
   };
@@ -448,12 +418,7 @@ export class Scene {
     const elementsMap = this.getNonDeletedElementsMap();
 
     const { version: prevVersion } = element;
-    const { version: nextVersion } = mutateElement(
-      element,
-      elementsMap,
-      updates,
-      options,
-    );
+    const { version: nextVersion } = mutateElement(element, elementsMap, updates, options);
 
     if (
       // skip if the element is not in the scene (i.e. selection)

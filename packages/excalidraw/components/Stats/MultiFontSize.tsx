@@ -1,7 +1,4 @@
-import {
-  getBoundTextElement,
-  redrawTextBoundingBox,
-} from "@excalidraw/element";
+import { getBoundTextElement, redrawTextBoundingBox } from "@excalidraw/element";
 import { hasBoundTextElement, isTextElement } from "@excalidraw/element";
 
 import { isInGroup } from "@excalidraw/element";
@@ -63,13 +60,7 @@ const getApplicableTextElements = (
 const handleFontSizeChange: DragInputCallbackType<
   MultiFontSizeProps["property"],
   ExcalidrawTextElement
-> = ({
-  accumulatedChange,
-  originalElements,
-  shouldChangeByStepSize,
-  nextValue,
-  scene,
-}) => {
+> = ({ accumulatedChange, originalElements, shouldChangeByStepSize, nextValue, scene }) => {
   const elementsMap = scene.getNonDeletedElementsMap();
   const latestTextElements = originalElements.map((el) =>
     elementsMap.get(el.id),
@@ -85,11 +76,7 @@ const handleFontSizeChange: DragInputCallbackType<
         fontSize: nextFontSize,
       });
 
-      redrawTextBoundingBox(
-        textElement,
-        scene.getContainerElement(textElement),
-        scene,
-      );
+      redrawTextBoundingBox(textElement, scene.getContainerElement(textElement), scene);
     }
 
     scene.triggerUpdate();
@@ -102,10 +89,7 @@ const handleFontSizeChange: DragInputCallbackType<
 
       const originalFontSize = Math.round(originalElement.fontSize);
       const changeInFontSize = Math.round(accumulatedChange);
-      let nextFontSize = Math.max(
-        originalFontSize + changeInFontSize,
-        MIN_FONT_SIZE,
-      );
+      let nextFontSize = Math.max(originalFontSize + changeInFontSize, MIN_FONT_SIZE);
       if (shouldChangeByStepSize) {
         nextFontSize = getStepSizedValue(nextFontSize, STEP_SIZE);
       }
@@ -113,11 +97,7 @@ const handleFontSizeChange: DragInputCallbackType<
         fontSize: nextFontSize,
       });
 
-      redrawTextBoundingBox(
-        latestElement,
-        scene.getContainerElement(latestElement),
-        scene,
-      );
+      redrawTextBoundingBox(latestElement, scene.getContainerElement(latestElement), scene);
     }
 
     scene.triggerUpdate();
@@ -137,9 +117,7 @@ const MultiFontSize = ({
     return null;
   }
 
-  const fontSizes = latestTextElements.map(
-    (textEl) => Math.round(textEl.fontSize * 10) / 10,
-  );
+  const fontSizes = latestTextElements.map((textEl) => Math.round(textEl.fontSize * 10) / 10);
   const value = new Set(fontSizes).size === 1 ? fontSizes[0] : "Mixed";
   const editable = fontSizes.length > 0;
 

@@ -76,13 +76,7 @@ export const EyeDropper: React.FC<{
 
     const ctx = app.canvas.getContext("2d")!;
 
-    const getCurrentColor = ({
-      clientX,
-      clientY,
-    }: {
-      clientX: number;
-      clientY: number;
-    }) => {
+    const getCurrentColor = ({ clientX, clientY }: { clientX: number; clientY: number }) => {
       const pixel = ctx.getImageData(
         (clientX - appState.offsetLeft) * window.devicePixelRatio,
         (clientY - appState.offsetTop) * window.devicePixelRatio,
@@ -109,12 +103,9 @@ export const EyeDropper: React.FC<{
       const currentColor = getCurrentColor({ clientX, clientY });
 
       if (isHoldingPointerDown) {
-        stableProps.onChange(
-          colorPickerType,
-          currentColor,
-          stableProps.selectedElements,
-          { altKey },
-        );
+        stableProps.onChange(colorPickerType, currentColor, stableProps.selectedElements, {
+          altKey,
+        });
       }
 
       colorPreviewDiv.style.background = currentColor;
@@ -124,10 +115,7 @@ export const EyeDropper: React.FC<{
       stableProps.onCancel();
     };
 
-    const onSelect: Required<EyeDropperProperties>["onSelect"] = (
-      color,
-      event,
-    ) => {
+    const onSelect: Required<EyeDropperProperties>["onSelect"] = (color, event) => {
       stableProps.onSelect(color, event);
     };
 
@@ -173,10 +161,7 @@ export const EyeDropper: React.FC<{
     });
 
     eyeDropperContainer.addEventListener(EVENT.KEYDOWN, keyDownListener);
-    eyeDropperContainer.addEventListener(
-      EVENT.POINTER_DOWN,
-      pointerDownListener,
-    );
+    eyeDropperContainer.addEventListener(EVENT.POINTER_DOWN, pointerDownListener);
     eyeDropperContainer.addEventListener(EVENT.POINTER_UP, pointerUpListener);
     window.addEventListener("pointermove", mouseMoveListener, {
       passive: true,
@@ -186,14 +171,8 @@ export const EyeDropper: React.FC<{
     return () => {
       isHoldingPointerDown = false;
       eyeDropperContainer.removeEventListener(EVENT.KEYDOWN, keyDownListener);
-      eyeDropperContainer.removeEventListener(
-        EVENT.POINTER_DOWN,
-        pointerDownListener,
-      );
-      eyeDropperContainer.removeEventListener(
-        EVENT.POINTER_UP,
-        pointerUpListener,
-      );
+      eyeDropperContainer.removeEventListener(EVENT.POINTER_DOWN, pointerDownListener);
+      eyeDropperContainer.removeEventListener(EVENT.POINTER_UP, pointerUpListener);
       window.removeEventListener("pointermove", mouseMoveListener);
       window.removeEventListener(EVENT.BLUR, onCancel);
     };
@@ -216,9 +195,7 @@ export const EyeDropper: React.FC<{
     },
     (event) => {
       if (
-        event.target.closest(
-          ".excalidraw-eye-dropper-trigger, .excalidraw-eye-dropper-backdrop",
-        )
+        event.target.closest(".excalidraw-eye-dropper-trigger, .excalidraw-eye-dropper-backdrop")
       ) {
         return true;
       }

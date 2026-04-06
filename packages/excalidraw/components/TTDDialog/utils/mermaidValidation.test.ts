@@ -31,12 +31,8 @@ describe("isValidMermaidSyntax", () => {
     });
 
     it("should return true for content with multiple balanced delimiters", () => {
-      expect(isValidMermaidSyntax("A[Node] --> B{Decision} --> C(End)")).toBe(
-        true,
-      );
-      expect(
-        isValidMermaidSyntax("flowchart\nA[Start] --> B{Check} --> C(Done)"),
-      ).toBe(true);
+      expect(isValidMermaidSyntax("A[Node] --> B{Decision} --> C(End)")).toBe(true);
+      expect(isValidMermaidSyntax("flowchart\nA[Start] --> B{Check} --> C(Done)")).toBe(true);
     });
   });
 
@@ -201,9 +197,7 @@ describe("isValidMermaidSyntax", () => {
 
     it("should handle strings with special characters", () => {
       expect(isValidMermaidSyntax("A[Node with spaces]")).toBe(true);
-      expect(
-        isValidMermaidSyntax("A[Node with 'quotes' and numbers 123]"),
-      ).toBe(true);
+      expect(isValidMermaidSyntax("A[Node with 'quotes' and numbers 123]")).toBe(true);
     });
 
     it("should trim content before validation", () => {

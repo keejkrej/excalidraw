@@ -65,10 +65,7 @@ export class WorkerPool<T, R> {
   /**
    * Take idle worker from the pool or create a new one and post a message to it.
    */
-  public async postMessage(
-    data: T,
-    options: StructuredSerializeOptions,
-  ): Promise<R> {
+  public async postMessage(data: T, options: StructuredSerializeOptions): Promise<R> {
     let worker: IdleWorker;
 
     const idleWorker = Array.from(this.idleWorkers).shift();
@@ -85,9 +82,7 @@ export class WorkerPool<T, R> {
 
       worker.instance.postMessage(data, options);
       worker.debounceTerminate(() =>
-        reject(
-          new Error(`Active worker did not respond for ${this.workerTTL}ms!`),
-        ),
+        reject(new Error(`Active worker did not respond for ${this.workerTTL}ms!`)),
       );
     });
   }
@@ -117,9 +112,7 @@ export class WorkerPool<T, R> {
         this.idleWorkers.delete(worker);
 
         // eslint-disable-next-line no-console
-        console.debug(
-          "Job finished! Idle worker has been released from the pool.",
-        );
+        console.debug("Job finished! Idle worker has been released from the pool.");
       } else if (reject) {
         reject();
       } else {
@@ -138,10 +131,7 @@ export class WorkerPool<T, R> {
     };
   }
 
-  private onErrorHandler(
-    worker: IdleWorker,
-    reject: (reason: ErrorEvent) => void,
-  ) {
+  private onErrorHandler(worker: IdleWorker, reject: (reason: ErrorEvent) => void) {
     return (e: ErrorEvent) => {
       // terminate the worker immediately before rejection
       worker.debounceTerminate(() => reject(e));

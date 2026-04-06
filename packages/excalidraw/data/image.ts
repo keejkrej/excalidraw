@@ -22,13 +22,7 @@ export const getTEXtChunk = async (
   return null;
 };
 
-export const encodePngMetadata = async ({
-  blob,
-  metadata,
-}: {
-  blob: Blob;
-  metadata: string;
-}) => {
+export const encodePngMetadata = async ({ blob, metadata }: { blob: Blob; metadata: string }) => {
   const chunks = decodePng(new Uint8Array(await blobToArrayBuffer(blob)));
 
   const metadataChunk = tEXt.encode(
@@ -53,10 +47,7 @@ export const decodePngMetadata = async (blob: Blob) => {
       const encodedData = JSON.parse(metadata.text);
       if (!("encoded" in encodedData)) {
         // legacy, un-encoded scene JSON
-        if (
-          "type" in encodedData &&
-          encodedData.type === EXPORT_DATA_TYPES.excalidraw
-        ) {
+        if ("type" in encodedData && encodedData.type === EXPORT_DATA_TYPES.excalidraw) {
           return metadata.text;
         }
         throw new Error("FAILED");

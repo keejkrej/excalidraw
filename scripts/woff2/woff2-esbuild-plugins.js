@@ -32,65 +32,58 @@ module.exports.woff2ServerPlugin = (options = {}) => {
         };
       });
 
-      build.onLoad(
-        { filter: /.*/, namespace: "woff2ServerPlugin" },
-        async (args) => {
-          let woff2Buffer;
+      build.onLoad({ filter: /.*/, namespace: "woff2ServerPlugin" }, async (args) => {
+        let woff2Buffer;
 
-          if (path.isAbsolute(args.path)) {
-            // read local woff2 as a buffer (WARN: `readFileSync` does not work!)
-            woff2Buffer = await fs.promises.readFile(args.path);
-          } else {
-            throw new Error(`Font path has to be absolute! "${args.path}"`);
-          }
+        if (path.isAbsolute(args.path)) {
+          // read local woff2 as a buffer (WARN: `readFileSync` does not work!)
+          woff2Buffer = await fs.promises.readFile(args.path);
+        } else {
+          throw new Error(`Font path has to be absolute! "${args.path}"`);
+        }
 
-          // google's brotli decompression into snft
-          const snftBuffer = new Uint8Array(
-            await wawoff.decompress(woff2Buffer),
-          ).buffer;
+        // google's brotli decompression into snft
+        const snftBuffer = new Uint8Array(await wawoff.decompress(woff2Buffer)).buffer;
 
-          // load font and store per fontfamily & subfamily cache
-          let font;
+        // load font and store per fontfamily & subfamily cache
+        let font;
 
-          try {
-            font = Font.create(snftBuffer, {
-              type: "ttf",
-              hinting: true,
-              kerning: true,
-            });
-          } catch {
-            // if loading as ttf fails, try to load as otf
-            font = Font.create(snftBuffer, {
-              type: "otf",
-              hinting: true,
-              kerning: true,
-            });
-          }
+        try {
+          font = Font.create(snftBuffer, {
+            type: "ttf",
+            hinting: true,
+            kerning: true,
+          });
+        } catch {
+          // if loading as ttf fails, try to load as otf
+          font = Font.create(snftBuffer, {
+            type: "otf",
+            hinting: true,
+            kerning: true,
+          });
+        }
 
-          const fontFamily = font.data.name.fontFamily;
-          const subFamily = font.data.name.fontSubFamily;
+        const fontFamily = font.data.name.fontFamily;
+        const subFamily = font.data.name.fontSubFamily;
 
-          if (!fonts.get(fontFamily)) {
-            fonts.set(fontFamily, {});
-          }
+        if (!fonts.get(fontFamily)) {
+          fonts.set(fontFamily, {});
+        }
 
-          if (!fonts.get(fontFamily)[subFamily]) {
-            fonts.get(fontFamily)[subFamily] = [];
-          }
+        if (!fonts.get(fontFamily)[subFamily]) {
+          fonts.get(fontFamily)[subFamily] = [];
+        }
 
-          // store the snftbuffer per subfamily
-          fonts.get(fontFamily)[subFamily].push(font);
+        // store the snftbuffer per subfamily
+        fonts.get(fontFamily)[subFamily].push(font);
 
-          // inline the woff2 as base64 for server-side use cases
-          // NOTE: "file" loader is broken in commonjs and "dataurl" loader does not produce correct ur
-          return {
-            contents: `data:font/woff2;base64,${woff2Buffer.toString(
-              "base64",
-            )}`,
-            loader: "text",
-          };
-        },
-      );
+        // inline the woff2 as base64 for server-side use cases
+        // NOTE: "file" loader is broken in commonjs and "dataurl" loader does not produce correct ur
+        return {
+          contents: `data:font/woff2;base64,${woff2Buffer.toString("base64")}`,
+          loader: "text",
+        };
+      });
 
       build.onEnd(async () => {
         const { outdir } = options;
@@ -110,25 +103,13 @@ module.exports.woff2ServerPlugin = (options = {}) => {
           return;
         }
 
-        const xiaolaiPath = path.resolve(
-          __dirname,
-          "./assets/Xiaolai-Regular.ttf",
-        );
-        const emojiPath = path.resolve(
-          __dirname,
-          "./assets/NotoEmoji-Regular.ttf",
-        );
+        const xiaolaiPath = path.resolve(__dirname, "./assets/Xiaolai-Regular.ttf");
+        const emojiPath = path.resolve(__dirname, "./assets/NotoEmoji-Regular.ttf");
 
         // need to use the same em size as built-in fonts, otherwise pyftmerge throws (modified manually with font forge)
-        const emojiPath_2048 = path.resolve(
-          __dirname,
-          "./assets/NotoEmoji-Regular-2048.ttf",
-        );
+        const emojiPath_2048 = path.resolve(__dirname, "./assets/NotoEmoji-Regular-2048.ttf");
 
-        const liberationPath = path.resolve(
-          __dirname,
-          "./assets/LiberationSans-Regular.ttf",
-        );
+        const liberationPath = path.resolve(__dirname, "./assets/LiberationSans-Regular.ttf");
 
         // need to use the same em size as built-in fonts, otherwise pyftmerge throws (modified manually with font forge)
         const liberationPath_2048 = path.resolve(
@@ -147,8 +128,8 @@ module.exports.woff2ServerPlugin = (options = {}) => {
           type: "ttf",
         });
 
-        const sortedFonts = Array.from(fonts.entries()).sort(
-          ([family1], [family2]) => (family1 > family2 ? 1 : -1),
+        const sortedFonts = Array.from(fonts.entries()).sort(([family1], [family2]) =>
+          family1 > family2 ? 1 : -1,
         );
 
         // for now we are interested in the regular families only
@@ -237,13 +218,9 @@ module.exports.woff2ServerPlugin = (options = {}) => {
           const { ascent, descent } = baseFont.data.hhea;
           console.info(`Generated "${family}"`);
           if (Regular.length > 1) {
-            console.info(
-              `- by merging ${Regular.length} woff2 fonts and related fallback fonts`,
-            );
+            console.info(`- by merging ${Regular.length} woff2 fonts and related fallback fonts`);
           }
-          console.info(
-            `- with metrics ${baseFont.data.head.unitsPerEm}, ${ascent}, ${descent}`,
-          );
+          console.info(`- with metrics ${baseFont.data.head.unitsPerEm}, ${ascent}, ${descent}`);
           console.info(``);
         }
       });

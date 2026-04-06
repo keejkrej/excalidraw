@@ -1,17 +1,8 @@
-import {
-  applyDarkModeFilter,
-  FRAME_STYLE,
-  THEME,
-  throttleRAF,
-} from "@excalidraw/common";
+import { applyDarkModeFilter, FRAME_STYLE, THEME, throttleRAF } from "@excalidraw/common";
 import { isElementLink } from "@excalidraw/element";
 import { createPlaceholderEmbeddableLabel } from "@excalidraw/element";
 import { getBoundTextElement } from "@excalidraw/element";
-import {
-  isEmbeddableElement,
-  isIframeLikeElement,
-  isTextElement,
-} from "@excalidraw/element";
+import { isEmbeddableElement, isIframeLikeElement, isTextElement } from "@excalidraw/element";
 import {
   elementOverlapsWithFrame,
   getTargetFrame,
@@ -36,10 +27,7 @@ import {
 
 import { bootstrapCanvas, getNormalizedCanvasDimensions } from "./helpers";
 
-import type {
-  StaticCanvasRenderConfig,
-  StaticSceneRenderConfig,
-} from "../scene/types";
+import type { StaticCanvasRenderConfig, StaticSceneRenderConfig } from "../scene/types";
 import type { StaticCanvasAppState, Zoom } from "../types";
 
 const GridLineColor = {
@@ -85,8 +73,7 @@ const strokeGrid = (
 
   // vertical lines
   for (let x = offsetX; x < offsetX + width + gridSize * 2; x += gridSize) {
-    const isBold =
-      gridStep > 1 && Math.round(x - scrollX) % (gridStep * gridSize) === 0;
+    const isBold = gridStep > 1 && Math.round(x - scrollX) % (gridStep * gridSize) === 0;
     // don't render regular lines when zoomed out and they're barely visible
     if (!isBold && actualGridSize < 10) {
       continue;
@@ -98,17 +85,14 @@ const strokeGrid = (
 
     context.beginPath();
     context.setLineDash(isBold ? [] : lineDash);
-    context.strokeStyle = isBold
-      ? GridLineColor[theme].bold
-      : GridLineColor[theme].regular;
+    context.strokeStyle = isBold ? GridLineColor[theme].bold : GridLineColor[theme].regular;
     context.moveTo(x, offsetY - gridSize);
     context.lineTo(x, Math.ceil(offsetY + height + gridSize * 2));
     context.stroke();
   }
 
   for (let y = offsetY; y < offsetY + height + gridSize * 2; y += gridSize) {
-    const isBold =
-      gridStep > 1 && Math.round(y - scrollY) % (gridStep * gridSize) === 0;
+    const isBold = gridStep > 1 && Math.round(y - scrollY) % (gridStep * gridSize) === 0;
     if (!isBold && actualGridSize < 10) {
       continue;
     }
@@ -119,9 +103,7 @@ const strokeGrid = (
 
     context.beginPath();
     context.setLineDash(isBold ? [] : lineDash);
-    context.strokeStyle = isBold
-      ? GridLineColor[theme].bold
-      : GridLineColor[theme].regular;
+    context.strokeStyle = isBold ? GridLineColor[theme].bold : GridLineColor[theme].regular;
     context.moveTo(offsetX - gridSize, y);
     context.lineTo(Math.ceil(offsetX + width + gridSize * 2), y);
     context.stroke();
@@ -138,21 +120,12 @@ export const frameClip = (
   context.translate(frame.x + appState.scrollX, frame.y + appState.scrollY);
   context.beginPath();
   if (context.roundRect) {
-    context.roundRect(
-      0,
-      0,
-      frame.width,
-      frame.height,
-      FRAME_STYLE.radius / appState.zoom.value,
-    );
+    context.roundRect(0, 0, frame.width, frame.height, FRAME_STYLE.radius / appState.zoom.value);
   } else {
     context.rect(0, 0, frame.width, frame.height);
   }
   context.clip();
-  context.translate(
-    -(frame.x + appState.scrollX),
-    -(frame.y + appState.scrollY),
-  );
+  context.translate(-(frame.x + appState.scrollX), -(frame.y + appState.scrollY));
 };
 
 type LinkIconCanvas = HTMLCanvasElement & { zoom: number };
@@ -184,9 +157,7 @@ const renderLinkIcon = (
     context.translate(appState.scrollX + centerX, appState.scrollY + centerY);
     context.rotate(element.angle);
 
-    const canvasKey = isElementLink(element.link)
-      ? "elementLink"
-      : "regularLink";
+    const canvasKey = isElementLink(element.link) ? "elementLink" : "regularLink";
 
     let linkCanvas = linkIconCanvasCache[canvasKey];
 
@@ -195,8 +166,7 @@ const renderLinkIcon = (
         zoom: appState.zoom.value,
       });
       linkCanvas.width = width * window.devicePixelRatio * appState.zoom.value;
-      linkCanvas.height =
-        height * window.devicePixelRatio * appState.zoom.value;
+      linkCanvas.height = height * window.devicePixelRatio * appState.zoom.value;
       linkIconCanvasCache[canvasKey] = linkCanvas;
 
       const linkCanvasCacheContext = linkCanvas.getContext("2d")!;
@@ -210,13 +180,7 @@ const renderLinkIcon = (
       if (canvasKey === "elementLink") {
         linkCanvasCacheContext.drawImage(ELEMENT_LINK_IMG, 0, 0, width, height);
       } else {
-        linkCanvasCacheContext.drawImage(
-          EXTERNAL_LINK_IMG,
-          0,
-          0,
-          width,
-          height,
-        );
+        linkCanvasCacheContext.drawImage(EXTERNAL_LINK_IMG, 0, 0, width, height);
       }
 
       linkCanvasCacheContext.restore();
@@ -242,10 +206,7 @@ const _renderStaticScene = ({
 
   const { renderGrid = true, isExporting } = renderConfig;
 
-  const [normalizedWidth, normalizedHeight] = getNormalizedCanvasDimensions(
-    canvas,
-    scale,
-  );
+  const [normalizedWidth, normalizedHeight] = getNormalizedCanvasDimensions(canvas, scale);
 
   const context = bootstrapCanvas({
     canvas,
@@ -282,16 +243,10 @@ const _renderStaticScene = ({
       element.groupIds.length > 0 &&
       appState.frameToHighlight &&
       appState.selectedElementIds[element.id] &&
-      (elementOverlapsWithFrame(
-        element,
-        appState.frameToHighlight,
-        elementsMap,
-      ) ||
+      (elementOverlapsWithFrame(element, appState.frameToHighlight, elementsMap) ||
         element.groupIds.find((groupId) => groupsToBeAddedToFrame.has(groupId)))
     ) {
-      element.groupIds.forEach((groupId) =>
-        groupsToBeAddedToFrame.add(groupId),
-      );
+      element.groupIds.forEach((groupId) => groupsToBeAddedToFrame.add(groupId));
     }
   });
 
@@ -304,54 +259,24 @@ const _renderStaticScene = ({
       try {
         const frameId = element.frameId || appState.frameToHighlight?.id;
 
-        if (
-          isTextElement(element) &&
-          element.containerId &&
-          elementsMap.has(element.containerId)
-        ) {
+        if (isTextElement(element) && element.containerId && elementsMap.has(element.containerId)) {
           // will be rendered with the container
           return;
         }
 
         context.save();
 
-        if (
-          frameId &&
-          appState.frameRendering.enabled &&
-          appState.frameRendering.clip
-        ) {
+        if (frameId && appState.frameRendering.enabled && appState.frameRendering.clip) {
           const frame = getTargetFrame(element, elementsMap, appState);
           if (
             frame &&
-            shouldApplyFrameClip(
-              element,
-              frame,
-              appState,
-              elementsMap,
-              inFrameGroupsMap,
-            )
+            shouldApplyFrameClip(element, frame, appState, elementsMap, inFrameGroupsMap)
           ) {
             frameClip(frame, context, renderConfig, appState);
           }
-          renderElement(
-            element,
-            elementsMap,
-            allElementsMap,
-            rc,
-            context,
-            renderConfig,
-            appState,
-          );
+          renderElement(element, elementsMap, allElementsMap, rc, context, renderConfig, appState);
         } else {
-          renderElement(
-            element,
-            elementsMap,
-            allElementsMap,
-            rc,
-            context,
-            renderConfig,
-            appState,
-          );
+          renderElement(element, elementsMap, allElementsMap, rc, context, renderConfig, appState);
         }
 
         const boundTextElement = getBoundTextElement(element, elementsMap);
@@ -373,14 +298,7 @@ const _renderStaticScene = ({
           renderLinkIcon(element, context, appState, elementsMap);
         }
       } catch (error: any) {
-        console.error(
-          error,
-          element.id,
-          element.x,
-          element.y,
-          element.width,
-          element.height,
-        );
+        console.error(error, element.id, element.x, element.y, element.width, element.height);
       }
     });
 
@@ -390,35 +308,18 @@ const _renderStaticScene = ({
     .forEach((element) => {
       try {
         const render = () => {
-          renderElement(
-            element,
-            elementsMap,
-            allElementsMap,
-            rc,
-            context,
-            renderConfig,
-            appState,
-          );
+          renderElement(element, elementsMap, allElementsMap, rc, context, renderConfig, appState);
 
           if (
             isIframeLikeElement(element) &&
             (isExporting ||
               (isEmbeddableElement(element) &&
-                renderConfig.embedsValidationStatus.get(element.id) !==
-                  true)) &&
+                renderConfig.embedsValidationStatus.get(element.id) !== true)) &&
             element.width &&
             element.height
           ) {
             const label = createPlaceholderEmbeddableLabel(element);
-            renderElement(
-              label,
-              elementsMap,
-              allElementsMap,
-              rc,
-              context,
-              renderConfig,
-              appState,
-            );
+            renderElement(label, elementsMap, allElementsMap, rc, context, renderConfig, appState);
           }
           if (!isExporting) {
             renderLinkIcon(element, context, appState, elementsMap);
@@ -429,24 +330,14 @@ const _renderStaticScene = ({
         //   if the containing frame is not selected, apply clipping
         const frameId = element.frameId || appState.frameToHighlight?.id;
 
-        if (
-          frameId &&
-          appState.frameRendering.enabled &&
-          appState.frameRendering.clip
-        ) {
+        if (frameId && appState.frameRendering.enabled && appState.frameRendering.clip) {
           context.save();
 
           const frame = getTargetFrame(element, elementsMap, appState);
 
           if (
             frame &&
-            shouldApplyFrameClip(
-              element,
-              frame,
-              appState,
-              elementsMap,
-              inFrameGroupsMap,
-            )
+            shouldApplyFrameClip(element, frame, appState, elementsMap, inFrameGroupsMap)
           ) {
             frameClip(frame, context, renderConfig, appState);
           }
@@ -463,15 +354,7 @@ const _renderStaticScene = ({
   // render pending nodes for flowcharts
   renderConfig.pendingFlowchartNodes?.forEach((element) => {
     try {
-      renderElement(
-        element,
-        elementsMap,
-        allElementsMap,
-        rc,
-        context,
-        renderConfig,
-        appState,
-      );
+      renderElement(element, elementsMap, allElementsMap, rc, context, renderConfig, appState);
     } catch (error) {
       console.error(error);
     }
@@ -479,19 +362,14 @@ const _renderStaticScene = ({
 };
 
 /** throttled to animation framerate */
-export const renderStaticSceneThrottled = throttleRAF(
-  (config: StaticSceneRenderConfig) => {
-    _renderStaticScene(config);
-  },
-);
+export const renderStaticSceneThrottled = throttleRAF((config: StaticSceneRenderConfig) => {
+  _renderStaticScene(config);
+});
 
 /**
  * Static scene is the non-ui canvas where we render elements.
  */
-export const renderStaticScene = (
-  renderConfig: StaticSceneRenderConfig,
-  throttle?: boolean,
-) => {
+export const renderStaticScene = (renderConfig: StaticSceneRenderConfig, throttle?: boolean) => {
   if (throttle) {
     renderStaticSceneThrottled(renderConfig);
     return;

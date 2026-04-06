@@ -1,8 +1,5 @@
 import { getVisibleElements } from "@excalidraw/element";
-import {
-  sceneCoordsToViewportCoords,
-  viewportCoordsToSceneCoords,
-} from "@excalidraw/common";
+import { sceneCoordsToViewportCoords, viewportCoordsToSceneCoords } from "@excalidraw/common";
 
 import { getClosestElementBounds } from "@excalidraw/element";
 
@@ -22,10 +19,7 @@ const isOutsideViewPort = (appState: AppState, cords: Array<number>) => {
     { sceneX: x2, sceneY: y2 },
     appState,
   );
-  return (
-    viewportX2 - viewportX1 > appState.width ||
-    viewportY2 - viewportY1 > appState.height
-  );
+  return viewportX2 - viewportX1 > appState.width || viewportY2 - viewportY1 > appState.height;
 };
 
 export const centerScrollOn = ({
@@ -39,15 +33,12 @@ export const centerScrollOn = ({
   zoom: Zoom;
   offsets?: Offsets;
 }) => {
-  let scrollX =
-    (viewportDimensions.width - (offsets?.right ?? 0)) / 2 / zoom.value -
-    scenePoint.x;
+  let scrollX = (viewportDimensions.width - (offsets?.right ?? 0)) / 2 / zoom.value - scenePoint.x;
 
   scrollX += (offsets?.left ?? 0) / 2 / zoom.value;
 
   let scrollY =
-    (viewportDimensions.height - (offsets?.bottom ?? 0)) / 2 / zoom.value -
-    scenePoint.y;
+    (viewportDimensions.height - (offsets?.bottom ?? 0)) / 2 / zoom.value - scenePoint.y;
 
   scrollY += (offsets?.top ?? 0) / 2 / zoom.value;
 
