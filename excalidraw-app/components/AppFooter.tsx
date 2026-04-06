@@ -7,7 +7,13 @@ import { DebugFooter, isVisualDebuggerEnabled } from "./DebugCanvas";
 import { EncryptedIcon } from "./EncryptedIcon";
 
 export const AppFooter = React.memo(
-  ({ onChange }: { onChange: () => void }) => {
+  ({
+    onChange,
+    showEncryptedIcon = true,
+  }: {
+    onChange: () => void;
+    showEncryptedIcon?: boolean;
+  }) => {
     return (
       <Footer>
         <div
@@ -18,7 +24,7 @@ export const AppFooter = React.memo(
           }}
         >
           {isVisualDebuggerEnabled() && <DebugFooter onChange={onChange} />}
-          {!isExcalidrawPlusSignedUser && <EncryptedIcon />}
+          {showEncryptedIcon && !isExcalidrawPlusSignedUser && <EncryptedIcon />}
         </div>
       </Footer>
     );

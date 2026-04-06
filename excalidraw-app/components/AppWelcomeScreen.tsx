@@ -10,6 +10,7 @@ export const AppWelcomeScreen: React.FC<{
   onCollabDialogOpen: () => any;
   isCollabEnabled: boolean;
   showExcalidrawPlusLinks: boolean;
+  showHelpLink: boolean;
 }> = React.memo((props) => {
   const { t } = useI18n();
   let headingContent;
@@ -51,7 +52,7 @@ export const AppWelcomeScreen: React.FC<{
         {t("welcomeScreen.app.menuHint")}
       </WelcomeScreen.Hints.MenuHint>
       <WelcomeScreen.Hints.ToolbarHint />
-      <WelcomeScreen.Hints.HelpHint />
+      {props.showHelpLink && <WelcomeScreen.Hints.HelpHint />}
       <WelcomeScreen.Center>
         <WelcomeScreen.Center.Logo />
         <WelcomeScreen.Center.Heading>
@@ -59,7 +60,7 @@ export const AppWelcomeScreen: React.FC<{
         </WelcomeScreen.Center.Heading>
         <WelcomeScreen.Center.Menu>
           <WelcomeScreen.Center.MenuItemLoadScene />
-          <WelcomeScreen.Center.MenuItemHelp />
+          {props.showHelpLink && <WelcomeScreen.Center.MenuItemHelp />}
           {props.isCollabEnabled && (
             <WelcomeScreen.Center.MenuItemLiveCollaborationTrigger
               onSelect={() => props.onCollabDialogOpen()}

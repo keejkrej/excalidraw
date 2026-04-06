@@ -76,6 +76,14 @@ export default defineConfig(({ mode }) => {
           find: /^@excalidraw\/utils\/(.*?)/,
           replacement: path.resolve(__dirname, "../packages/utils/src/$1"),
         },
+        ...(isDesktopBuild
+          ? [
+              {
+                find: /^virtual:pwa-register$/,
+                replacement: path.resolve(__dirname, "./stubs/pwa-register.ts"),
+              },
+            ]
+          : []),
       ],
     },
     build: {
@@ -141,63 +149,64 @@ export default defineConfig(({ mode }) => {
       }),
       svgrPlugin(),
       ViteEjsPlugin(),
-      VitePWA({
-        registerType: "autoUpdate",
-        devOptions: {
-          /* set this flag to true to enable in Development mode */
-          enabled: envVars.VITE_APP_ENABLE_PWA === "true",
-        },
+      !isDesktopBuild &&
+        VitePWA({
+          registerType: "autoUpdate",
+          devOptions: {
+            /* set this flag to true to enable in Development mode */
+            enabled: envVars.VITE_APP_ENABLE_PWA === "true",
+          },
 
-        workbox: {
-          // don't precache fonts, locales and separate chunks
-          globIgnores: [
-            "fonts.css",
-            "**/locales/**",
-            "service-worker.js",
-            "**/*.chunk-*.js",
-            // CodeMirrorEditor can't be assigned a `.chunk` name via
-            // manualChunks because Rollup would hoist shared deps (React)
-            // via a static import from the main bundle, defeating lazy
-            // loading. So we exclude it by name instead.
-            "**/CodeMirrorEditor-*.js",
-          ],
-          runtimeCaching: [
-            {
-              urlPattern: new RegExp(".+.woff2"),
-              handler: "CacheFirst",
-              options: {
-                cacheName: "fonts",
-                expiration: {
-                  maxEntries: 1000,
-                  maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
-                },
-                cacheableResponse: {
-                  // 0 to cache "opaque" responses from cross-origin requests (i.e. CDN)
-                  statuses: [0, 200],
-                },
-              },
-            },
-            {
-              urlPattern: new RegExp("fonts.css"),
-              handler: "StaleWhileRevalidate",
-              options: {
-                cacheName: "fonts",
-                expiration: {
-                  maxEntries: 50,
+          workbox: {
+            // don't precache fonts, locales and separate chunks
+            globIgnores: [
+              "fonts.css",
+              "**/locales/**",
+              "service-worker.js",
+              "**/*.chunk-*.js",
+              // CodeMirrorEditor can't be assigned a `.chunk` name via
+              // manualChunks because Rollup would hoist shared deps (React)
+              // via a static import from the main bundle, defeating lazy
+              // loading. So we exclude it by name instead.
+              "**/CodeMirrorEditor-*.js",
+            ],
+            runtimeCaching: [
+              {
+                urlPattern: new RegExp(".+.woff2"),
+                handler: "CacheFirst",
+                options: {
+                  cacheName: "fonts",
+                  expiration: {
+                    maxEntries: 1000,
+                    maxAgeSeconds: 60 * 60 * 24 * 90, // 90 days
+                  },
+                  cacheableResponse: {
+                    // 0 to cache "opaque" responses from cross-origin requests (i.e. CDN)
+                    statuses: [0, 200],
+                  },
                 },
               },
-            },
-            {
-              urlPattern: new RegExp("locales/[^/]+.js"),
-              handler: "CacheFirst",
-              options: {
-                cacheName: "locales",
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 30, // <== 30 days
+              {
+                urlPattern: new RegExp("fonts.css"),
+                handler: "StaleWhileRevalidate",
+                options: {
+                  cacheName: "fonts",
+                  expiration: {
+                    maxEntries: 50,
+                  },
                 },
               },
-            },
+              {
+                urlPattern: new RegExp("locales/[^/]+.js"),
+                handler: "CacheFirst",
+                options: {
+                  cacheName: "locales",
+                  expiration: {
+                    maxEntries: 50,
+                    maxAgeSeconds: 60 * 60 * 24 * 30, // <== 30 days
+                  },
+                },
+              },
             {
               urlPattern: new RegExp("(.chunk-.+|CodeMirrorEditor-.+)\\.js"),
               handler: "CacheFirst",

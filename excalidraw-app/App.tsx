@@ -823,10 +823,9 @@ const ExcalidrawWrapper = () => {
           errorMessage: null,
           isLoading: false,
         },
-        files: loadedScene.files,
-        replaceFiles: true,
         captureUpdate: CaptureUpdateAction.IMMEDIATELY,
       });
+      excalidrawAPI.addFiles(Object.values(loadedScene.files));
     },
     [excalidrawAPI],
   );
@@ -1066,6 +1065,7 @@ const ExcalidrawWrapper = () => {
           isCollaborating={isCollaborating}
           isCollabEnabled={!isCollabDisabled}
           isDesktopApp={isDesktopApp}
+          showHelpLinks={!isDesktopApp}
           theme={appTheme}
           setTheme={(theme) => setAppTheme(theme)}
           refresh={() => forceRefresh((prev) => !prev)}
@@ -1074,6 +1074,7 @@ const ExcalidrawWrapper = () => {
           onCollabDialogOpen={onCollabDialogOpen}
           isCollabEnabled={!isCollabDisabled}
           showExcalidrawPlusLinks={!isDesktopApp}
+          showHelpLink={!isDesktopApp}
         />
         <OverwriteConfirmDialog>
           <OverwriteConfirmDialog.Actions.ExportToImage />
@@ -1095,7 +1096,10 @@ const ExcalidrawWrapper = () => {
             </OverwriteConfirmDialog.Action>
           )}
         </OverwriteConfirmDialog>
-        <AppFooter onChange={() => excalidrawAPI?.refresh()} />
+        <AppFooter
+          onChange={() => excalidrawAPI?.refresh()}
+          showEncryptedIcon={!isDesktopApp}
+        />
         {!isDesktopApp && excalidrawAPI && (
           <AIComponents excalidrawAPI={excalidrawAPI} />
         )}

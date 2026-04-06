@@ -27,7 +27,7 @@ export const fileOpen = async <M extends boolean | undefined = false>(opts: {
 
   const hostAdapter = getHostFilesystemAdapter();
   if (hostAdapter?.supported) {
-    return hostAdapter.open(opts) as RetType;
+    return hostAdapter.open(opts) as unknown as RetType;
   }
 
   const mimeTypes = opts.extensions?.reduce((mimeTypes, type) => {

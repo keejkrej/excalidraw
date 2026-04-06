@@ -92,9 +92,11 @@
       }
     </style>
 
+    <% if (!(typeof VITE_DESKTOP_APP != 'undefined' && VITE_DESKTOP_APP == 'true')) { %>
     <!-- Warmup the connection for Google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <% } %>
 
     <!------------------------------------------------------------------------->
     <% if (typeof PROD != 'undefined' && PROD == true && !(typeof VITE_DESKTOP_APP != 'undefined' && VITE_DESKTOP_APP == 'true')) { %>

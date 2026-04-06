@@ -20,6 +20,7 @@ export const AppMainMenu: React.FC<{
   isCollaborating: boolean;
   isCollabEnabled: boolean;
   isDesktopApp: boolean;
+  showHelpLinks: boolean;
   theme: Theme | "system";
   setTheme: (theme: Theme | "system") => void;
   refresh: () => void;
@@ -38,7 +39,7 @@ export const AppMainMenu: React.FC<{
       )}
       <MainMenu.DefaultItems.CommandPalette className="highlighted" />
       <MainMenu.DefaultItems.SearchMenu />
-      <MainMenu.DefaultItems.Help />
+      {props.showHelpLinks && <MainMenu.DefaultItems.Help />}
       <MainMenu.DefaultItems.ClearCanvas />
       {!props.isDesktopApp && (
         <>
@@ -54,7 +55,7 @@ export const AppMainMenu: React.FC<{
           </MainMenu.ItemLink>
         </>
       )}
-      <MainMenu.DefaultItems.Socials />
+      {props.showHelpLinks && <MainMenu.DefaultItems.Socials />}
       {!props.isDesktopApp && (
         <MainMenu.ItemLink
           icon={loginIcon}

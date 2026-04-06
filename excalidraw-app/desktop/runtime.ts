@@ -171,24 +171,16 @@ export const installDesktopRuntime = async () => {
   }
 
   desktopRuntimePromise = (async () => {
-    const [
-      { invoke },
-      { listen },
-      dialog,
-      opener,
-    ] = await Promise.all([
+    const [{ invoke }, { listen }, dialog] = await Promise.all([
       import("@tauri-apps/api/core"),
       import("@tauri-apps/api/event"),
       import("@tauri-apps/plugin-dialog"),
-      import("@tauri-apps/plugin-opener"),
-      import("@tauri-apps/plugin-opener/init"),
     ]);
 
     const originalOpen = window.open.bind(window);
 
     window.open = ((url, target, features) => {
       if (shouldUseNativeOpen(url)) {
-        void opener.openUrl(String(url));
         return null;
       }
       return originalOpen(url, target, features);
