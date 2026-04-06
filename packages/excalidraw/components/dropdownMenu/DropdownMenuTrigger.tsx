@@ -7,15 +7,17 @@ import { useEditorInterface } from "../App";
 const MenuTrigger = ({
   className = "",
   children,
+  onClick,
   onToggle,
   title,
   ...rest
 }: {
   className?: string;
   children: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   onToggle: () => void;
   title?: string;
-} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onSelect">) => {
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onSelect" | "onToggle">) => {
   const editorInterface = useEditorInterface();
   const classNames = clsx(`dropdown-menu-button ${className}`, "zen-mode-transition", {
     "dropdown-menu-button--mobile": editorInterface.formFactor === "phone",
@@ -23,7 +25,10 @@ const MenuTrigger = ({
   return (
     <DropdownMenuPrimitive.Trigger
       className={classNames}
-      onClick={onToggle}
+      onClick={(event) => {
+        onToggle();
+        onClick?.(event);
+      }}
       type="button"
       data-testid="dropdown-menu-button"
       title={title}

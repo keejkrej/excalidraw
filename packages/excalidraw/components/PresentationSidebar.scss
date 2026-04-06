@@ -106,7 +106,7 @@
 }
 
 .PresentationSidebar__actionButton.ToolIcon_type_button:hover,
-.PresentationSidebar__slideAction.ToolIcon_type_button:hover {
+.PresentationSidebar__slideAction.dropdown-menu-button:hover {
   background: var(--color-surface-high);
 }
 
@@ -175,29 +175,45 @@
   transition: opacity 120ms ease-out;
 }
 
-.PresentationSidebar__slide:hover .PresentationSidebar__slideActionWrapper {
+.PresentationSidebar__slide:hover .PresentationSidebar__slideActionWrapper,
+.PresentationSidebar__slideActionWrapper:has(.PresentationSidebar__slideAction--open) {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
 
-.PresentationSidebar__slideAction.ToolIcon_type_button {
+.PresentationSidebar__slideAction.dropdown-menu-button {
   width: 1.5rem;
   height: 1.5rem;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0;
   border-radius: 0.25rem;
+  background: transparent;
 }
 
-.PresentationSidebar__slideAction.ToolIcon_type_button .ToolIcon__icon {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.PresentationSidebar__slideAction.dropdown-menu-button:hover,
+.PresentationSidebar__slideAction.dropdown-menu-button:active,
+.PresentationSidebar__slideAction--open.dropdown-menu-button {
+  background: var(--color-surface-high);
 }
 
-.PresentationSidebar__slideAction.ToolIcon_type_button .ToolIcon__icon svg {
+.PresentationSidebar__slideAction.dropdown-menu-button svg {
   width: 0.875rem;
   height: 0.875rem;
+}
+
+.PresentationSidebar__slideMenu.dropdown-menu {
+  min-width: 16rem;
+}
+
+.PresentationSidebar__slideMenuDanger {
+  color: var(--color-danger);
+}
+
+.PresentationSidebar__slideMenuDanger:hover,
+.PresentationSidebar__slideMenuDanger:active {
+  color: var(--color-danger);
 }
 
 .PresentationSidebar__thumbnail {

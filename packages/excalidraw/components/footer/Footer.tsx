@@ -21,7 +21,7 @@ const Footer = ({
   showExitZenModeBtn: boolean;
   renderWelcomeScreen: boolean;
 }) => {
-  const { FooterCenterTunnel, WelcomeScreenHelpHintTunnel } = useTunnels();
+  const { FooterLeftTunnel, FooterCenterTunnel, WelcomeScreenHelpHintTunnel } = useTunnels();
 
   return (
     <footer role="contentinfo" className="layer-ui__wrapper__footer App-menu App-menu_bottom">
@@ -35,12 +35,15 @@ const Footer = ({
             <ZoomActions renderAction={actionManager.renderAction} zoom={appState.zoom} />
 
             {!appState.viewModeEnabled && (
-              <UndoRedoActions
-                renderAction={actionManager.renderAction}
-                className={clsx("zen-mode-transition", {
-                  "layer-ui__wrapper__footer-left--transition-bottom": appState.zenModeEnabled,
-                })}
-              />
+              <Stack.Row align="center" gap={1}>
+                <UndoRedoActions
+                  renderAction={actionManager.renderAction}
+                  className={clsx("zen-mode-transition", {
+                    "layer-ui__wrapper__footer-left--transition-bottom": appState.zenModeEnabled,
+                  })}
+                />
+                <FooterLeftTunnel.Out />
+              </Stack.Row>
             )}
           </Section>
         </Stack.Col>

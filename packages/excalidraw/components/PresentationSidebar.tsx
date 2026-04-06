@@ -1,14 +1,37 @@
 import clsx from "clsx";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { isFrameElement } from "@excalidraw/element";
+import { EXPORT_IMAGE_TYPES, arrayToMap } from "@excalidraw/common";
+import {
+  CaptureUpdateAction,
+  isFrameElement,
+  newFrameElement,
+  setPresentationOrder,
+} from "@excalidraw/element";
 import type { ExcalidrawElement, ExcalidrawFrameElement } from "@excalidraw/element/types";
 
+import { actionDeleteSelected } from "../actions/actionDeleteSelected";
+import { actionDuplicateSelection } from "../actions/actionDuplicateSelection";
+import { prepareElementsForExport } from "../data";
 import { exportToSvg } from "../scene/export";
 
 import { FilledButton } from "./FilledButton";
-import { useApp, useExcalidrawAppState } from "./App";
-import { DotsHorizontalIcon, DotsIcon, PlusIcon, playerPlayIcon, slidesLayoutIcon } from "./icons";
+import { useApp, useExcalidrawAppState, useExcalidrawSetAppState } from "./App";
+import DropdownMenu from "./dropdownMenu/DropdownMenu";
+import {
+  copyIcon,
+  DotsHorizontalIcon,
+  DotsIcon,
+  ExportIcon,
+  PlusIcon,
+  TrashIcon,
+  pencilIcon,
+  playerPlayIcon,
+  pngIcon,
+  share as shareIcon,
+  slidesLayoutIcon,
+  svgIcon,
+} from "./icons";
 import { ScrollableList } from "./ScrollableList";
 import { ToolButton } from "./ToolButton";
 
@@ -76,10 +99,18 @@ const FrameThumbnail = ({ frame }: { frame: ExcalidrawFrameElement }) => {
 };
 
 export const PresentationSidebar = () => {
+  const DEFAULT_PRESENTATION_FRAME = {
+    x: 0,
+    y: 0,
+    width: 1280,
+    height: 720,
+  } as const;
   const app = useApp();
   const appState = useExcalidrawAppState();
+  const setAppState = useExcalidrawSetAppState();
   const frames = app.getPresentationFrames();
   const [draggedId, setDraggedId] = useState<ExcalidrawElement["id"] | null>(null);
+  const [openSlideMenuId, setOpenSlideMenuId] = useState<ExcalidrawElement["id"] | null>(null);
 
   const activeFrameId = useMemo(() => {
     if (appState.presentationModeEnabled && appState.presentationFrameId) {
@@ -117,6 +148,143 @@ export const PresentationSidebar = () => {
     app.reorderPresentationFrames(ids);
   };
 
+  const setFrameOrders = (
+    elements: readonly ExcalidrawElement[],
+    orderedFrameIds: readonly ExcalidrawElement["id"][],
+  ) => {
+    const elementsMap = arrayToMap(elements);
+
+    orderedFrameIds.forEach((id, index) => {
+      const frame = elementsMap.get(id);
+      if (frame && isFrameElement(frame)) {
+        setPresentationOrder(frame, elementsMap, index);
+      }
+    });
+
+    return elements;
+  };
+
+  const getSelectedFrameIds = (frameId: ExcalidrawElement["id"]) =>
+    ({
+      [frameId]: true,
+    }) as Record<ExcalidrawElement["id"], true>;
+
+  const getFrameScopedAppState = (frameId: ExcalidrawElement["id"]) => ({
+    ...appState,
+    selectedElementIds: getSelectedFrameIds(frameId),
+  });
+
+  const exportSlide = async (
+    frameId: ExcalidrawElement["id"],
+    exportType: keyof typeof EXPORT_IMAGE_TYPES,
+  ) => {
+    const { exportedElements, exportingFrame } = prepareElementsForExport(
+      app.scene.getElementsIncludingDeleted(),
+      getFrameScopedAppState(frameId),
+      true,
+    );
+
+    await app.onExportImage(exportType, exportedElements, { exportingFrame });
+  };
+
+  const duplicateSlide = (frameId: ExcalidrawElement["id"]) => {
+    const actionResult = actionDuplicateSelection.perform(
+      app.scene.getElementsIncludingDeleted(),
+      getFrameScopedAppState(frameId),
+      null,
+      app,
+    );
+
+    if (!actionResult) {
+      return;
+    }
+
+    const nextElements = actionResult.elements || app.scene.getElementsIncludingDeleted();
+    const nextSelectedIds = Object.keys(actionResult.appState?.selectedElementIds || {});
+    const nextElementsMap = arrayToMap(nextElements);
+    const duplicatedFrameId =
+      nextSelectedIds.find((id) => {
+        const element = nextElementsMap.get(id);
+        return !!element && isFrameElement(element);
+      }) || null;
+
+    if (duplicatedFrameId) {
+      const nextFrameIds = frames.map((frame) => frame.id);
+      const insertIndex = nextFrameIds.indexOf(frameId);
+      nextFrameIds.splice(insertIndex + 1, 0, duplicatedFrameId);
+      setFrameOrders(nextElements, nextFrameIds);
+    }
+
+    setOpenSlideMenuId(null);
+    app.syncActionResult({
+      ...actionResult,
+      elements: nextElements,
+    });
+
+    if (duplicatedFrameId) {
+      app.goToPresentationFrame(duplicatedFrameId);
+    }
+  };
+
+  const removeSlide = (frameId: ExcalidrawElement["id"]) => {
+    const actionResult = actionDeleteSelected.perform(
+      app.scene.getElementsIncludingDeleted(),
+      getFrameScopedAppState(frameId),
+      null,
+      app,
+    );
+
+    if (!actionResult) {
+      return;
+    }
+
+    setOpenSlideMenuId(null);
+    app.syncActionResult(actionResult);
+  };
+
+  const renameSlide = (frameId: ExcalidrawElement["id"]) => {
+    setOpenSlideMenuId(null);
+    app.goToPresentationFrame(frameId);
+    setAppState({
+      selectedElementIds: getSelectedFrameIds(frameId),
+      editingFrame: frameId,
+    });
+  };
+
+  const createSlide = (targetFrame: ExcalidrawFrameElement | null) => {
+    const nextFrame = newFrameElement({
+      x: targetFrame?.x ?? DEFAULT_PRESENTATION_FRAME.x,
+      y:
+        targetFrame?.y !== undefined
+          ? targetFrame.y + targetFrame.height + 64
+          : DEFAULT_PRESENTATION_FRAME.y,
+      width: targetFrame?.width ?? DEFAULT_PRESENTATION_FRAME.width,
+      height: targetFrame?.height ?? DEFAULT_PRESENTATION_FRAME.height,
+    });
+    const nextElements = [...app.scene.getElementsIncludingDeleted(), nextFrame];
+    const nextFrameIds = frames.map((currentFrame) => currentFrame.id);
+    const insertIndex = targetFrame ? nextFrameIds.indexOf(targetFrame.id) : -1;
+
+    nextFrameIds.splice(insertIndex + 1, 0, nextFrame.id);
+    setFrameOrders(nextElements, nextFrameIds);
+
+    setOpenSlideMenuId(null);
+    app.syncActionResult({
+      elements: nextElements,
+      appState: {
+        selectedElementIds: getSelectedFrameIds(nextFrame.id),
+      },
+      captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+    });
+    app.goToPresentationFrame(nextFrame.id);
+  };
+
+  const createSlideFromSidebar = () => {
+    const targetFrame = frames.find((frame) => frame.id === activeFrameId) || frames.at(-1) || null;
+
+    createSlide(targetFrame);
+  };
+
   return (
     <div className="PresentationSidebar">
       <div className="PresentationSidebar__header">
@@ -138,8 +306,9 @@ export const PresentationSidebar = () => {
             size="small"
             className="PresentationSidebar__actionButton"
             icon={PlusIcon}
-            aria-label="Add slide action"
-            title="Add slide action"
+            aria-label="Create new slide"
+            title="Create new slide"
+            onClick={createSlideFromSidebar}
           />
           <ToolButton
             type="button"
@@ -197,14 +366,88 @@ export const PresentationSidebar = () => {
               </label>
             </div>
             <div className="PresentationSidebar__slideActionWrapper">
-              <ToolButton
-                type="button"
-                size="small"
-                className="PresentationSidebar__slideAction"
-                icon={DotsHorizontalIcon}
-                aria-label="Slide actions"
-                title="Slide actions"
-              />
+              <DropdownMenu open={openSlideMenuId === frame.id}>
+                <DropdownMenu.Trigger
+                  className={clsx("PresentationSidebar__slideAction", {
+                    "PresentationSidebar__slideAction--open": openSlideMenuId === frame.id,
+                  })}
+                  onToggle={() =>
+                    setOpenSlideMenuId((currentOpenSlideMenuId) =>
+                      currentOpenSlideMenuId === frame.id ? null : frame.id,
+                    )
+                  }
+                  aria-label={`Slide ${index + 1} actions`}
+                  title="Slide actions"
+                  draggable={false}
+                  onClick={(event) => event.stopPropagation()}
+                  onKeyDown={(event) => event.stopPropagation()}
+                >
+                  {DotsHorizontalIcon}
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content
+                  className="PresentationSidebar__slideMenu"
+                  align="center"
+                  onClickOutside={() => setOpenSlideMenuId(null)}
+                  onSelect={() => setOpenSlideMenuId(null)}
+                >
+                  <DropdownMenu.Item
+                    icon={playerPlayIcon}
+                    onSelect={() => {
+                      void app.startPresentation(frame.id);
+                    }}
+                  >
+                    Start presentation
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item
+                    icon={shareIcon}
+                    onSelect={() => {
+                      void exportSlide(frame.id, EXPORT_IMAGE_TYPES.clipboard);
+                    }}
+                  >
+                    Share presentation
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Sub>
+                    <DropdownMenu.Sub.Trigger icon={ExportIcon}>
+                      Export slide as
+                    </DropdownMenu.Sub.Trigger>
+                    <DropdownMenu.Sub.Content className="PresentationSidebar__slideMenu">
+                      <DropdownMenu.Item
+                        icon={pngIcon}
+                        onSelect={() => {
+                          void exportSlide(frame.id, EXPORT_IMAGE_TYPES.png);
+                        }}
+                      >
+                        PNG
+                      </DropdownMenu.Item>
+                      <DropdownMenu.Item
+                        icon={svgIcon}
+                        onSelect={() => {
+                          void exportSlide(frame.id, EXPORT_IMAGE_TYPES.svg);
+                        }}
+                      >
+                        SVG
+                      </DropdownMenu.Item>
+                    </DropdownMenu.Sub.Content>
+                  </DropdownMenu.Sub>
+                  <DropdownMenu.Item icon={copyIcon} onSelect={() => duplicateSlide(frame.id)}>
+                    Duplicate slide
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item icon={pencilIcon} onSelect={() => renameSlide(frame.id)}>
+                    Rename slide
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item icon={PlusIcon} onSelect={() => createSlide(frame)}>
+                    Create new slide
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Separator />
+                  <DropdownMenu.Item
+                    icon={TrashIcon}
+                    className="PresentationSidebar__slideMenuDanger"
+                    onSelect={() => removeSlide(frame.id)}
+                  >
+                    Remove slide
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu>
             </div>
             <div className="PresentationSidebar__thumbnail">
               <FrameThumbnail frame={frame} />

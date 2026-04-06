@@ -1,0 +1,34 @@
+.excalidraw {
+  .presi-sidebar-button {
+    --button-bg: var(--color-surface-low);
+    --button-hover-bg: var(--color-surface-mid);
+    --button-active-bg: var(--color-surface-mid);
+    --button-width: var(--lg-button-size);
+    --button-height: var(--lg-button-size);
+
+    margin-inline-start: 0.75rem;
+    border: 0;
+    box-shadow: 0 0 0 1px var(--color-surface-lowest);
+
+    &:hover {
+      box-shadow: 0 0 0 1px var(--color-surface-lowest);
+    }
+
+    &:active,
+    &.active {
+      box-shadow: 0 0 0 1px var(--color-brand-active);
+    }
+
+    svg {
+      width: var(--lg-icon-size);
+      height: var(--lg-icon-size);
+      flex: 0 0 auto;
+    }
+  }
+
+  .presi-sidebar-button__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
